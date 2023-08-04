@@ -51,7 +51,7 @@
           <li class="list-group-item list-group-item-dark">내 포트폴리오</li>
           <li class="list-group-item list-group-item-dark" @click="this.$router.push('/assets')">자산 검색</li>
           <li class="list-group-item list-group-item-dark">분석</li>
-          <li class="list-group-item list-group-item-dark">거래내역</li>
+          <li class="list-group-item list-group-item-dark" @click="this.$router.push('/assets/transactions')">거래내역</li>
         </div>
         <div v-else>
           <li class="list-group-item list-group-item-dark category">자산</li>

@@ -5,7 +5,7 @@
   >
     <div class="contents">
       <div class="contents-head flex">
-        <span>국내 주식</span>
+        <span>해외 주식</span>
         <div class="input-group mb-1">
           <input
             type="text"
@@ -46,8 +46,8 @@
         </div>
         <!-- 안했으면 이거나 봐라 -->
         <div v-else class="indexes flex">
-          <div class="kospi">KOSPI 줘봐라</div>
-          <div class="kosdaq">KOSDAQ 줘보봐라</div>
+          <div class="kospi">S&P 500 줘봐라</div>
+          <div class="kosdaq">NASDAQ 줘보봐라</div>
         </div>
       </div>
     </div>
@@ -63,7 +63,7 @@ export default {
   data() {
     //변수생성
     return {
-      isUserSearching: true,
+      isUserSearching: false,
     };
   },
   methods: {

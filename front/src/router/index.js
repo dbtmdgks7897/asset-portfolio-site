@@ -12,6 +12,8 @@ import PageManageUsers from '@/views/admin/PageManageUsers'
 import PageManageBoards from '@/views/admin/PageManageBoards'
 import PageAssetsMain from '@/views/assets/PageAssetsMain'
 import PageStocksDomestic from '@/views/assets/stocks/PageStocksDomestic'
+import PageStocksOverseas from '@/views/assets/stocks/PageStocksOverseas'
+import PageAssetsTransactions from '@/views/assets/PageAssetsTransactions'
 
 import Test from '@/views/test'
 
@@ -82,6 +84,17 @@ const routes = [
         name: 'PageStocksDomestic',
         component: PageStocksDomestic
     },
+    {
+        path: '/assets/stocks/overseas',
+        name: 'PageStocksOverseas',
+        component: PageStocksOverseas
+    },
+    {
+        path: '/assets/transactions',
+        name: 'PageAssetsTransactions',
+        component: PageAssetsTransactions
+    },
+    
     {
         path: '/test',
         name: 'Test',

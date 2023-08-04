@@ -92,11 +92,14 @@ export default {
     //변수생성
     return {
       deleteAnswer: false,
+      id: this.$route.params.id,
     };
   },
   methods: {
     updateButton() {
-      alert('');
+      this.$router.push({ name : 'PageBoardUpdate', params : {
+        id: this.id
+      }})
     },
     deleteButton() {
       this.deleteAnswer = confirm("삭제하시겠습니까?");

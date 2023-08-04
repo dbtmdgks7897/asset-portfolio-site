@@ -13,14 +13,14 @@
             <h1>국내 주식</h1>
             <span>여기다 인덱스 넣으셈</span>
           </div>
-          <div class="overseas">
+          <div class="overseas" @click="this.$router.push('/assets/stocks/overseas')">
             <h1>해외 주식</h1>
             <span>여기도 인덱스 넣으셈</span>
           </div>
         </div>
         <div class="box currencies">
           <h1>외화</h1>
-          <span>연동 되나?</span>
+          <span>으엑으에에에</span>
         </div>
         <div class="box materials">
           <h1>원자재</h1>
@@ -41,6 +41,7 @@ import { toggle } from "@/utils/toggle";
 </script>
 <script>
 export default {
+  
   data() {
     //변수생성
     return {};
@@ -49,6 +50,9 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+* {
+  
+}
 .contents {
   height: 100vh;
   &-head {

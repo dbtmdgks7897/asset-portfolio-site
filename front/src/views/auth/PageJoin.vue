@@ -61,7 +61,7 @@
       />
       <div class="invalid-feedback">닉네임을 입력해주세요</div>
     </div>
-    <button class="btn my-button"><span>가입하기</span></button>
+    <button class="btn my-button" @click="this.$router.push({name : 'PageLogin'})"><span>가입하기</span></button>
   </div>
 </template>
 <script>

@@ -51,18 +51,27 @@ import { toggle } from "@/utils/toggle";
 
 <script>
 export default {
+  name : 'PageBoardUpdate',
   data() {
     return {
       width: window.innerWidth || document.body.clientWidth,
       height: window.innerHeight || document.body.clientHeight,
+      
     };
   },
   methods :{
     cancelButton() {
-      alert('')
+      confirm('')
+      this.$router.push({name : 'PageBoardDetail', params : {
+        id: this.$route.params.id,
+      }})
+      
     },
     submitButton() {
-      alert('')
+      confirm('')
+      this.$router.push({name : 'PageBoardDetail', params : {
+        id: this.$route.params.id,
+      }})
     },
   }
 };

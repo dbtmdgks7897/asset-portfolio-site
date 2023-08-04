@@ -59,10 +59,10 @@ export default {
   },
   methods :{
     cancelButton() {
-      alert('')
+      this.$router.push({name : 'PageBoardList'})
     },
     submitButton() {
-      alert('')
+      this.$router.push({name : 'PageBoardList'})
     },
   }
 };

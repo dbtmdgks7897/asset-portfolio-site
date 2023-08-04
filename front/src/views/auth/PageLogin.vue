@@ -34,7 +34,7 @@
       </div>
     </div>
     <div class="flex">
-      <button class="btn my-button"><span>회원가입</span></button>
+      <button class="btn my-button" @click="this.$router.push({name : 'PageJoin'})"><span>회원가입</span></button>
       <button class="btn my-button"><span>로그인</span></button>
     </div>
   </div>

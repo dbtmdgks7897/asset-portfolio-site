@@ -56,7 +56,7 @@
               @click="
                 this.$router.push({
                   name: 'PageBoardDetail',
-                  params: { id: 2 },
+                  params: { id: 1 },
                 })
               "
             >
