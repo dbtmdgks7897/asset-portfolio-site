@@ -1,0 +1,88 @@
+$sidebar-width: 15vw;
+
+ul{
+    list-style-type: none;
+}
+
+body {
+  background-color: rgb(187, 187, 187);
+}
+
+#app {
+  margin: 0;
+}
+
+.flex {
+  display: flex;
+}
+.grid {
+  display: grid;
+}
+
+.border-2px {
+  border: 2px solid black;
+}
+
+.sidebar-margin {
+  margin-left: $sidebar-width;
+  transition: all 1s;
+}
+
+.sidebar-margin-none {
+  margin-left: 0;
+  transition: all 1s;
+}
+
+.no-marigin {
+  margin: 0;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+
+.contents {
+  width: 70%;
+  height: 100vh;
+  padding: 2vw;
+  margin: 5vh auto;
+  background-color: rgb(255, 255, 255);
+  border: 2px solid black;
+  &-head {
+    width: 100%;
+    height: 8vh;
+    font-size: 5vh;
+    font-weight: bold;
+    justify-content: space-between;
+    padding: 1vw;
+    margin: 3vh 0;
+    border-bottom: 2px solid blueviolet;
+    align-items: center;
+  }
+}
+
+.my-button {
+    $main-color: blueviolet;
+    $sub-color: white;
+
+    width: 6vw;
+    height: 5vh;
+    border-color: $main-color;
+    &:hover {
+      background-color: $main-color;
+      border-color: $sub-color;
+      color: $sub-color;
+      span {
+        color: $sub-color;
+      }
+    }
+    span {
+      text-align: center;
+      font-size: 1vw;
+      color: $main-color;
+    }
+}
