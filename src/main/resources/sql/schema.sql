@@ -9,31 +9,34 @@ DROP TABLE IF EXISTS `board_recommend`;
 SET foreign_key_checks = 1; 
 
 CREATE TABLE `user` (
-  `idx` INT PRIMARY KEY AUTO_INCREMENT,
+  `idx` INT PRIMARY KEY,
   `email` VARCHAR(255) UNIQUE NOT NULL,
   `password` VARCHAR(255) NOT NULL,
   `name` VARCHAR(100) NOT NULL,
-  `nickname` VARCHAR(50),
+  `nickname` VARCHAR(50) NOT NULL,
   `phone` VARCHAR(20),
   `profile_img` BLOB,
   `gender` VARCHAR(10),
   `age` INT,
+  `suspend_until` DATETIME,
+  `suspend_reason` VARCHAR(255),
   `created_at` DATETIME DEFAULT (CURRENT_TIMESTAMP),
   `updated_at` DATETIME,
   `deleted_at` DATETIME,
-  `suspend_until` DATETIME
+  `deleted_reason` VARCHAR(255)
 );
 
-CREATE TABLE `board` (
-  `idx` INT PRIMARY KEY,
-  `name` VARCHAR(100) NOT NULL,
-  `user_idx` INT,
-  `view_count` INT DEFAULT 0,
-  `recommend_count` INT DEFAULT 0,
-  `status` VARCHAR(10),
-  `created_at` DATETIME DEFAULT (CURRENT_TIMESTAMP),
-  `updated_at` DATETIME,
-  `deleted_at` DATETIME
+CREATE TABLE board (
+    `idx` INT PRIMARY KEY,
+    `name` VARCHAR(100) NOT NULL,
+    `content` VARCHAR(1000) NOT NULL,
+    `user_idx` INT,
+    `view_count` INT DEFAULT 0,
+    `recommend_count` INT DEFAULT 0,
+    `isHide` BOOL,
+    `created_at` DATETIME DEFAULT (CURRENT_TIMESTAMP),
+    `updated_at` DATETIME,
+    `deleted_at` DATETIME
 );
 
 CREATE TABLE `board_recommend` (
@@ -44,7 +47,7 @@ CREATE TABLE `board_recommend` (
 );
 
 CREATE TABLE `comment` (
-  `idx` INT PRIMARY KEY,
+  `idx` INT PRIMARY KEY AUTO_INCREMENT,
   `user_idx` INT,
   `board_idx` INT,
   `content` TEXT,
