@@ -4,7 +4,7 @@ spring:
   thymeleaf:
     cache: false # 이전 데이터 캐싱되어 수정 안될 수 있음
   datasource:
-    url: jdbc:mariadb://localhost:3306/test
+    url: jdbc:mariadb://localhost:3306/asset-port
     driverClassName: org.mariadb.jdbc.Driver # 인터넷 검색
     username: root
     password: 1234
@@ -36,3 +36,19 @@ spring:
     multipart:
       max-request-size: 10MB
       max-file-size: 10MB
+      
+springdoc:
+  api-docs:
+    path: /api-docs/json
+    groups:
+      enabled: 'true'
+  default-produces-media-type: application/json;charset=UTF-8
+  default-consumes-media-type: application/json;charset=UTF-8
+  version: v1.0.0
+  swagger-ui:
+    operations-sorter: alpha
+    tags-sorter: alpha
+    path: /api-docs
+  cache:
+    disabled: 'true'
+  packages-to-scan: com.ysh.back
