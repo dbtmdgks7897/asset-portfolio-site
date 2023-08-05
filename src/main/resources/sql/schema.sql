@@ -5,11 +5,15 @@ DROP TABLE IF EXISTS `board`;
 DROP TABLE IF EXISTS `comment`;
 DROP TABLE IF EXISTS `comment_recommend`;
 DROP TABLE IF EXISTS `board_recommend`;
+DROP TABLE IF EXISTS `roles`;
+DROP TABLE IF EXISTS `authority`;
+DROP TABLE IF EXISTS `user_roles`;
+DROP TABLE IF EXISTS `roles_authority`;
 
 SET foreign_key_checks = 1; 
 
 CREATE TABLE `user` (
-  `idx` INT PRIMARY KEY,
+  `idx` BIGINT PRIMARY KEY,
   `email` VARCHAR(255) UNIQUE NOT NULL,
   `password` VARCHAR(255) NOT NULL,
   `name` VARCHAR(100) NOT NULL,
@@ -26,11 +30,33 @@ CREATE TABLE `user` (
   `deleted_reason` VARCHAR(255)
 );
 
+CREATE TABLE `roles` (
+    `idx` INT PRIMARY KEY AUTO_INCREMENT,
+    `name` VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE `authority` (
+    `idx` INT PRIMARY KEY AUTO_INCREMENT,
+    `name` VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE `user_roles` (
+    `user_idx` BIGINT NOT NULL,
+    `roles_idx` INT NOT NULL,
+    PRIMARY KEY (`user_idx`, `roles_idx`)
+);
+
+CREATE TABLE `roles_authority` (
+    `roles_idx` INT NOT NULL,
+    `authority_idx` INT NOT NULL,
+    PRIMARY KEY (`roles_idx`, `authority_idx`)
+);
+
 CREATE TABLE board (
-    `idx` INT PRIMARY KEY,
+    `idx` BIGINT PRIMARY KEY,
     `name` VARCHAR(100) NOT NULL,
     `content` VARCHAR(1000) NOT NULL,
-    `user_idx` INT,
+    `user_idx` BIGINT,
     `view_count` INT DEFAULT 0,
     `recommend_count` INT DEFAULT 0,
     `isHide` BOOL,
@@ -40,16 +66,16 @@ CREATE TABLE board (
 );
 
 CREATE TABLE `board_recommend` (
-  `idx` INT PRIMARY KEY AUTO_INCREMENT,
-  `board_idx` INT NOT NULL,
-  `user_idx` INT NOT NULL,
+  `idx` BIGINT PRIMARY KEY AUTO_INCREMENT,
+  `board_idx` BIGINT NOT NULL,
+  `user_idx` BIGINT NOT NULL,
   `created_at` DATETIME DEFAULT (CURRENT_TIMESTAMP)
 );
 
 CREATE TABLE `comment` (
-  `idx` INT PRIMARY KEY AUTO_INCREMENT,
-  `user_idx` INT,
-  `board_idx` INT,
+  `idx` BIGINT PRIMARY KEY AUTO_INCREMENT,
+  `user_idx` BIGINT,
+  `board_idx` BIGINT,
   `content` TEXT,
   `recommend_count` INT DEFAULT 0,
   `created_at` DATETIME DEFAULT (CURRENT_TIMESTAMP),
@@ -58,15 +84,11 @@ CREATE TABLE `comment` (
 );
 
 CREATE TABLE `comment_recommend` (
-  `idx` INT PRIMARY KEY AUTO_INCREMENT,
-  `comment_idx` INT NOT NULL,
-  `user_idx` INT NOT NULL,
+  `idx` BIGINT PRIMARY KEY AUTO_INCREMENT,
+  `comment_idx` BIGINT NOT NULL,
+  `user_idx` BIGINT NOT NULL,
   `created_at` DATETIME DEFAULT (CURRENT_TIMESTAMP)
 );
-
-
-
-
 CREATE INDEX `idx_board_user_idx` ON `board` (`user_idx`);
 
 CREATE INDEX `idx_board_recommend_board_idx` ON `board_recommend` (`board_idx`);
@@ -88,4 +110,7 @@ ALTER TABLE `comment` ADD CONSTRAINT `fk_comment_user` FOREIGN KEY (`user_idx`) 
 ALTER TABLE `comment` ADD CONSTRAINT `fk_comment_board` FOREIGN KEY (`board_idx`) REFERENCES `board` (`idx`) ON DELETE CASCADE;
 ALTER TABLE `comment_recommend` ADD CONSTRAINT `fk_comment_recommend_comment` FOREIGN KEY (`comment_idx`) REFERENCES `comment` (`idx`) ON DELETE CASCADE;
 ALTER TABLE `comment_recommend` ADD CONSTRAINT `fk_comment_recommend_user` FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
-
+ALTER TABLE `user_roles` ADD CONSTRAINT `fk_user_roles_user` FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
+ALTER TABLE `user_roles` ADD CONSTRAINT `fk_user_roles_roles` FOREIGN KEY (`roles_idx`) REFERENCES `roles` (`idx`) ON DELETE CASCADE;
+ALTER TABLE `roles_authority` ADD CONSTRAINT `fk_roles_authority_roles` FOREIGN KEY (`roles_idx`) REFERENCES `roles` (`idx`) ON DELETE CASCADE;
+ALTER TABLE `roles_authority` ADD CONSTRAINT `fk_roles_authority_authority` FOREIGN KEY (`authority_idx`) REFERENCES `authority` (`idx`) ON DELETE CASCADE;

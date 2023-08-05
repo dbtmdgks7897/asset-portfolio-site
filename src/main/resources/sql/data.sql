@@ -101,6 +101,14 @@ insert into user (idx, email, password, name, nickname, phone, profile_img, gend
 insert into user (idx, email, password, name, nickname, phone, profile_img, gender, age, suspend_until, suspend_reason, updated_at, deleted_at, deleted_reason) values (99, 'nwasling2q@umich.edu', '$2a$04$FaeB.sTUnY6BH8ycQqHr5OVfcSY7aIUga86xeL7I/50d.bVPFOP.S', 'Nealson Wasling', 'Doe', '839-360-3215', null, 'Male', null, '2013-11-02 18:43:46', 'Violation', null, null, 'Account Closure');
 insert into user (idx, email, password, name, nickname, phone, profile_img, gender, age, suspend_until, suspend_reason, updated_at, deleted_at, deleted_reason) values (100, 'bhovard2r@archive.org', '$2a$04$v3rj0obKbdwlcnCJ7np9cuCQzP1hBMro3nqCZUKqDxDSEZRQFGlAW', 'Binni Hovard', 'Jane', null, null, null, null, null, null, null, null, null);
 
+INSERT INTO `roles` (`name`) VALUES
+('ROLE_USER'),
+('ROLE_ADMIN');
+
+INSERT INTO `authority` (`name`) VALUES
+('READ'),
+('WRITE'),
+('DELETE');
 
 
 
@@ -514,3 +522,5 @@ insert into comment_recommend (comment_idx, user_idx) values (97, 20);
 insert into comment_recommend (comment_idx, user_idx) values (85, 26);
 insert into comment_recommend (comment_idx, user_idx) values (62, 46);
 insert into comment_recommend (comment_idx, user_idx) values (29, 46);
+
+
