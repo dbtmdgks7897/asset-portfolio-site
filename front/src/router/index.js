@@ -1,19 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import PageMain from '@/views/PageMain'
-import PageBoardList from '@/views/boards/PageBoardList'
-import PageBoardWrite from '@/views/boards/PageBoardWrite'
-import PageBoardDetail from '@/views/boards/PageBoardDetail'
-import PageBoardUpdate from '@/views/boards/PageBoardUpdate'
+import PageBoardList from '@/views/board/PageBoardList'
+import PageBoardWrite from '@/views/board/PageBoardWrite'
+import PageBoardDetail from '@/views/board/PageBoardDetail'
+import PageBoardUpdate from '@/views/board/PageBoardUpdate'
 import PageLogin from '@/views/auth/PageLogin'
 import PageJoin from '@/views/auth/PageJoin'
-import PageMyinfo from '@/views/mypages/PageMyinfo'
-import PageMyactive from '@/views/mypages/PageMyactive'
-import PageManageUsers from '@/views/admin/PageManageUsers'
-import PageManageBoards from '@/views/admin/PageManageBoards'
-import PageAssetsMain from '@/views/assets/PageAssetsMain'
-import PageStocksDomestic from '@/views/assets/stocks/PageStocksDomestic'
-import PageStocksOverseas from '@/views/assets/stocks/PageStocksOverseas'
-import PageAssetsTransactions from '@/views/assets/PageAssetsTransactions'
+import PageMyinfo from '@/views/mypage/PageMyinfo'
+import PageMyactive from '@/views/mypage/PageMyactive'
+import PageManageUser from '@/views/admin/PageManageUser'
+import PageManageBoard from '@/views/admin/PageManageBoard'
+import PageAssetMain from '@/views/asset/PageAssetMain'
+import PageStockDomestic from '@/views/asset/stock/PageStockDomestic'
+import PageStockOverseas from '@/views/asset/stock/PageStockOverseas'
+import PageAssetTransaction from '@/views/asset/PageAssetTransaction'
 
 import Test from '@/views/test'
 
@@ -25,22 +25,22 @@ const routes = [
         component: PageMain
     },
     {
-        path: '/boards',
+        path: '/board',
         name: 'PageBoardList',
         component: PageBoardList
     },
     {
-        path: '/boards/write',
+        path: '/board/write',
         name: 'PageBoardWrite',
         component: PageBoardWrite
     },
     {
-        path: '/boards/:id',
+        path: '/board/:id',
         name: 'PageBoardDetail',
         component: PageBoardDetail
     },
     {
-        path: '/boards/:id/update',
+        path: '/board/:id/updatePage',
         name: 'PageBoardUpdate',
         component: PageBoardUpdate
     },
@@ -65,34 +65,34 @@ const routes = [
         component: PageMyactive
     },
     {
-        path: '/admin/users',
-        name: 'PageManageUsers',
-        component: PageManageUsers
+        path: '/admin/user',
+        name: 'PageManageUser',
+        component: PageManageUser
     },
     {
-        path: '/admin/boards',
-        name: 'PageManageBoards',
-        component: PageManageBoards
+        path: '/admin/board',
+        name: 'PageManageBoard',
+        component: PageManageBoard
     },
     {
-        path: '/assets',
-        name: 'PageAssetsMain',
-        component: PageAssetsMain
+        path: '/asset',
+        name: 'PageAssetMain',
+        component: PageAssetMain
     },
     {
-        path: '/assets/stocks/domestic',
-        name: 'PageStocksDomestic',
-        component: PageStocksDomestic
+        path: '/asset/stock/domestic',
+        name: 'PageStockDomestic',
+        component: PageStockDomestic
     },
     {
-        path: '/assets/stocks/overseas',
-        name: 'PageStocksOverseas',
-        component: PageStocksOverseas
+        path: '/asset/stock/overseas',
+        name: 'PageStockOverseas',
+        component: PageStockOverseas
     },
     {
-        path: '/assets/transactions',
-        name: 'PageAssetsTransactions',
-        component: PageAssetsTransactions
+        path: '/asset/transaction',
+        name: 'PageAssetTransaction',
+        component: PageAssetTransaction
     },
     
     {

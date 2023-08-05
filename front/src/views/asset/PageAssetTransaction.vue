@@ -77,8 +77,5 @@ export default {
     }
   }
 
-  &-body {
-    
-  }
 }
 </style>

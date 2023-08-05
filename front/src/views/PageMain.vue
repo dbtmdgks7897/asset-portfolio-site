@@ -21,7 +21,7 @@
             <span class="initial">M</span><span>anager</span><br />
           </li>
         </ul>
-        <button data-aos="fade-right" data-aos-delay="1100" class="btn btn-outline-dark flex-item" @click="this.$router.push('/boards')">이동</button>
+        <button data-aos="fade-right" data-aos-delay="1100" class="btn btn-outline-dark flex-item" @click="this.$router.push('/board')">이동</button>
       </div>
     </div>
   </div>

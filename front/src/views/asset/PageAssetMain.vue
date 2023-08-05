@@ -9,11 +9,11 @@
       </div>
       <div class="contents-body grid">
         <div class="box stocks">
-          <div class="domestic" @click="this.$router.push('/assets/stocks/domestic')">
+          <div class="domestic" @click="this.$router.push('/asset/stock/domestic')">
             <h1>국내 주식</h1>
             <span>여기다 인덱스 넣으셈</span>
           </div>
-          <div class="overseas" @click="this.$router.push('/assets/stocks/overseas')">
+          <div class="overseas" @click="this.$router.push('/asset/stock/overseas')">
             <h1>해외 주식</h1>
             <span>여기도 인덱스 넣으셈</span>
           </div>
@@ -50,9 +50,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-* {
-  
-}
+
 .contents {
   height: 100vh;
   &-head {

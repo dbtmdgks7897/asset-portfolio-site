@@ -8,6 +8,7 @@
       <div class="input-group has-validation">
         <span class="input-group-text" id="inputGroupPrepend">@</span>
         <input
+          v-model="username"
           type="text"
           class="form-control"
           id="validationCustomUsername"
@@ -23,6 +24,7 @@
           ><i class="bi bi-key-fill"></i
         ></span>
         <input
+          v-model="password"
           type="text"
           class="form-control"
           id="validationCustomUsername"
@@ -34,13 +36,38 @@
       </div>
     </div>
     <div class="flex">
-      <button class="btn my-button" @click="this.$router.push({name : 'PageJoin'})"><span>회원가입</span></button>
-      <button class="btn my-button"><span>로그인</span></button>
+      <button
+        class="btn my-button"
+        @click="this.$router.push({ name: 'PageJoin' })"
+      >
+        <span>회원가입</span>
+      </button>
+      <button class="btn my-button" @click="login"><span>로그인</span></button>
     </div>
   </div>
 </template>
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      data: {
+        username: "",
+        password: "",
+      },
+      config: {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      },
+    };
+  },
+
+  methods: {
+    // async login() {
+    //   this.$axios.post("/api/v1/auth/login", this.data, this.config)
+    // },
+  },
+};
 </script>
 <style lang="scss" scoped>
 .content {
@@ -68,7 +95,7 @@ export default {};
     }
   }
 
-  .my-button{
+  .my-button {
     margin: 0 2vw;
   }
 }

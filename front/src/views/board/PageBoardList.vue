@@ -28,7 +28,7 @@
           />
           <!-- 버튼 클릭 시 위의 인풋의 데이터를 -->
           <!-- 쿼리스트링 변수 search에 넣어서 -->
-          <!-- /api/boards 로 보내기 -->
+          <!-- /api/board 로 보내기 -->
           <button
             class="btn btn-outline-secondary"
             type="button"
@@ -75,7 +75,7 @@
   <!-- 로그인 시에만 보이게 -->
   <button
     class="btn btn btn-outline-dark posting"
-    @click="this.$router.push('/boards/write')"
+    @click="this.$router.push('/board/write')"
   >
     <i class="bi bi-file-earmark-plus"></i>
   </button>
