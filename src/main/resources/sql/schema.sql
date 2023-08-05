@@ -1,5 +1,4 @@
 SET foreign_key_checks = 0; 
-
 DROP TABLE IF EXISTS `user`;
 DROP TABLE IF EXISTS `board`;
 DROP TABLE IF EXISTS `comment`;
@@ -9,11 +8,10 @@ DROP TABLE IF EXISTS `roles`;
 DROP TABLE IF EXISTS `authority`;
 DROP TABLE IF EXISTS `user_roles`;
 DROP TABLE IF EXISTS `roles_authority`;
-
 SET foreign_key_checks = 1; 
 
 CREATE TABLE `user` (
-  `idx` BIGINT PRIMARY KEY,
+  `idx` BIGINT PRIMARY KEY AUTO_INCREMENT,
   `email` VARCHAR(255) UNIQUE NOT NULL,
   `password` VARCHAR(255) NOT NULL,
   `name` VARCHAR(100) NOT NULL,
@@ -53,13 +51,13 @@ CREATE TABLE `roles_authority` (
 );
 
 CREATE TABLE board (
-    `idx` BIGINT PRIMARY KEY,
+    `idx` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `name` VARCHAR(100) NOT NULL,
     `content` VARCHAR(1000) NOT NULL,
     `user_idx` BIGINT,
     `view_count` INT DEFAULT 0,
     `recommend_count` INT DEFAULT 0,
-    `isHide` BOOL,
+    `is_hided` BOOL,
     `created_at` DATETIME DEFAULT (CURRENT_TIMESTAMP),
     `updated_at` DATETIME,
     `deleted_at` DATETIME
@@ -76,7 +74,7 @@ CREATE TABLE `comment` (
   `idx` BIGINT PRIMARY KEY AUTO_INCREMENT,
   `user_idx` BIGINT,
   `board_idx` BIGINT,
-  `content` TEXT,
+  `content` TEXT UNIQUE,
   `recommend_count` INT DEFAULT 0,
   `created_at` DATETIME DEFAULT (CURRENT_TIMESTAMP),
   `updated_at` DATETIME,
