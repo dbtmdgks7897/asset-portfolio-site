@@ -1,5 +1,6 @@
 server:
-
+  error:
+    path: /error
 spring:
   thymeleaf:
     cache: false # 이전 데이터 캐싱되어 수정 안될 수 있음

@@ -21,17 +21,20 @@ public class BoardControllerApiV1 {
     BoardService boardService;
 
     @Operation(summary = "게시물 리스트",
-    description = "전체 리스트를 출력하거나 search, sort 받아 검색 / 정렬")
+    description = "전체 리스트를 출력하거나"
+    + "search, sort, desc 받아 검색 / 정렬 / 내림차순 \n"
+    + "desc가 true면 내림차순")
     @GetMapping()
     public ResponseEntity<?> getBoardListData(
-        // Get으로 두 개의 파라미터 받아옴
+        // Get으로 세 개의 파라미터 받아옴
         @RequestParam(required = false) String search,
-        @RequestParam(required = false) String sort
-        
+        @RequestParam(required = false) String sort,
+        @RequestParam(required = false) Boolean desc
     ){
-        boardService.getBoardListData(search, sort);
-
-        return ResponseEntity.ok().body(sort);
+        desc = desc == null ? false : desc;
+        
+        System.out.println(search + sort);
+        return boardService.getBoardListData(search, sort, desc);
     }
 
 }

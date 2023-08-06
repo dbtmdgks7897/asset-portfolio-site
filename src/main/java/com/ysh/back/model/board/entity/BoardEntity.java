@@ -39,7 +39,7 @@ public class BoardEntity {
     @Column(name = "content", nullable = false)
     private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_idx", referencedColumnName = "idx", updatable = false, nullable = false)
     private UserEntity userEntity;
 

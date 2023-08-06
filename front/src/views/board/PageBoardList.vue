@@ -7,24 +7,37 @@
       <div class="contents-head flex">
         <span>자유 게시판</span>
         <select
+          v-model="sort"
           class="form-select form-select-sm"
           aria-label="Small select example"
         >
-          <option selected>정렬 기준</option>
-          <option value="1">(post.idx)</option>
-          <option value="2">(post.created_at)</option>
-          <option value="3">(post.view_count)</option>
+          <option value="idx" selected>번호</option>
+          <option value="created_at">등록일</option>
+          <option value="view_count">조회수</option>
           <!-- post에서 oneToMany 매핑으로 -->
           <!-- 행의 수 합 -->
-          <option value="4">(SUM(post-recommend.post_idx))</option>
+          <option value="recommend_count">추천수</option>
         </select>
+
+        <div class="form-check">
+          <input
+            v-model="desc"
+            class="form-check-input"
+            type="checkbox"
+            value="true"
+            id="flexCheckIndeterminate"
+          />
+          내림차순
+        </div>
         <div class="input-group mb-1">
           <input
+            v-model="search"
             type="text"
             class="form-control"
             placeholder="검색어"
             aria-label="검색어"
             aria-describedby="button-addon2"
+            @keydown.enter="getBoardListFn"
           />
           <!-- 버튼 클릭 시 위의 인풋의 데이터를 -->
           <!-- 쿼리스트링 변수 search에 넣어서 -->
@@ -33,6 +46,7 @@
             class="btn btn-outline-secondary"
             type="button"
             id="button-addon2"
+            @click="getBoardListFn()"
           >
             <i class="bi bi-search"></i>
           </button>
@@ -53,25 +67,45 @@
           <tbody>
             <!-- v-for로 반복 돌려서 데이터 가져와서 링크 넣고 뿌려주기 -->
             <tr
+              v-for="board in chunkedBoardList[pageNum-1]"
+              :key="board.idx"
               @click="
                 this.$router.push({
                   name: 'PageBoardDetail',
-                  params: { id: 1 },
+                  params: { id: board.idx },
                 })
               "
             >
-              <th scope="row">(post.idx)</th>
-              <td>(post.title)</td>
-              <td>(post.user_idx)</td>
-              <td>(post.created_at)</td>
-              <td>(post.view_count)</td>
-              <td>(SUM(post-recommend.post_idx))</td>
+              <th scope="row">{{ board.idx }}</th>
+              <td>{{ truncateText(board.name, 25) }}</td>
+              <td>{{ board.user.name }}</td>
+              <td>{{ board.createdAt }}</td>
+              <td>{{ board.viewCount }}</td>
+              <td>{{ board.recommendCount }}</td>
             </tr>
           </tbody>
         </table>
       </div>
+      <nav class="flex" aria-label="...">
+        <ul class="pagination">
+          <li v-if="pageNum - 1 > 0" class="page-item pre">
+            <a class="page-link" tabindex="-1" aria-disabled="true" @click="pageNum -= 1"
+              >Previous</a
+            >
+          </li>
+          <li v-if="pageNum - 1 > 0" class="page-item"><a class="page-link" @click="pageNum -= 1">{{pageNum - 1}}</a></li>
+          <li class="page-item active" aria-current="page">
+            <a class="page-link" href="#">{{ pageNum }}</a>
+          </li>
+          <li v-if="pageNum + 1 <= chunkedBoardList.length" class="page-item"><a class="page-link" @click="pageNum += 1">{{pageNum +1}}</a></li>
+          <li v-if="pageNum + 1 <= chunkedBoardList.length" class="page-item next">
+            <a class="page-link" @click="pageNum += 1">Next</a>
+          </li>
+        </ul>
+      </nav>
     </div>
   </div>
+
   <!-- 로그인 시에만 보이게 -->
   <button
     class="btn btn btn-outline-dark posting"
@@ -89,10 +123,69 @@ export default {
   name: "PageBoardList",
   data() {
     //변수생성
-    return {};
+    return {
+      boardList: [],
+      search: null,
+      sort: "idx",
+      desc: true,
+      chunkSize: 15,
+      pageNum: 1,
+    };
   },
-  mounted() {},
-  methods: {},
+  mounted() {
+    this.getBoardListFn();
+  },
+  computed : {
+    chunkedBoardList() {
+      const chunkSize = this.chunkSize
+      const result = [];
+      for (let i = 0; i < this.boardList.length; i += chunkSize) {
+        result.push(this.boardList.slice(i, i + chunkSize));
+      }
+      return result;
+    },
+  },
+  // updated :{
+  //   test() {
+  //     console.log(this.pageNum);
+  //   }
+  // },
+  watch: {
+    sort() {
+      this.getBoardListFn();
+    },
+    desc() {
+      this.getBoardListFn();
+    },
+  },
+  methods: {
+    getBoardListFn() {
+      this.$axios
+        .get(`/api/v1/board`, {
+          params: {
+            search: this.search,
+            sort: this.sort,
+            desc: this.desc,
+          },
+        })
+        .then((res) => {
+          if (res.data.code === 0) {
+            console.log(res.data.message);
+          }
+          this.boardList = res.data.data.boardList;
+          this.pageNum = 1;
+        })
+        .catch((res) => {
+          console.error(res);
+        });
+    },
+    truncateText(text, maxLength) {
+      if (text.length > maxLength) {
+        return text.substring(0, maxLength) + "...";
+      }
+      return text;
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -156,4 +249,17 @@ export default {
     width: 100%;
   }
 }
+
+
+
+.form-check {
+  width: 5vw !important;
+  font-size: 1vw;
+}
+
+nav{
+  justify-content: center;
+}
+
+
 </style>
