@@ -67,7 +67,7 @@
           <tbody>
             <!-- v-for로 반복 돌려서 데이터 가져와서 링크 넣고 뿌려주기 -->
             <tr
-              v-for="board in chunkedBoardList[pageNum-1]"
+              v-for="board in chunkedBoardList[pageNum - 1]"
               :key="board.idx"
               @click="
                 this.$router.push({
@@ -89,16 +89,27 @@
       <nav class="flex" aria-label="...">
         <ul class="pagination">
           <li v-if="pageNum - 1 > 0" class="page-item pre">
-            <a class="page-link" tabindex="-1" aria-disabled="true" @click="pageNum -= 1"
+            <a
+              class="page-link"
+              tabindex="-1"
+              aria-disabled="true"
+              @click="pageNum -= 1"
               >Previous</a
             >
           </li>
-          <li v-if="pageNum - 1 > 0" class="page-item"><a class="page-link" @click="pageNum -= 1">{{pageNum - 1}}</a></li>
+          <li v-if="pageNum - 1 > 0" class="page-item">
+            <a class="page-link" @click="pageNum -= 1">{{ pageNum - 1 }}</a>
+          </li>
           <li class="page-item active" aria-current="page">
             <a class="page-link" href="#">{{ pageNum }}</a>
           </li>
-          <li v-if="pageNum + 1 <= chunkedBoardList.length" class="page-item"><a class="page-link" @click="pageNum += 1">{{pageNum +1}}</a></li>
-          <li v-if="pageNum + 1 <= chunkedBoardList.length" class="page-item next">
+          <li v-if="pageNum + 1 <= chunkedBoardList.length" class="page-item">
+            <a class="page-link" @click="pageNum += 1">{{ pageNum + 1 }}</a>
+          </li>
+          <li
+            v-if="pageNum + 1 <= chunkedBoardList.length"
+            class="page-item next"
+          >
             <a class="page-link" @click="pageNum += 1">Next</a>
           </li>
         </ul>
@@ -108,6 +119,7 @@
 
   <!-- 로그인 시에만 보이게 -->
   <button
+    v-if="login.isLogined"
     class="btn btn btn-outline-dark posting"
     @click="this.$router.push('/board/write')"
   >
@@ -117,6 +129,7 @@
 
 <script setup>
 import { toggle } from "@/utils/toggle";
+import { login } from "@/utils/login";
 </script>
 <script>
 export default {
@@ -135,9 +148,9 @@ export default {
   mounted() {
     this.getBoardListFn();
   },
-  computed : {
+  computed: {
     chunkedBoardList() {
-      const chunkSize = this.chunkSize
+      const chunkSize = this.chunkSize;
       const result = [];
       for (let i = 0; i < this.boardList.length; i += chunkSize) {
         result.push(this.boardList.slice(i, i + chunkSize));
@@ -171,9 +184,9 @@ export default {
         .then((res) => {
           if (res.data.code === 0) {
             console.log(res.data.message);
+            this.boardList = res.data.data.boardList;
+            this.pageNum = 1;
           }
-          this.boardList = res.data.data.boardList;
-          this.pageNum = 1;
         })
         .catch((res) => {
           console.error(res);
@@ -190,6 +203,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .contents {
+  height: 100%;
   &-head {
     span {
       font-size: 3vw;
@@ -250,16 +264,12 @@ export default {
   }
 }
 
-
-
 .form-check {
   width: 5vw !important;
   font-size: 1vw;
 }
 
-nav{
+nav {
   justify-content: center;
 }
-
-
 </style>

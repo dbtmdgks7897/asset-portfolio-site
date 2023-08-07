@@ -21,16 +21,16 @@
           <a @click="goToPage">
             <div class="profile flex">
               <img
-                v-if="isLoggedIn"
+                v-if="login.isLogined"
                 class="flex-item"
                 :src="profile.img"
                 alt="프로필 이미지"
               />
-              <span v-if="isLoggedIn && !isSidebarHide" class="flex-item name">{{
+              <span v-if="login.isLogined && !isSidebarHide" class="flex-item name">{{
                 profile.name
               }}</span>
               <span
-                v-else-if="!isLoggedIn && !isSidebarHide"
+                v-else-if="!login.isLogined && !isSidebarHide"
                 class="flex-item name"
                 @click="this.$router.push('/login')"
                 >로그인 하소</span
@@ -127,6 +127,7 @@
 
 <script setup>
 import { toggle } from "@/utils/toggle";
+import { login } from "@/utils/login";
 </script>
 <script>
 export default {
@@ -136,7 +137,6 @@ export default {
       // toggle: this.$toggle,
       // isActive: false,
       width: 0,
-      isLoggedIn: false,
       isSidebarHide: false,
       flag: false,
       profile: {

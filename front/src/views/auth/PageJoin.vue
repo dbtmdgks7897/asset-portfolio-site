@@ -6,9 +6,9 @@
     <span id="title">회원가입</span><br />
     <div class="col-md-8">
       <input
+        v-model="name"
         type="text"
         class="form-control"
-        id="validationServer01"
         placeholder="이름 (*)"
         required
       />
@@ -16,10 +16,10 @@
     </div>
     <div class="col-md-8">
       <input
+        v-model="phone"
         type="text"
         class="form-control"
-        id="validationServer01"
-        placeholder="전화번호"
+        placeholder="전화번호(구분은 '-')"
         required
       />
     </div>
@@ -28,8 +28,8 @@
         <span class="input-group-text" id="inputGroupPrepend">@</span>
         <input
           type="text"
+          v-model="email"
           class="form-control"
-          id="validationCustomUsername"
           aria-describedby="inputGroupPrepend"
           placeholder="Email (*)"
           required
@@ -39,11 +39,13 @@
     </div>
     <div class="col-md-8">
       <div class="input-group has-validation">
-        <span class="input-group-text" id="inputGroupPrepend"><i class="bi bi-key-fill"></i></span>
+        <span class="input-group-text" id="inputGroupPrepend"
+          ><i class="bi bi-key-fill"></i
+        ></span>
         <input
-          type="text"
+          type="password"
+          v-model="password"
           class="form-control"
-          id="validationCustomUsername"
           aria-describedby="inputGroupPrepend"
           placeholder="Password (*)"
           required
@@ -53,19 +55,61 @@
     </div>
     <div class="col-md-8">
       <input
+        v-model="nickname"
         type="text"
         class="form-control"
-        id="validationServer01"
         placeholder="닉네임 (*)"
         required
       />
       <div class="invalid-feedback">닉네임을 입력해주세요</div>
     </div>
-    <button class="btn my-button" @click="this.$router.push({name : 'PageLogin'})"><span>가입하기</span></button>
+    <button class="btn my-button" @click="joinButton">
+      <span>가입하기</span>
+    </button>
   </div>
 </template>
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      name: null,
+      phone: null,
+      email: null,
+      password: null,
+      nickname: null,
+    };
+  },
+
+  methods: {
+    joinButton() {
+      const params = {
+        user: {
+          name: this.name,
+          phone: this.phone,
+          email: this.email,
+          password: this.password,
+          nickname: this.nickname,
+        },
+      };
+      console.log("---axios Post 시작----");
+      this.$axios
+        .post(`api/v1/auth/join`, params, {
+          header: {
+            "Content-type": "application/json;charset=utf-8",
+          },
+        })
+        .then((res) => {
+          if (res.data.code === 0) {
+            alert("회원가입 성공!");
+            this.$router.push({ name: "PageLogin" });
+          }
+        })
+        .catch((res) => {
+          console.error(res);
+        });
+    },
+  },
+};
 </script>
 <style lang="scss" scoped>
 .content {
@@ -77,10 +121,10 @@ export default {};
   flex-direction: column;
   justify-content: center;
   align-items: center;
-    #title{
-        font-weight: bold;
-        font-size: 2vw;
-    }
+  #title {
+    font-weight: bold;
+    font-size: 2vw;
+  }
 
   img {
     width: 10vw;
@@ -113,6 +157,6 @@ export default {};
       font-size: 1vw;
       color: $main-color;
     }
-}
+  }
 }
 </style>

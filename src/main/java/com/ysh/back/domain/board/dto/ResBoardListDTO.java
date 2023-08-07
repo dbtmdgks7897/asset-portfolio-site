@@ -32,8 +32,6 @@ public class ResBoardListDTO {
         .build();
     }
 
-
-
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder

@@ -3,9 +3,9 @@
     :class="[toggle.show ? 'sidebar-margin' : 'sidebar-margin-none']"
     class=""
   >
-    <div class="contents">
+    <div v-if="detailsData" class="contents">
       <div class="contents-head flex">
-        <span>(post.title)</span>
+        <span class="auto-resize-text">{{ detailsData.name }}</span>
         <div>
           <!-- 현재 사용자와 작성자의 id가 같을 시 보이게-->
           <!-- v-if -->
@@ -17,16 +17,16 @@
       </div>
       <div class="contents-body">
         <div class="post-info flex">
-          <span>(post.created_at)</span>
-          <span>(post.user_idx)</span>
-          <span>(post.recommend_count)</span>
+          <span>작성일 :{{ detailsData.createdAt }}</span>
+          <span>작성자 : {{ detailsData.user.name}}</span>
+          <span>조회수 : {{ detailsData.viewCount }}</span>
         </div>
-        <div class="post-content">(post.content)</div>
-        <div class="post-buttons">
+        <div class="post-content">{{ detailsData.content }}</div>
+        <div v-if="login.isLogined" class="post-buttons">
           <!-- 게시글 추천, 신고 -->
           <button class="btn btn-outline-dark" @click="reportButton">신고</button>
           <button class="btn btn-outline-dark" @click="recommendButton">
-            추천 (post.recommend_count)
+            추천 ({{ detailsData.recommendCount }})
           </button>
         </div>
       </div>
@@ -35,41 +35,21 @@
         <div class="comment-main">
           <ul>
             <!-- v-for로 반복 돌림 -->
-            <li class="flex comment-li">
+            <li v-for="comment in detailsData.commentList" :key="comment"  class="flex-item flex comment-li">
               <div class="text">
-                <span>(comment.user_idx)</span> |
-                <span>(comment.created_at)</span><br />
-                <span>(comment.content)</span>
+                <span>{{ comment.user.name }}</span> |
+                <span>{{ comment.createdAt }}</span><br />
+                <span>{{ comment.content }}</span>
               </div>
-
-              <div class="buttons">
+              <div v-if="login.isLogined" class="buttons">
                 <!-- comment 테이블에서 1대N 매핑한 후 -->
                 <!-- 리스트 가져오기 -->
-                <span>(추천 수)</span><br />
+                <span>{{ comment.recommendCount }}</span><br />
                 <!-- 댓글 추천, 신고 -->
                 <button class="btn btn-outline-dark" @click="comReportButton">
                   <i class="bi bi-cone"></i>
                 </button>
                 <button class="btn btn-outline-dark" @click="comRecommendButton">
-                  <i class="bi bi-hand-thumbs-up-fill"></i>
-                </button>
-              </div>
-            </li>
-            <li class="flex comment-li">
-              <div class="text">
-                <span>(comment.user_idx)</span> |
-                <span>(comment.created_at)</span><br />
-                <span>(comment.content)</span>
-              </div>
-
-              <div class="buttons">
-                <!-- comment 테이블에서 1대N 매핑한 후 -->
-                <!-- 리스트 가져오기 -->
-                <span>(추천 수)</span><br />
-                <button class="btn btn-outline-dark">
-                  <i class="bi bi-cone"></i>
-                </button>
-                <button class="btn btn-outline-dark">
                   <i class="bi bi-hand-thumbs-up-fill"></i>
                 </button>
               </div>
@@ -84,6 +64,7 @@
 
 <script setup>
 import { toggle } from "@/utils/toggle";
+import { login } from "@/utils/login"
 </script>
 <script>
 export default {
@@ -91,18 +72,45 @@ export default {
   data() {
     //변수생성
     return {
-      deleteAnswer: false,
-      id: this.$route.params.id,
+      deleteConfirm: false,
+      boardIdx: this.$route.params.id,
+      detailsData: null,
     };
   },
+  mounted() {
+    this.getBoardDetailsFn(); 
+  },
   methods: {
+    getBoardDetailsFn() {
+      this.$axios
+        .get(`/api/v1/board/` + this.boardIdx)
+        .then((res) => {
+          if (res.data.code === 0) {
+            console.log(res.data.data);
+            this.detailsData = res.data.data;
+          }
+        })
+        .catch((res) => {
+          console.log(res);
+        });
+    }
+    ,
     updateButton() {
       this.$router.push({ name : 'PageBoardUpdate', params : {
-        id: this.id
+        id: this.boardIdx
       }})
     },
     deleteButton() {
-      this.deleteAnswer = confirm("삭제하시겠습니까?");
+      this.deleteConfirm = confirm("삭제하시겠습니까?");
+      if(this.deleteConfirm) {
+        
+        if(login.idx === this.detailsData.user)
+        {
+          console.log("삭제");
+        }else{
+          console.log("누구냐 너");
+        }
+      }
     },
     reportButton() {
       // 신고 내역 확인 후
@@ -134,6 +142,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+
 ul {
   padding: 0;
   list-style-type: none;
@@ -146,6 +155,7 @@ button {
   font-size: 1vw;
 }
 .contents {
+  height: 100%;
   &-body {
     width: 100%;
     height: 50vh;
@@ -205,6 +215,7 @@ button {
         padding: 5px 0px;
         border-bottom: 1px solid black;
         .text {
+          max-width: 40vw;
           text-align: left;
         }
 
@@ -219,6 +230,11 @@ button {
       }
     }
   }
+}
+
+.auto-resize-text {
+  max-width: 55%;
+  font-size: clamp(12px, 4vw, 24px); /* 최소 크기, 화면 너비에 따라 자동 크기 조절, 최대 크기 */
 }
 
 @media (max-width: 767px) {

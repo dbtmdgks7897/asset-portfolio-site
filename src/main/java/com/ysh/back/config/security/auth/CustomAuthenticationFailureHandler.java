@@ -16,8 +16,9 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
             AuthenticationException exception) throws IOException, ServletException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'onAuthenticationFailure'");
+        // Auto-generated method stub
+        // throw new UnsupportedOperationException("Unimplemented method 'onAuthenticationFailure'");
+        System.out.println("실패");
     }
     
 }

@@ -8,7 +8,7 @@
       <div class="input-group has-validation">
         <span class="input-group-text" id="inputGroupPrepend">@</span>
         <input
-          v-model="username"
+          v-model="email"
           type="text"
           class="form-control"
           id="validationCustomUsername"
@@ -25,7 +25,7 @@
         ></span>
         <input
           v-model="password"
-          type="text"
+          type="password"
           class="form-control"
           id="validationCustomUsername"
           aria-describedby="inputGroupPrepend"
@@ -42,7 +42,7 @@
       >
         <span>회원가입</span>
       </button>
-      <button class="btn my-button" @click="login"><span>로그인</span></button>
+      <button class="btn my-button" @click="loginButton"><span>로그인</span></button>
     </div>
   </div>
 </template>
@@ -51,7 +51,7 @@ export default {
   data() {
     return {
       data: {
-        username: "",
+        email: "",
         password: "",
       },
       config: {
@@ -63,9 +63,30 @@ export default {
   },
 
   methods: {
-    // async login() {
-    //   this.$axios.post("/api/v1/auth/login", this.data, this.config)
-    // },
+    loginButton() {
+      
+
+      const formData = new FormData();
+      formData.append("email", this.email);
+      formData.append("password", this.password);
+
+      this.$axios
+        .post("/api/v1/auth/login", formData, {
+          headers: {
+            "content-type": "application/x-www-form-urlencoded",
+          },
+        })
+        .then(function (res) {
+          if (res.data.code === 0) {
+            alert("성공");
+          }
+          console.log(res)
+          // alert("실패");
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
   },
 };
 </script>

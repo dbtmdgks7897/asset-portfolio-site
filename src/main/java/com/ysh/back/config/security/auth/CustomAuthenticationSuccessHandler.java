@@ -16,8 +16,9 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException, ServletException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'onAuthenticationSuccess'");
+        // Auto-generated method stub
+        // throw new UnsupportedOperationException("Unimplemented method 'onAuthenticationSuccess'");
+        System.out.println("성공");
     }
     
 }

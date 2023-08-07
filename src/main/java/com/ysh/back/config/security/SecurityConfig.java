@@ -56,18 +56,18 @@ public class SecurityConfig {
         //     .authenticated()
         // );
 
-        // httpSecurity.formLogin(
-        //     config -> config
-        //     // 실제 로그인 컨트롤러 메소드 경로
-        //     .loginPage("/auth/login")
-        //     // 가상의 주소를 넣는다
-        //     .loginProcessingUrl("/api/v1/auth/login")
-        //     .usernameParameter("id")
-        //     .passwordParameter("password")
-        //     .successHandler(customAuthenticationSuccessHandler)
-        //     .failureHandler(customAuthenticationFailureHandler)
-        //     .permitAll()
-        // );
+        httpSecurity.formLogin(
+            config -> config
+            // 실제 로그인 컨트롤러 메소드 경로
+            .loginPage("/auth/login")
+            // 가상의 주소를 넣는다
+            .loginProcessingUrl("/api/v1/auth/login")
+            .usernameParameter("email")
+            .passwordParameter("password")
+            .successHandler(customAuthenticationSuccessHandler)
+            .failureHandler(customAuthenticationFailureHandler)
+            .permitAll()
+        );
         return httpSecurity.getOrBuild();
     }
 }

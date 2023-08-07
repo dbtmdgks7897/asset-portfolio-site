@@ -70,7 +70,7 @@ export default {
     submitButton() {
       confirm('')
       this.$router.push({name : 'PageBoardDetail', params : {
-        id: this.$route.params.id,
+        boardIdx: this.$route.params.id,
       }})
     },
   }

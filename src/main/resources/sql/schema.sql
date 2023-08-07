@@ -8,6 +8,7 @@ DROP TABLE IF EXISTS `roles`;
 DROP TABLE IF EXISTS `authority`;
 DROP TABLE IF EXISTS `user_roles`;
 DROP TABLE IF EXISTS `roles_authority`;
+DROP TABLE IF EXISTS `audit_log`;
 SET foreign_key_checks = 1; 
 
 CREATE TABLE `user` (
@@ -64,17 +65,17 @@ CREATE TABLE board (
 );
 
 CREATE TABLE `board_recommend` (
-  `idx` BIGINT PRIMARY KEY AUTO_INCREMENT,
   `board_idx` BIGINT NOT NULL,
   `user_idx` BIGINT NOT NULL,
-  `created_at` DATETIME DEFAULT (CURRENT_TIMESTAMP)
+  `created_at` DATETIME DEFAULT (CURRENT_TIMESTAMP),
+  PRIMARY KEY (board_idx, user_idx)
 );
 
 CREATE TABLE `comment` (
   `idx` BIGINT PRIMARY KEY AUTO_INCREMENT,
   `user_idx` BIGINT,
   `board_idx` BIGINT,
-  `content` TEXT UNIQUE,
+  `content` TEXT UNIQUE NOT NULL,
   `recommend_count` INT DEFAULT 0,
   `created_at` DATETIME DEFAULT (CURRENT_TIMESTAMP),
   `updated_at` DATETIME,
@@ -82,11 +83,25 @@ CREATE TABLE `comment` (
 );
 
 CREATE TABLE `comment_recommend` (
-  `idx` BIGINT PRIMARY KEY AUTO_INCREMENT,
   `comment_idx` BIGINT NOT NULL,
   `user_idx` BIGINT NOT NULL,
-  `created_at` DATETIME DEFAULT (CURRENT_TIMESTAMP)
+  `created_at` DATETIME DEFAULT (CURRENT_TIMESTAMP),
+  PRIMARY KEY (comment_idx, user_idx)
 );
+
+
+CREATE TABLE `audit_log` (
+    `idx` BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `table_name` VARCHAR(100) NOT NULL,
+    `row_id` INT NOT NULL,
+    `operation` VARCHAR(10) NOT NULL,
+    `column_name` VARCHAR(100),
+    `old_value` VARCHAR(255),
+    `new_value` VARCHAR(255),
+    `reason` VARCHAR(255),
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE INDEX `idx_board_user_idx` ON `board` (`user_idx`);
 
 CREATE INDEX `idx_board_recommend_board_idx` ON `board_recommend` (`board_idx`);

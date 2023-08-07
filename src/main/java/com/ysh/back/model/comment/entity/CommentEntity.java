@@ -1,10 +1,9 @@
-package com.ysh.back.model.board.entity;
+package com.ysh.back.model.comment.entity;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.ysh.back.domain.board.dto.ResBoardDetailsDTO.Comment;
-import com.ysh.back.model.comment.entity.CommentEntity;
+import com.ysh.back.model.board.entity.BoardEntity;
 import com.ysh.back.model.user.entity.UserEntity;
 
 import jakarta.persistence.Column;
@@ -22,41 +21,34 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
-@Table(name="BOARD")
+@Table(name = "COMMENT")
 @Getter
-@Setter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(of = "idx", callSuper = false)
-public class BoardEntity {
-
+public class CommentEntity {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idx", nullable = false, unique = true)
     private Long idx;
 
-    @Column(name = "name", nullable = false)
-    private String name;
-
-    @Column(name = "content", nullable = false)
-    private String content;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_idx", referencedColumnName = "idx", updatable = false, nullable = false)
     private UserEntity userEntity;
 
-    @Column(name = "view_count")
-    private Integer viewCount;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "board_idx", referencedColumnName = "idx", updatable = false, nullable = false)
+    private BoardEntity boardEntity;
+    
+    @Column(name = "content", nullable = false)
+    private String content;
 
     @Column(name = "recommend_count")
     private Integer recommendCount;
-
-    @Column(name = "is_hided")
-    private Boolean isHided;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -67,6 +59,4 @@ public class BoardEntity {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    @OneToMany(mappedBy = "boardEntity", fetch = FetchType.EAGER)
-    private List<CommentEntity> commentEntityList;
 }
