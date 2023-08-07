@@ -55,4 +55,13 @@ public class BoardControllerApiV1 {
     ) {
         return boardService.deleteBoardData(boardIdx);
     }
+
+    @Operation(summary = "게시물 댓글",
+    description = "게시물 댓글 조회 기능")
+    @GetMapping("/{boardIdx}/comment")
+    public ResponseEntity<?> getBoardCommentListData(
+        @PathVariable Long boardIdx
+    ) {
+        return boardService.getBoardCommentListData(boardIdx);
+    }
 }

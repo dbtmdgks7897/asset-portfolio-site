@@ -25,9 +25,8 @@ public class ResBoardDetailsDTO {
     private Integer viewCount;
     private Integer recommendCount;
     private String content;
-    private List<Comment> commentList;
 
-    public static ResBoardDetailsDTO of(BoardEntity boardEntity) {
+    public static ResBoardDetailsDTO fromEntity(BoardEntity boardEntity) {
         return ResBoardDetailsDTO.builder()
                 .idx(boardEntity.getIdx())
                 .name(boardEntity.getName())
@@ -36,11 +35,6 @@ public class ResBoardDetailsDTO {
                 .viewCount(boardEntity.getViewCount())
                 .recommendCount(boardEntity.getRecommendCount())
                 .content(boardEntity.getContent())
-                .commentList(
-                        boardEntity.getCommentEntityList()
-                                .stream()
-                                .map(commentEntity -> Comment.fromEntity(commentEntity))
-                                .toList())
                 .build();
     }
 
@@ -57,44 +51,6 @@ public class ResBoardDetailsDTO {
                     .idx(userEntity.getIdx())
                     .name(userEntity.getName())
                     .build();
-        }
-    }
-
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Getter
-    @Builder
-    public static class Comment {
-        private Long idx;
-        private String createdAt;
-        private String content;
-        private Integer recommendCount;
-        private User user;
-
-        public static Comment fromEntity(CommentEntity commentEntity) {
-            return Comment.builder()
-                    .idx(commentEntity.getIdx())
-                    .createdAt(commentEntity.getCreatedAt().format(DateTimeFormatter.ofPattern(("yy/MM/dd hh:mm"))))
-                    .content(commentEntity.getContent())
-                    .recommendCount(commentEntity.getRecommendCount())
-                    .user(User.fromEntity(commentEntity.getUserEntity()))
-                    .build();
-        };
-
-        @AllArgsConstructor
-        @NoArgsConstructor
-        @Getter
-        @Builder
-        public static class User {
-            private Long idx;
-            private String name;
-
-            public static User fromEntity(UserEntity userEntity) {
-                return User.builder()
-                        .idx(userEntity.getIdx())
-                        .name(userEntity.getName())
-                        .build();
-            }
         }
     }
 }

@@ -3,7 +3,6 @@ package com.ysh.back.model.board.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.ysh.back.domain.board.dto.ResBoardDetailsDTO.Comment;
 import com.ysh.back.model.comment.entity.CommentEntity;
 import com.ysh.back.model.user.entity.UserEntity;
 

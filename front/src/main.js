@@ -9,8 +9,8 @@ const app = createApp(App)
 
 // app.config.globalProperties.$toggle = true; 
 
-app.use(router)
 
+app.use(router)
 app.mount('#app')
 
 app.config.globalProperties.$axios = axios;

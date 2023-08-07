@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.support.Repositories;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -14,10 +15,13 @@ import com.ysh.back.common.dto.ResponseDTO;
 import com.ysh.back.common.exception.BadRequestException;
 import com.ysh.back.domain.board.dto.ResBoardDetailsDTO;
 import com.ysh.back.domain.board.dto.ResBoardListDTO;
+import com.ysh.back.domain.comment.dto.ResBoardCommentListDTO;
 import com.ysh.back.model.auditLog.entity.AuditLogEntity;
 import com.ysh.back.model.auditLog.repository.AuditLogRepository;
 import com.ysh.back.model.board.entity.BoardEntity;
 import com.ysh.back.model.board.repository.BoardRepository;
+import com.ysh.back.model.comment.entity.CommentEntity;
+import com.ysh.back.model.comment.repository.CommentRepository;
 
 @Service
 public class BoardServiceApiV1 {
@@ -26,6 +30,8 @@ public class BoardServiceApiV1 {
     BoardRepository boardRepository;
     @Autowired
     AuditLogRepository auditLogRepository;
+    @Autowired
+    CommentRepository commentRepository;
 
     // 게시물 리스트 뿌려주기 검색어, 정렬기준 입력 가능
     public ResponseEntity<?> getBoardListData(String search, String sort, Boolean desc){
@@ -77,7 +83,23 @@ public class BoardServiceApiV1 {
             ResponseDTO.builder()
             .code(0)
             .message("게시물 상세 조회 성공")
-            .data(ResBoardDetailsDTO.of(boardEntityOptional.get()))
+            .data(ResBoardDetailsDTO.fromEntity(boardEntityOptional.get()))
+            .build()   
+        ,HttpStatus.OK);
+    }
+
+    public ResponseEntity<?> getBoardCommentListData(Long boardIdx) {
+        List<CommentEntity> commentEntityList = commentRepository.findByBoardEntityIdxOrderByCreatedAtAsc(boardIdx);
+        
+        if(commentEntityList.isEmpty()){
+            return null;
+        }
+
+        return new ResponseEntity<>(
+            ResponseDTO.builder()
+            .code(0)
+            .message("게시물 댓글 조회 성공")
+            .data(ResBoardCommentListDTO.of(commentEntityList))
             .build()   
         ,HttpStatus.OK);
     }
@@ -94,7 +116,7 @@ public class BoardServiceApiV1 {
 
         // TODO : 작성자와 현재 유저 매치 기능 추가 필요
 
-        
+
         boardEntity.setDeletedAt(LocalDateTime.now());
 
 

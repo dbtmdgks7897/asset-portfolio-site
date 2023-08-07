@@ -3,9 +3,9 @@
     :class="[toggle.show ? 'sidebar-margin' : 'sidebar-margin-none']"
     class=""
   >
-    <div v-if="detailsData" class="contents">
+    <div v-if="boardDetailsData" class="contents">
       <div class="contents-head flex">
-        <span class="auto-resize-text">{{ detailsData.name }}</span>
+        <span class="auto-resize-text">{{ boardDetailsData.name }}</span>
         <div>
           <!-- 현재 사용자와 작성자의 id가 같을 시 보이게-->
           <!-- v-if -->
@@ -17,16 +17,16 @@
       </div>
       <div class="contents-body">
         <div class="post-info flex">
-          <span>작성일 :{{ detailsData.createdAt }}</span>
-          <span>작성자 : {{ detailsData.user.name}}</span>
-          <span>조회수 : {{ detailsData.viewCount }}</span>
+          <span>작성일 :{{ boardDetailsData.createdAt }}</span>
+          <span>작성자 : {{ boardDetailsData.user.name}}</span>
+          <span>조회수 : {{ boardDetailsData.viewCount }}</span>
         </div>
-        <div class="post-content">{{ detailsData.content }}</div>
+        <div class="post-content">{{ boardDetailsData.content }}</div>
         <div v-if="login.isLogined" class="post-buttons">
           <!-- 게시글 추천, 신고 -->
           <button class="btn btn-outline-dark" @click="reportButton">신고</button>
           <button class="btn btn-outline-dark" @click="recommendButton">
-            추천 ({{ detailsData.recommendCount }})
+            추천 ({{ boardDetailsData.recommendCount }})
           </button>
         </div>
       </div>
@@ -35,7 +35,7 @@
         <div class="comment-main">
           <ul>
             <!-- v-for로 반복 돌림 -->
-            <li v-for="comment in detailsData.commentList" :key="comment"  class="flex-item flex comment-li">
+            <li v-for="comment in boardCommentListData" :key="comment"  class="flex-item flex comment-li">
               <div class="text">
                 <span>{{ comment.user.name }}</span> |
                 <span>{{ comment.createdAt }}</span><br />
@@ -64,7 +64,7 @@
 
 <script setup>
 import { toggle } from "@/utils/toggle";
-import { login } from "@/utils/login"
+import { login } from "@/utils/login";
 </script>
 <script>
 export default {
@@ -74,11 +74,13 @@ export default {
     return {
       deleteConfirm: false,
       boardIdx: this.$route.params.id,
-      detailsData: null,
+      boardDetailsData: null,
+      boardCommentListData: null,
     };
   },
   mounted() {
-    this.getBoardDetailsFn(); 
+    this.getBoardDetailsFn();
+    this.getBoardCommentListFn();
   },
   methods: {
     getBoardDetailsFn() {
@@ -87,14 +89,38 @@ export default {
         .then((res) => {
           if (res.data.code === 0) {
             console.log(res.data.data);
-            this.detailsData = res.data.data;
+            this.boardDetailsData = res.data.data;
           }
         })
         .catch((res) => {
           console.log(res);
         });
-    }
-    ,
+    },
+    getBoardCommentListFn() {
+      this.$axios
+        .get(`/api/v1/board/${this.boardIdx}/comment`)
+        .then((res) => {
+          if (res.data.code === 0) {
+            console.log(res.data.data);
+            this.boardCommentListData = res.data.data.commentList;
+          }
+        })
+        .catch((res) => {
+          console.log(res);
+        });
+    },
+    deleteBoardFn() {
+      this.$axios
+        .delete(`/api/v1/board/${this.boardIdx}`)
+        .then((res) => {
+          if (res.data.code === 0) {
+            console.log(res);
+          }
+        })
+        .catch((res) => {
+          console.error(res);
+        });
+    },
     updateButton() {
       this.$router.push({ name : 'PageBoardUpdate', params : {
         id: this.boardIdx
@@ -103,10 +129,9 @@ export default {
     deleteButton() {
       this.deleteConfirm = confirm("삭제하시겠습니까?");
       if(this.deleteConfirm) {
-        
-        if(login.idx === this.detailsData.user)
+        if(login.idx === this.boardDetailsData.user)
         {
-          console.log("삭제");
+          this.deleteBoardFn();
         }else{
           console.log("누구냐 너");
         }
