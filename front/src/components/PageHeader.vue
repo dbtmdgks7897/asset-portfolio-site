@@ -18,7 +18,7 @@
           <!-- Vuex나 create 등으로 현재 상태 받아오기 -->
           <!-- 인증 정보 있을 시엔 내 정보-->
           <!-- 인증 정보 없을 시엔 로그인 페이지 이동-->
-          <a @click="goToPage">
+          <a @click="profileClick">
             <div class="profile flex">
               <img
                 v-if="login.isLogined"
@@ -74,7 +74,7 @@
           >
             내 활동
           </li>
-          <li class="list-group-item list-group-item-dark">로그아웃</li>
+          <li class="list-group-item list-group-item-dark" @click="logout">로그아웃</li>
         </div>
         <div v-else>
           <li class="list-group-item list-group-item-dark category">내 계정</li>
@@ -146,17 +146,21 @@ export default {
     };
   },
   methods: {
-    goToPage() {
+    profileClick() {
       // 현재 로그인 상태를 가정하여, 조건에 따라 라우터 이동
-      const isLoggedIn = true; // 로그인 상태라면 true, 로그인하지 않은 상태라면 false로 변경
-      if (isLoggedIn) {
+       // 로그인 상태라면 true, 로그인하지 않은 상태라면 false로 변경
+      if (login.isLogined) {
         // this.isActive = !this.isActive; // 로그인 상태에서 클릭 시 내 정보 페이지로 이동
         // this.$router.push("/"); // 실제 라우터 이동이 필요한 경우 주석 해제
-        console.log("가즈아");
+        this.$router.push({name : "PageMyinfo"})
       } else {
         // this.$router.push('/login'); // 실제 라우터 이동이 필요한 경우 주석 해제
-        console.log("넌 못감");
+        this.$router.push({name : "PageLogin"})
       }
+    },
+    logout(){
+      login.isLogined = false;
+      this.$router.push({name: "PageBoardList"})
     },
     handleResize() {
       this.width = window.innerWidth;

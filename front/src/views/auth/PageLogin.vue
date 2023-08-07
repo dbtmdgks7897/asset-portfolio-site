@@ -11,7 +11,6 @@
           v-model="email"
           type="text"
           class="form-control"
-          id="validationCustomUsername"
           aria-describedby="inputGroupPrepend"
           placeholder="Email (*)"
           required
@@ -27,7 +26,6 @@
           v-model="password"
           type="password"
           class="form-control"
-          id="validationCustomUsername"
           aria-describedby="inputGroupPrepend"
           placeholder="Password (*)"
           required
@@ -47,25 +45,22 @@
   </div>
 </template>
 <script>
+import { login } from "@/utils/login";
+
 export default {
   data() {
     return {
       data: {
         email: "",
         password: "",
-      },
-      config: {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        
       },
     };
   },
 
   methods: {
     loginButton() {
-      
-
+  
       const formData = new FormData();
       formData.append("email", this.email);
       formData.append("password", this.password);
@@ -76,11 +71,12 @@ export default {
             "content-type": "application/x-www-form-urlencoded",
           },
         })
-        .then(function (res) {
+        .then((res) => {
           if (res.data.code === 0) {
-            alert("성공");
+            login.isLogined = true;
+            this.$router.push({name: "PageBoardList"});
           }
-          console.log(res)
+          console.log(res.data)
           // alert("실패");
         })
         .catch(function (error) {

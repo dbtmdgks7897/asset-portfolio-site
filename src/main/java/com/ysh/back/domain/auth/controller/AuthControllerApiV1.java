@@ -11,8 +11,10 @@ import com.ysh.back.domain.auth.dto.ReqJoinDTO;
 import com.ysh.back.domain.auth.service.AuthServiceApiV1;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
+@Tag(name = "인증 / 인가", description = "사용자 정보 인가 / 인증 관련")
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthControllerApiV1 {

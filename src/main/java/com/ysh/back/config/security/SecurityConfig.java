@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 import com.ysh.back.config.security.auth.CustomAuthenticationFailureHandler;
 import com.ysh.back.config.security.auth.CustomAuthenticationSuccessHandler;
@@ -18,6 +19,7 @@ public class SecurityConfig {
 
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
     private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+    private final LogoutSuccessHandler logoutSuccessHandler;
 
     @Bean
     // throws Exception : 오류를 함수 밖으로 내보내 바깥에서 오류 처리하도록 함
@@ -67,6 +69,19 @@ public class SecurityConfig {
             .successHandler(customAuthenticationSuccessHandler)
             .failureHandler(customAuthenticationFailureHandler)
             .permitAll()
+        );
+
+        httpSecurity.logout(config -> config
+                // 로그아웃 페이지 매핑
+                .logoutUrl("/auth/logout")
+                // 세션 초기화(?)
+                .invalidateHttpSession(true)
+                // 쿠키 삭제
+                .deleteCookies("JSESSIONID")
+                // 로그아웃 성공 시 유저에게 보낼 내용
+                .logoutSuccessHandler(logoutSuccessHandler)
+                // 모든 유저 접근 허용
+                .permitAll()
         );
         return httpSecurity.getOrBuild();
     }
