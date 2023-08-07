@@ -102,6 +102,24 @@ CREATE TABLE `audit_log` (
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+-- board_report 테이블 생성
+CREATE TABLE `board_report` (
+  `board_idx` BIGINT NOT NULL,
+  `user_idx` BIGINT NOT NULL,
+  `reason` VARCHAR(255),
+  `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (board_idx, user_idx)
+);
+
+-- comment_report 테이블 생성
+CREATE TABLE `comment_report` (
+  `comment_idx` BIGINT NOT NULL,
+  `user_idx` BIGINT NOT NULL,
+  `reason` VARCHAR(255),
+  `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (comment_idx, user_idx)
+);
+
 CREATE INDEX `idx_board_user_idx` ON `board` (`user_idx`);
 
 CREATE INDEX `idx_board_recommend_board_idx` ON `board_recommend` (`board_idx`);
