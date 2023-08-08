@@ -56,12 +56,12 @@
                 <span>{{ comment.recommendCount }}</span
                 ><br />
                 <!-- 댓글 추천, 신고 -->
-                <button class="btn btn-outline-dark" @click="comReportButton">
+                <button class="btn btn-outline-dark" @click="comReportButton(comment.idx)">
                   <i class="bi bi-cone"></i>
                 </button>
                 <button
                   class="btn btn-outline-dark"
-                  @click="comRecommendButton"
+                  @click="comRecommendButton(comment.idx)"
                 >
                   <i class="bi bi-hand-thumbs-up-fill"></i>
                 </button>
@@ -80,7 +80,7 @@ import { toggle } from "@/utils/toggle";
 import { login } from "@/utils/login";
 </script>
 <script>
-import router from '@/router';
+import router from "@/router";
 export default {
   name: "PageBoardDetail",
   data() {
@@ -90,6 +90,7 @@ export default {
       boardIdx: this.$route.params.id,
       boardDetailsData: null,
       boardCommentListData: null,
+      router
     };
   },
   mounted() {
@@ -123,31 +124,35 @@ export default {
           console.log(res);
         });
     },
-    deleteBoardFn() {
-      this.$axios
-        .delete(`/api/v1/board/${this.boardIdx}`)
-        .then((res) => {
-          if (res.data.code === 0) {
-            console.log(res);
-          }
-        })
-        .catch((res) => {
-          console.error(res);
-        });
-    },
     updateButton() {
-      this.$router.push({
-        name: "PageBoardUpdate",
-        params: {
-          id: this.boardIdx,
-        },
-      });
+      if (login.idx === this.boardDetailsData.user.idx) {
+        this.$router.push({
+          name: "PageBoardUpdate",
+          params: {
+            id: this.boardIdx,
+          },
+        });
+      } else {
+        alert("돌아가");
+      }
     },
     deleteButton() {
       this.deleteConfirm = confirm("삭제하시겠습니까?");
       if (this.deleteConfirm) {
-        if (login.idx === this.boardDetailsData.user) {
-          this.deleteBoardFn();
+        if (login.idx === this.boardDetailsData.user.idx) {
+          this.$axios
+            .delete(`/api/v1/board/${this.boardIdx}`)
+            .then((res) => {
+              if (res.data.code === 0) {
+                alert("게시물이 삭제되었습니다.");
+                this.$router.push({ name: "PageBoardList" });
+              } else {
+                console.log(res);
+              }
+            })
+            .catch((res) => {
+              console.error(res);
+            });
         } else {
           console.log("누구냐 너");
         }
@@ -155,35 +160,33 @@ export default {
     },
     reportButton() {
       const reportReason = prompt("신고 사유를 입력해주세요");
-      if(reportReason != null) {
+      if (reportReason != null) {
         const dto = {
-        userIdx: login.idx,
-        boardIdx: this.boardIdx,
-        reason: reportReason,
-      };
-      this.$axios
-        .post(`/api/v1/board/${this.boardIdx}/report`, dto, {
-          headers: {
-            "content-type": "application/json;charset=utf-8;",
-          },
-        })
-        .then((res) => {
-          if (res.data.code === 0) {
-            alert("신고 성공");
-            router.go(0);
-          } else {
-            alert(res.data.message);
-          }
-        })
-        .catch((err) => {
-          alert(err);
-        });
+          userIdx: login.idx,
+          reason: reportReason,
+        };
+        this.$axios
+          .post(`/api/v1/board/${this.boardIdx}/report`, dto, {
+            headers: {
+              "content-type": "application/json;charset=utf-8;",
+            },
+          })
+          .then((res) => {
+            if (res.data.code === 0) {
+              alert("신고 성공");
+              this.getBoardDetailsFn();
+            } else {
+              alert(res.data.message);
+            }
+          })
+          .catch((err) => {
+            alert(err);
+          });
       }
     },
     recommendButton() {
       const dto = {
         userIdx: login.idx,
-        boardIdx: this.boardIdx,
       };
       this.$axios
         .post(`/api/v1/board/${this.boardIdx}/recommend`, dto, {
@@ -194,7 +197,7 @@ export default {
         .then((res) => {
           if (res.data.code === 0) {
             alert("추천 성공");
-            router.go(0);
+            this.getBoardDetailsFn();
           } else {
             alert(res.data.message);
           }
@@ -203,18 +206,53 @@ export default {
           alert(err);
         });
     },
-    comReportButton() {
-      // 신고 내역 확인 후
-      // 있으면 이미 신고한 게시물, 없으면 신고 내역 받아서 넘겨주기
-      // prompt('신고 사유를 입력해주세용');
-      alert("");
+    comReportButton(commentIdx) {
+      const reportReason = prompt("신고 사유를 입력해주세요");
+      if (reportReason != null) {
+        const dto = {
+          userIdx: login.idx,
+          reason: reportReason,
+        };
+        this.$axios
+          .post(`/api/v1/comment/${commentIdx}/report`, dto, {
+            headers: {
+              "content-type": "application/json;charset=utf-8;",
+            },
+          })
+          .then((res) => {
+            if (res.data.code === 0) {
+              alert("신고 성공");
+              this.getBoardCommentListFn();
+            } else {
+              alert(res.data.message);
+            }
+          })
+          .catch((err) => {
+            alert(err);
+          });
+      }
     },
-    comRecommendButton() {
-      // 추천 내역 확인 후
-      // 있으면 추천 테이블에 추가 후 count 하나 올리기
-      // 없으면 이미 추천한 게시물입니다
-      // alert
-      alert("");
+    comRecommendButton(commentIdx) {
+      const dto = {
+        userIdx: login.idx,
+      };
+      this.$axios
+        .post(`/api/v1/comment/${commentIdx}/recommend`, dto, {
+          headers: {
+            "content-type": "application/json;charset=utf-8;",
+          },
+        })
+        .then((res) => {
+          if (res.data.code === 0) {
+            alert("추천 성공");
+            this.getBoardCommentListFn();
+          } else {
+            alert(res.data.message);
+          }
+        })
+        .catch((err) => {
+          alert(err);
+        });
     },
   },
 };

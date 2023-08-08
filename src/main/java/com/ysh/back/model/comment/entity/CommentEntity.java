@@ -1,7 +1,6 @@
 package com.ysh.back.model.comment.entity;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import com.ysh.back.model.board.entity.BoardEntity;
 import com.ysh.back.model.user.entity.UserEntity;
@@ -14,7 +13,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -20,7 +20,7 @@ public class CommonExceptionHandler {
                         .code(1)
                         .message(exception.getMessage())
                         .build(),
-                HttpStatus.BAD_REQUEST
+                HttpStatus.OK
         );
     }
 }

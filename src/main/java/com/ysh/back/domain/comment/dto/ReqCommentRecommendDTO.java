@@ -11,5 +11,4 @@ import lombok.NoArgsConstructor;
 @Getter
 public class ReqCommentRecommendDTO {
     private Long userIdx;
-    private Long boardIdx;
 }

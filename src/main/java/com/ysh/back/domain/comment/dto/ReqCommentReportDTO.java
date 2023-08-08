@@ -11,6 +11,5 @@ import lombok.NoArgsConstructor;
 @Getter
 public class ReqCommentReportDTO {
     private Long userIdx;
-    private Long boardIdx;
     private String reason;
 }

@@ -14,13 +14,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "BOARD_REPORT")
+@Table(name = "COMMENT_REPORT")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Builder
 @IdClass(CommentReportEntityKey.class)
-public class BoardReportEntity implements Serializable{
+public class CommentReportEntity implements Serializable{
     @Id
     @Column(name = "comment_idx", nullable = false, unique = true)
     private Long commentIdx;

@@ -11,6 +11,5 @@ import lombok.NoArgsConstructor;
 @Getter
 public class ReqBoardReportDTO {
     private Long userIdx;
-    private Long boardIdx;
     private String reason;
 }
