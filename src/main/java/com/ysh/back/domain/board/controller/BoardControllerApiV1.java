@@ -2,15 +2,17 @@ package com.ysh.back.domain.board.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ysh.back.config.security.auth.CustomUserDetails;
+import com.ysh.back.domain.board.dto.ReqBoardRecommendDTO;
+import com.ysh.back.domain.board.dto.ReqBoardReportDTO;
 import com.ysh.back.domain.board.service.BoardServiceApiV1;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,7 +24,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class BoardControllerApiV1 {
     
     @Autowired
-    BoardServiceApiV1 boardService;
+    BoardServiceApiV1 boardServiceApiV1;
 
     @Operation(summary = "게시물 리스트",
     description = "전체 리스트를 반환하거나"
@@ -36,7 +38,7 @@ public class BoardControllerApiV1 {
         @RequestParam(required = false) Boolean desc
     ){
         desc = desc == null ? false : desc;
-                return boardService.getBoardListData(search, sort, desc);
+                return boardServiceApiV1.getBoardListData(search, sort, desc);
     }
 
     @Operation(summary = "게시물 상세 정보",
@@ -45,7 +47,7 @@ public class BoardControllerApiV1 {
     public ResponseEntity<?> getBoardDetailsData(
         @PathVariable Long boardIdx
     ) {
-        return boardService.getBoardDetailsData(boardIdx);
+        return boardServiceApiV1.getBoardDetailsData(boardIdx);
     }
 
     @Operation(summary = "게시물 삭제",
@@ -55,7 +57,7 @@ public class BoardControllerApiV1 {
     public ResponseEntity<?> deleteBoardData(
         @PathVariable Long boardIdx
     ) {
-        return boardService.deleteBoardData(boardIdx);
+        return boardServiceApiV1.deleteBoardData(boardIdx);
     }
 
     @Operation(summary = "게시물 댓글 조회",
@@ -64,27 +66,28 @@ public class BoardControllerApiV1 {
     public ResponseEntity<?> getBoardCommentListData(
         @PathVariable Long boardIdx
     ) {
-        return boardService.getBoardCommentListData(boardIdx);
+        return boardServiceApiV1.getBoardCommentListData(boardIdx);
     }
 
     @Operation(summary = "게시물 신고",
     description = "신고 버튼 클릭 시 현재 유저가 누른 적 있는 지 판별<br />"
     + "없으면 신고 정보 board_report 테이블 등록")
-    @GetMapping("/{boardIdx}/comment")
+    @PostMapping("/{boardIdx}/report")
     public ResponseEntity<?> insertBoardReportData(
         @PathVariable Long boardIdx,
-        @AuthenticationPrincipal CustomUserDetails customUserDetails
+        @RequestBody ReqBoardReportDTO reqBoardReportDTO
     ) {
-        return null;
+        return boardServiceApiV1.insertBoardReportData(boardIdx, reqBoardReportDTO);
     }
 
     @Operation(summary = "게시물 추천",
     description = "추천 버튼 클릭 시 현재 유저가 누른 적 있는 지 판별<br />"
     + "없으면 추천 정보 board_recommend 테이블 등록")
-    @GetMapping("/{boardIdx}/comment")
+    @PostMapping("/{boardIdx}/recommend")
     public ResponseEntity<?> insertBoardRecommendData(
-        @PathVariable Long boardIdx
+        @PathVariable Long boardIdx,
+        @RequestBody ReqBoardRecommendDTO reqBoardRecommendDTO
     ) {
-        return null;
+        return boardServiceApiV1.insertBoardRecommendData(boardIdx, reqBoardRecommendDTO);
     }
 }

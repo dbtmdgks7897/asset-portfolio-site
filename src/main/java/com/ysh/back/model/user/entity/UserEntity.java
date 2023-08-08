@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.ysh.back.model.board.entity.BoardEntity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

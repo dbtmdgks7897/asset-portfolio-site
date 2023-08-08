@@ -1,10 +1,8 @@
 package com.ysh.back.domain.board.dto;
 
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 import com.ysh.back.model.board.entity.BoardEntity;
-import com.ysh.back.model.comment.entity.CommentEntity;
 import com.ysh.back.model.user.entity.UserEntity;
 
 import lombok.AllArgsConstructor;

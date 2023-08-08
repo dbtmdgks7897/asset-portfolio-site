@@ -9,6 +9,8 @@ DROP TABLE IF EXISTS `authority`;
 DROP TABLE IF EXISTS `user_roles`;
 DROP TABLE IF EXISTS `roles_authority`;
 DROP TABLE IF EXISTS `audit_log`;
+DROP TABLE IF EXISTS `comment_report`;
+DROP TABLE IF EXISTS `board_report`;
 SET foreign_key_checks = 1; 
 
 CREATE TABLE `user` (
@@ -110,7 +112,8 @@ CREATE TABLE `comment_report` (
 CREATE TABLE `audit_log` (
     `idx` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `table_name` VARCHAR(100) NOT NULL,
-    `row_id` INT NOT NULL,
+    `user_idx` VARCHAR(100) NOT NULL,
+    `row_id` INT,
     `operation` VARCHAR(10) NOT NULL,
     `column_name` VARCHAR(100),
     `old_value` VARCHAR(255),

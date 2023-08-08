@@ -28,7 +28,10 @@ public class AuditLogEntity {
     @Column(name = "table_name", nullable = false)
     private String tableName;
 
-    @Column(name = "row_id", nullable = false)
+    @Column(name = "user_idx", nullable = false)
+    private Long userIdx;
+
+    @Column(name = "row_id")
     private Long rowId;
 
     @Column(name = "operation", nullable = false)

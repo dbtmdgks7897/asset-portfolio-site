@@ -1,6 +1,5 @@
 package com.ysh.back.domain.comment.dto;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 

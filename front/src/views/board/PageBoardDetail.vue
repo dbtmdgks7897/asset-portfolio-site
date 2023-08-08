@@ -9,7 +9,9 @@
         <div>
           <!-- 현재 사용자와 작성자의 id가 같을 시 보이게-->
           <!-- v-if -->
-          <button class="btn btn-outline-dark" @click="updateButton">수정</button>
+          <button class="btn btn-outline-dark" @click="updateButton">
+            수정
+          </button>
           <button class="btn btn-outline-dark" @click="deleteButton">
             삭제
           </button>
@@ -18,13 +20,15 @@
       <div class="contents-body">
         <div class="post-info flex">
           <span>작성일 :{{ boardDetailsData.createdAt }}</span>
-          <span>작성자 : {{ boardDetailsData.user.name}}</span>
+          <span>작성자 : {{ boardDetailsData.user.name }}</span>
           <span>조회수 : {{ boardDetailsData.viewCount }}</span>
         </div>
         <div class="post-content">{{ boardDetailsData.content }}</div>
         <div v-if="login.isLogined" class="post-buttons">
           <!-- 게시글 추천, 신고 -->
-          <button class="btn btn-outline-dark" @click="reportButton">신고</button>
+          <button class="btn btn-outline-dark" @click="reportButton">
+            신고
+          </button>
           <button class="btn btn-outline-dark" @click="recommendButton">
             추천 ({{ boardDetailsData.recommendCount }})
           </button>
@@ -35,21 +39,30 @@
         <div class="comment-main">
           <ul>
             <!-- v-for로 반복 돌림 -->
-            <li v-for="comment in boardCommentListData" :key="comment"  class="flex-item flex comment-li">
+            <li
+              v-for="comment in boardCommentListData"
+              :key="comment"
+              class="flex-item flex comment-li"
+            >
               <div class="text">
                 <span>{{ comment.user.name }}</span> |
-                <span>{{ comment.createdAt }}</span><br />
+                <span>{{ comment.createdAt }}</span
+                ><br />
                 <span>{{ comment.content }}</span>
               </div>
               <div v-if="login.isLogined" class="buttons">
                 <!-- comment 테이블에서 1대N 매핑한 후 -->
                 <!-- 리스트 가져오기 -->
-                <span>{{ comment.recommendCount }}</span><br />
+                <span>{{ comment.recommendCount }}</span
+                ><br />
                 <!-- 댓글 추천, 신고 -->
                 <button class="btn btn-outline-dark" @click="comReportButton">
                   <i class="bi bi-cone"></i>
                 </button>
-                <button class="btn btn-outline-dark" @click="comRecommendButton">
+                <button
+                  class="btn btn-outline-dark"
+                  @click="comRecommendButton"
+                >
                   <i class="bi bi-hand-thumbs-up-fill"></i>
                 </button>
               </div>
@@ -67,6 +80,7 @@ import { toggle } from "@/utils/toggle";
 import { login } from "@/utils/login";
 </script>
 <script>
+import router from '@/router';
 export default {
   name: "PageBoardDetail",
   data() {
@@ -122,52 +136,90 @@ export default {
         });
     },
     updateButton() {
-      this.$router.push({ name : 'PageBoardUpdate', params : {
-        id: this.boardIdx
-      }})
+      this.$router.push({
+        name: "PageBoardUpdate",
+        params: {
+          id: this.boardIdx,
+        },
+      });
     },
     deleteButton() {
       this.deleteConfirm = confirm("삭제하시겠습니까?");
-      if(this.deleteConfirm) {
-        if(login.idx === this.boardDetailsData.user)
-        {
+      if (this.deleteConfirm) {
+        if (login.idx === this.boardDetailsData.user) {
           this.deleteBoardFn();
-        }else{
+        } else {
           console.log("누구냐 너");
         }
       }
     },
     reportButton() {
-      // 신고 내역 확인 후
-      // 있으면 이미 신고한 게시물, 없으면 신고 내역 받아서 넘겨주기
-      // prompt('신고 사유를 입력해주세용');
-      alert('');
+      const reportReason = prompt("신고 사유를 입력해주세요");
+      if(reportReason != null) {
+        const dto = {
+        userIdx: login.idx,
+        boardIdx: this.boardIdx,
+        reason: reportReason,
+      };
+      this.$axios
+        .post(`/api/v1/board/${this.boardIdx}/report`, dto, {
+          headers: {
+            "content-type": "application/json;charset=utf-8;",
+          },
+        })
+        .then((res) => {
+          if (res.data.code === 0) {
+            alert("신고 성공");
+            router.go(0);
+          } else {
+            alert(res.data.message);
+          }
+        })
+        .catch((err) => {
+          alert(err);
+        });
+      }
     },
     recommendButton() {
-      // 추천 내역 확인 후
-      // 있으면 추천 테이블에 추가 후 count 하나 올리기
-      // 없으면 이미 추천한 게시물입니다
-      // alert
-      alert('');
+      const dto = {
+        userIdx: login.idx,
+        boardIdx: this.boardIdx,
+      };
+      this.$axios
+        .post(`/api/v1/board/${this.boardIdx}/recommend`, dto, {
+          headers: {
+            "content-type": "application/json;charset=utf-8;",
+          },
+        })
+        .then((res) => {
+          if (res.data.code === 0) {
+            alert("추천 성공");
+            router.go(0);
+          } else {
+            alert(res.data.message);
+          }
+        })
+        .catch((err) => {
+          alert(err);
+        });
     },
     comReportButton() {
       // 신고 내역 확인 후
       // 있으면 이미 신고한 게시물, 없으면 신고 내역 받아서 넘겨주기
       // prompt('신고 사유를 입력해주세용');
-      alert('');
+      alert("");
     },
     comRecommendButton() {
       // 추천 내역 확인 후
       // 있으면 추천 테이블에 추가 후 count 하나 올리기
       // 없으면 이미 추천한 게시물입니다
       // alert
-      alert('');
+      alert("");
     },
   },
 };
 </script>
 <style lang="scss" scoped>
-
 ul {
   padding: 0;
   list-style-type: none;
@@ -259,7 +311,11 @@ button {
 
 .auto-resize-text {
   max-width: 55%;
-  font-size: clamp(12px, 4vw, 24px); /* 최소 크기, 화면 너비에 따라 자동 크기 조절, 최대 크기 */
+  font-size: clamp(
+    12px,
+    4vw,
+    24px
+  ); /* 최소 크기, 화면 너비에 따라 자동 크기 조절, 최대 크기 */
 }
 
 @media (max-width: 767px) {
