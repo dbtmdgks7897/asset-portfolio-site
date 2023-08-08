@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ysh.back.domain.board.dto.ReqBoardRecommendDTO;
 import com.ysh.back.domain.board.dto.ReqBoardReportDTO;
+import com.ysh.back.domain.board.dto.ReqBoardUpdateDTO;
 import com.ysh.back.domain.board.service.BoardServiceApiV1;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -89,5 +90,25 @@ public class BoardControllerApiV1 {
         @RequestBody ReqBoardRecommendDTO reqBoardRecommendDTO
     ) {
         return boardServiceApiV1.insertBoardRecommendData(boardIdx, reqBoardRecommendDTO);
+    }
+
+    @Operation(summary = "게시물 수정 원본 데이터",
+    description = "게시물 수정 페이지 진입 시 원래 게시물의 정보가 <br/>"
+    + "title, content 인풋 박스에 들어있도록 함")
+    @GetMapping("/{boardIdx}/update")
+    public ResponseEntity<?> getBoardUpdateInitData(
+        @PathVariable Long boardIdx
+    ) {
+        return boardServiceApiV1.getBoardUpdateInitData(boardIdx);
+    }
+
+    @Operation(summary = "게시물 수정 요청",
+    description = "게시물 내용 수정 후 업데이트")
+    @PostMapping("/{boardIdx}/update")
+    public ResponseEntity<?> updateBoardData(
+        @PathVariable Long boardIdx,
+        @RequestBody ReqBoardUpdateDTO reqBoardUpdateDTO
+    ) {
+        return boardServiceApiV1.updateBoardData(boardIdx, reqBoardUpdateDTO);
     }
 }

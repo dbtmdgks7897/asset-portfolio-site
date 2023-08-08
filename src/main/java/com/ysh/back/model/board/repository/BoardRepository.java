@@ -1,6 +1,7 @@
 package com.ysh.back.model.board.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -12,7 +13,8 @@ import com.ysh.back.model.board.entity.BoardEntity;
 
 @Repository
 public interface BoardRepository extends JpaRepository<BoardEntity, Long>{
-    
+       Optional<BoardEntity> findByIdx(Long boardIdx);
+
     List<BoardEntity> findByNameContainingOrContentContainingOrUserEntity_NameContaining(String nameSearch, String contentSearch, String userSearch);
 
     @Query("SELECT board FROM BoardEntity board ORDER BY "

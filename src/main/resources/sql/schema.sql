@@ -57,7 +57,7 @@ CREATE TABLE board (
     `idx` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `name` VARCHAR(100) NOT NULL,
     `content` VARCHAR(1000) NOT NULL,
-    `user_idx` BIGINT,
+    `user_idx` BIGINT NOT NULL,
     `view_count` INT DEFAULT 0,
     `recommend_count` INT DEFAULT 0,
     `is_hided` BOOL,

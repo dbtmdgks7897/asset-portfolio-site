@@ -26,7 +26,7 @@
                 :src="profile.img"
                 alt="프로필 이미지"
               />
-              <span v-if="login.isLogined && !isSidebarHide" class="flex-item name">{{
+              <span v-if="login.isLogined" class="flex-item name">{{
                 profile.name
               }}</span>
               <span
@@ -77,7 +77,7 @@
           <li class="list-group-item list-group-item-dark" @click="logout">로그아웃</li>
         </div>
         <div v-else>
-          <li class="list-group-item list-group-item-dark category">내 계정</li>
+          <li class="list-group-item list-group-item-dark category" @click="this.$router.push('/myinfo')">내 계정</li>
         </div>
         <br />
         <!-- 커뮤니티 카테고리 -->
@@ -93,7 +93,7 @@
             자유 게시판
           </li>
         </div>
-        <div v-else><li class="list-group-item list-group-item-dark category">
+        <div v-else><li class="list-group-item list-group-item-dark category" @click="this.$router.push('/board')">
             커뮤니티
           </li></div>
         <br />
@@ -117,7 +117,7 @@
             게시물 관리
           </li>
         </div>
-        <div v-else><li class="list-group-item list-group-item-dark category">
+        <div v-else><li class="list-group-item list-group-item-dark category"  @click="this.$router.push('/admin/user')">
             관리
           </li></div>
       </ul>
@@ -172,6 +172,7 @@ export default {
     },
   },
   mounted() {
+    this.handleResize();
     window.addEventListener("resize", this.handleResize);
   },
   beforeUnmount() {
@@ -214,6 +215,14 @@ ul {
   }
 }
 
+@media(max-width: 767px) {
+  .profile{
+    .name{
+      display: none;
+    }
+  }
+}
+
 .list-group-item {
   background-color: rgba(255, 255, 255, 0);
   border: 0px;
@@ -224,7 +233,7 @@ ul {
   border-bottom: 2px solid black;
 }
 
-@media (min-width: 800px) {
+@media (min-width: 767px) {
   .sidebar {
     width: $sidebar-width;
     height: 100vh;
@@ -252,7 +261,7 @@ ul {
   }
 }
 
-@media (max-width: 800px) {
+@media (max-width: 767px) {
   .btn-toggle {
     left: $sidebar-width;
     top: 50vh;

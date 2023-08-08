@@ -14,8 +14,10 @@ import com.ysh.back.common.dto.ResponseDTO;
 import com.ysh.back.common.exception.BadRequestException;
 import com.ysh.back.domain.board.dto.ReqBoardRecommendDTO;
 import com.ysh.back.domain.board.dto.ReqBoardReportDTO;
+import com.ysh.back.domain.board.dto.ReqBoardUpdateDTO;
 import com.ysh.back.domain.board.dto.ResBoardDetailsDTO;
 import com.ysh.back.domain.board.dto.ResBoardListDTO;
+import com.ysh.back.domain.board.dto.ResBoardUpdateInitDTO;
 import com.ysh.back.domain.comment.dto.ResBoardCommentListDTO;
 import com.ysh.back.model.auditLog.entity.AuditLogEntity;
 import com.ysh.back.model.auditLog.repository.AuditLogRepository;
@@ -212,6 +214,66 @@ public class BoardServiceApiV1 {
             ResponseDTO.builder()
             .code(0)
             .message("게시물 추천 성공")
+            .build()   
+        ,HttpStatus.OK);
+    }
+
+    public ResponseEntity<?> getBoardUpdateInitData(Long boardIdx){
+        Optional<BoardEntity> boardEntityOptional = boardRepository.findById(boardIdx);
+
+        if(!boardEntityOptional.isPresent()){
+            throw new BadRequestException("게시물?이 없습니다?");
+        }
+
+        BoardEntity boardEntity = boardEntityOptional.get();
+
+        ResBoardUpdateInitDTO resBoardUpdateInitDTO = ResBoardUpdateInitDTO.builder()
+        .name(boardEntity.getName())
+        .content(boardEntity.getContent())
+        .build();
+
+        return new ResponseEntity<>(
+            ResponseDTO.builder()
+            .code(0)
+            .message("게시물 정보 들고옴")
+            .data(resBoardUpdateInitDTO)
+            .build()   
+        ,HttpStatus.OK);
+
+    }
+
+    @Transactional
+     public ResponseEntity<?> updateBoardData(Long boardIdx, ReqBoardUpdateDTO dto){
+        Optional<BoardEntity> boardEntityOptional = boardRepository.findByIdx(boardIdx);
+
+        if(!boardEntityOptional.isPresent()){
+            throw new BadRequestException("해당 게시물이 존재하지 않습니다.");
+        }
+
+        BoardEntity boardEntity = boardEntityOptional.get();
+
+        boardEntity.setName(dto.getName());
+        boardEntity.setContent(dto.getContent());
+        boardEntity.setUpdatedAt(dto.getUpdatedAt());
+
+        AuditLogEntity auditLog = AuditLogEntity.builder()
+        .tableName("board")
+        .userIdx(boardEntity.getUserEntity().getIdx())
+        .rowId(boardIdx)
+        .operation("UPDATE")
+        .reason("게시물 수정")
+        .oldValue("게시물 제목 : " + dto.getNameOrigin()
+        + "\n게시물 내용 : " + dto.getContentOrigin())
+        .newValue("게시물 제목 : " + dto.getName()
+        + "\n게시물 내용 : " + dto.getContent())
+        .build();
+        auditLogRepository.save(auditLog);
+
+
+        return new ResponseEntity<>(
+            ResponseDTO.builder()
+            .code(0)
+            .message("게시물 수정 성공")
             .build()   
         ,HttpStatus.OK);
     }

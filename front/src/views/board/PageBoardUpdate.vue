@@ -10,18 +10,21 @@
       <div class="contents-body">
         <div class="mb-3">
           <input
+            v-if="data"
+            v-model="data.name"
             type="email"
             class="form-control"
             id="exampleFormControlInput1"
-            value="(post.title)"
           />
         </div>
         <div class="mb-3">
           <textarea
+            v-if="data"
+            v-model="data.content"
             class="form-control"
             id="exampleFormControlTextarea1"
             rows="20"
-          >(post.content)</textarea>
+          ></textarea>
         </div>
       </div>
       <div class="buttons">
@@ -35,7 +38,10 @@
         <!-- 완료 클릭 시 -->
         <!-- 데이터 유효성 검사 후 값을 받아 -->
         <!-- 데이터를 post에 저장 -->
-        <button class="btn btn-outline-dark posting-button" @click="submitButton">
+        <button
+          class="btn btn-outline-dark posting-button"
+          @click="submitButton"
+        >
           <span>완료</span>
         </button>
       </div>
@@ -51,29 +57,70 @@ import { toggle } from "@/utils/toggle";
 
 <script>
 export default {
-  name : 'PageBoardUpdate',
+  name: "PageBoardUpdate",
   data() {
     return {
       width: window.innerWidth || document.body.clientWidth,
       height: window.innerHeight || document.body.clientHeight,
-      
+      boardIdx: this.$route.params.id,
+      initData: this.data,
+      data: null,
     };
   },
-  methods :{
+  mounted() {
+    this.$axios.get(`/api/v1/board/${this.boardIdx}/update`).then((res) => {
+      if (res.data.code === 0) {
+        this.data = res.data.data;
+        this.initData = res.data.data;
+      } else {
+        alert(res.data.message);
+      }
+    });
+  },
+  methods: {
     cancelButton() {
-      confirm('')
-      this.$router.push({name : 'PageBoardDetail', params : {
-        id: this.$route.params.id,
-      }})
-      
+      if (confirm("게시물 수정을 취소하시겠습니까?")) {
+        this.$router.push({
+          name: "PageBoardDetail",
+          params: {
+            id: this.boardIdx,
+          },
+        });
+      }
     },
     submitButton() {
-      confirm('')
-      this.$router.push({name : 'PageBoardDetail', params : {
-        boardIdx: this.$route.params.id,
-      }})
+      if (confirm("게시물을 수정하시겠습니까?")) {
+        const currentDate = new Date();
+        const dto = {
+          name: this.data.name,
+          nameOrigin: this.initData.name,
+          content: this.data.content,
+          contentOrigin: this.initData.content,
+          updatedAt: currentDate.toISOString(),
+        };
+
+        this.$axios
+          .post(`/api/v1/board/${this.boardIdx}/update`, dto, {
+            headers: {
+              "Content-Type": "application/json;charset=UTF-8",
+            },
+          })
+          .then((res) => {
+            if (res.data.code === 0) {
+              alert("게시물이 수정되었습니다.");
+              this.$router.push({
+                name: "PageBoardDetail",
+                params: {
+                  boardIdx: this.$route.params.id,
+                },
+              });
+            } else {
+              alert(res.data.message);
+            }
+          });
+      }
     },
-  }
+  },
 };
 </script>
 <style lang="scss" scoped>
