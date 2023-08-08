@@ -100,7 +100,7 @@ export default {
         };
 
         this.$axios
-          .post(`/api/v1/board/${this.boardIdx}/update`, dto, {
+          .put(`/api/v1/board/${this.boardIdx}/update`, dto, {
             headers: {
               "Content-Type": "application/json;charset=UTF-8",
             },

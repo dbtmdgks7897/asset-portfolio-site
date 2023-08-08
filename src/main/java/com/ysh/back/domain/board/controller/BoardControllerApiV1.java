@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -104,7 +105,7 @@ public class BoardControllerApiV1 {
 
     @Operation(summary = "게시물 수정 요청",
     description = "게시물 내용 수정 후 업데이트")
-    @PostMapping("/{boardIdx}/update")
+    @PutMapping("/{boardIdx}/update")
     public ResponseEntity<?> updateBoardData(
         @PathVariable Long boardIdx,
         @RequestBody ReqBoardUpdateDTO reqBoardUpdateDTO
