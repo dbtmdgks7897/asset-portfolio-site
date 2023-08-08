@@ -140,8 +140,8 @@ export default {
       isSidebarHide: false,
       flag: false,
       profile: {
-        name: "anonymous",
-        img: require("../assets/img/anonymous.png"),
+        name: login.idx,
+        img: login.img,
       },
     };
   },

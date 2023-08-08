@@ -14,11 +14,12 @@ import com.ysh.back.domain.comment.service.CommentServiceApiV1;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @Tag(name = "댓글", description = "댓글 관련")
 @RequestMapping("/api/v1/comment")
-public class CommentController{
+public class CommentControllerApiV1{
     
     @Autowired
     CommentServiceApiV1 commentServiceApiV1;
@@ -29,7 +30,7 @@ public class CommentController{
     @PostMapping("/{commentIdx}/report")
     public ResponseEntity<?> insertCommentReportData(
         @PathVariable Long commentIdx,
-        @RequestBody ReqCommentReportDTO reqCommentReportDTO
+        @Valid @RequestBody ReqCommentReportDTO reqCommentReportDTO
     ) {
         return commentServiceApiV1.insertCommentReportData(commentIdx, reqCommentReportDTO);
     }

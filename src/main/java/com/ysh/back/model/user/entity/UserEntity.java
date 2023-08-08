@@ -22,10 +22,12 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "USER")
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -55,6 +57,9 @@ public class UserEntity {
     @Lob
     @Column(name = "profile_img")
     private Byte[] profileImg;
+
+    @Column(name = "img_type")
+    private String imgType;
 
     @Column(name = "gender")
     private String gender;

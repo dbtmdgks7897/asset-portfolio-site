@@ -150,8 +150,8 @@ export default {
                 console.log(res);
               }
             })
-            .catch((res) => {
-              console.error(res);
+            .catch((err) => {
+              console.log(err);
             });
         } else {
           console.log("누구냐 너");

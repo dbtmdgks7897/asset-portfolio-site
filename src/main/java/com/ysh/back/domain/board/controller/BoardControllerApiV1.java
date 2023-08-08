@@ -19,6 +19,7 @@ import com.ysh.back.domain.board.service.BoardServiceApiV1;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @Tag(name = "게시판", description = "게시판 관련")
 @RestController
@@ -108,7 +109,7 @@ public class BoardControllerApiV1 {
     @PutMapping("/{boardIdx}/update")
     public ResponseEntity<?> updateBoardData(
         @PathVariable Long boardIdx,
-        @RequestBody ReqBoardUpdateDTO reqBoardUpdateDTO
+        @Valid @RequestBody ReqBoardUpdateDTO reqBoardUpdateDTO
     ) {
         return boardServiceApiV1.updateBoardData(boardIdx, reqBoardUpdateDTO);
     }

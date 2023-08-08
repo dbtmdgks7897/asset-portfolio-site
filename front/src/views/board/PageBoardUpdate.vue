@@ -117,6 +117,9 @@ export default {
             } else {
               alert(res.data.message);
             }
+          })
+          .catch((err) => {
+            alert(err);
           });
       }
     },

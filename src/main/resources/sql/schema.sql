@@ -21,6 +21,7 @@ CREATE TABLE `user` (
   `nickname` VARCHAR(50) NOT NULL,
   `phone` VARCHAR(20),
   `profile_img` BLOB,
+  `img_type` VARCHAR(30),
   `gender` VARCHAR(10),
   `age` INT,
   `suspend_until` DATETIME,

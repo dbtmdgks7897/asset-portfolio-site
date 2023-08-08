@@ -221,7 +221,7 @@ public class BoardServiceApiV1 {
     public ResponseEntity<?> getBoardUpdateInitData(Long boardIdx){
         Optional<BoardEntity> boardEntityOptional = boardRepository.findById(boardIdx);
 
-        if(!boardEntityOptional.isPresent()){
+        if(boardEntityOptional.isEmpty()){
             throw new BadRequestException("게시물?이 없습니다?");
         }
 
@@ -246,7 +246,7 @@ public class BoardServiceApiV1 {
      public ResponseEntity<?> updateBoardData(Long boardIdx, ReqBoardUpdateDTO dto){
         Optional<BoardEntity> boardEntityOptional = boardRepository.findByIdx(boardIdx);
 
-        if(!boardEntityOptional.isPresent()){
+        if(boardEntityOptional.isEmpty()){
             throw new BadRequestException("해당 게시물이 존재하지 않습니다.");
         }
 

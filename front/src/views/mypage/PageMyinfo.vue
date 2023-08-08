@@ -1,49 +1,55 @@
 <template>
   <div :class="[toggle.show ? 'sidebar-margin' : 'sidebar-margin-none']">
     <div class="contents">
-      <div class="contents-box">
+      <div v-if="myData" class="contents-box">
         <div class="contents-head flex">
           <div class="flex">
-            <img class="flex-item" :src="profile.img" alt="프로필 이미지" />
+            <img class="flex-item" :src="myData.profileImg" alt="프로필 이미지" />
             <transition name="fade" mode="out-in">
-              <input v-show="isUpdateInter" type="file" name="profile" />
+              <input v-if="isUpdateInfo" id="file-input" type="file" name="profile" accept="image/*" @change="onFileSelected"/>
             </transition>
           </div>
           <div class="text">
-            <input
+            <input v-model="myData.nickname"
               id="nicknameInput"
+              class="changeableInput"
+              style="display: block;"
               type="text"
-              value="(user.nickname)"
               disabled
-              readonly
             />
-            <span id="name">(user.name)</span>
+            <span v-if="!myData.nickname" class="error-span">닉네임을 입력해주세요</span><br />
+            <span id="name">{{myData.name}}</span>
           </div>
         </div>
         <div class="contents-body">
           <ul>
             <li class="flex">
               <span>이메일</span>
-              <input type="text" value="(user.email)" disabled readonly />
+              <input v-model="myData.email" type="text" disabled readonly />
             </li>
             <li class="flex">
+              <span>전화번호</span>
+              <input v-model="myData.phone" class="changeableInput" type="text" disabled /><br />
+            </li>
+            <span v-if="!(myData.phone.length == 13) || !(myData.phone.split('-')[0] == '010')" class="error-span">전화번호를 제대로 입력해주세요</span>
+            <li class="flex">
               <span>성별</span>
-              <select
-                id="genderSelect"
-                class="form-select form-select-sm"
+              <select v-model="myData.gender"
+                id="genderSelect" 
+                class="form-select form-select-sm changeableInput"
                 aria-label="Small select example"
                 disabled
               >
-                <option selected>성별</option>
-                <option value="1">남성</option>
-                <option value="2">여성</option>
+                <option value="" selected>성별</option>
+                <option value="남성">남성</option>
+                <option value="여성">여성</option>
               </select>
             </li>
             <li class="flex">
               <span>나이</span>
-              <select
-                id="ageSelect"
-                class="form-select form-select-sm"
+              <select v-model="myData.age"
+                id="ageSelect" 
+                class="form-select form-select-sm changeableInput"
                 aria-label="Small select example"
                 disabled
               >
@@ -56,7 +62,7 @@
             <li class="buttons">
               <transition name="fade" mode="out-in">
                 <button
-                  v-if="!isUpdateInter"
+                  v-if="!isUpdateInfo"
                   class="btn my-button"
                   @click="changeUpdateInter"
                 >
@@ -67,13 +73,13 @@
             <li class="buttons">
               <transition name="fade" mode="out-in">
                 <button
-                  v-if="!isUpdateInter"
+                  v-if="!isUpdateInfo"
                   class="btn red-button"
-                  @click="leave"
+                  @click="leaveButton"
                 >
                   <span>회원 탈퇴</span>
                 </button>
-                <button v-else class="btn my-button" @click="changeUpdateInter">
+                <button v-else class="btn my-button" @click="updateButton">
                   <span>수정 완료</span>
                 </button>
               </transition>
@@ -87,30 +93,99 @@
 
 <script setup>
 import { toggle } from "@/utils/toggle";
+import { login } from "@/utils/login";
+// import { imgTrans } from "@/utils/imgTrans";
+
 </script>
 <script>
 export default {
   data() {
     return {
-      isUpdateInter: false,
-
-      profile: {
-        name: "anonymous",
-        img: require("../../assets/img/anonymous.png"),
-      },
+      isUpdateInfo: false,
+      myData: null,
+      fileReader: new FileReader(),
+      anonProfileImg: require("../../assets/img/anonymous.png"),
     };
   },
+  watch() {
+    // 총 길이가 13, 앞에서 3글자가 010
+  },
+  mounted() {
+    this.getMyinfoInitData()
+  },
   methods: {
+    onFileSelected(event) {
+      const file = event.target.files[0];
+
+      if (file) {
+        // FileReader 객체 생성
+        const reader = new FileReader();
+
+        // 파일 로드가 완료되면 이미지 URL을 업데이트
+        reader.onload = () => {
+          console.log(reader.result)
+          this.myData.profileImg = reader.result;
+          login.img = reader.result;
+        };
+
+        // 이미지 파일을 Data URL 형태로 읽기
+        reader.readAsDataURL(file);
+      }
+    },
     changeUpdateInter() {
-      document.querySelector("#nicknameInput").disabled = this.isUpdateInter;
-      document.querySelector("#genderSelect").disabled = this.isUpdateInter;
-      document.querySelector("#ageSelect").disabled = this.isUpdateInter;
-      this.isUpdateInter = !this.isUpdateInter;
+      document.querySelectorAll(".changeableInput").forEach(element => {
+          element.disabled = this.isUpdateInfo;
+      });
+      this.isUpdateInfo = !this.isUpdateInfo;
     },
-    update() {
-      confirm("");
+    updateButton() {
+      const dto = {
+        idx: login.idx,
+        profileImg: this.myData.profileImg.split(',')[1],
+        imgType: this.myData.imgType,
+        nickname: this.myData.nickname,
+        gender: this.myData.gender,
+        age: this.myData.age,
+        phone: this.myData.phone
+      }
+      // myData의 name만 지금 이름으로
+      this.$axios
+      .put(`/api/v1/mypage/info`, dto, {
+        headers: {
+          'Content-Type' : 'application/json;charset=utf-8;'
+        }
+      }).then((res) => {
+        if(res.data.code === 0){
+          console.log(res.data);
+          this.changeUpdateInter()
+          
+        } else {
+          alert(res.data.message)
+        }
+      }).catch((err) => {
+        console.log(err);
+      })
     },
-    leave() {
+    getMyinfoInitData(){
+      this.$axios
+      .post(
+        `/api/v1/mypage/info`,
+        { idx: login.idx },
+        {
+          "Content-Type": "application/json;charset=utf-8;",
+        }
+      )
+      .then((res) => {
+        if (res.data.code === 0) {
+          this.myData = res.data.data;
+        } else {
+          alert(res.data.message);
+        }
+      }).catch((err) => {
+        alert(err);
+      });
+    },
+    leaveButton() {
       prompt("");
     },
   },
@@ -193,6 +268,9 @@ export default {
       margin: 2% 5%;
       text-align: right;
     }
+  }
+  .error-span{
+    color: red;
   }
 }
 </style>

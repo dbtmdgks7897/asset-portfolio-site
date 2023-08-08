@@ -15,8 +15,6 @@ import PageStockDomestic from '@/views/asset/stock/PageStockDomestic'
 import PageStockOverseas from '@/views/asset/stock/PageStockOverseas'
 import PageAssetTransaction from '@/views/asset/PageAssetTransaction'
 
-import Test from '@/views/test'
-
 
 const routes = [
     {
@@ -94,13 +92,6 @@ const routes = [
         name: 'PageAssetTransaction',
         component: PageAssetTransaction
     },
-    
-    {
-        path: '/test',
-        name: 'Test',
-        component: Test
-    },
-
 ]
 
 const router = createRouter({
