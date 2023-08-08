@@ -73,7 +73,7 @@ public class CommentServiceApiV1 {
         Optional<CommentRecommendEntity> commnetRecommendEntityOptional = commentRecommendRepository.findByCommentIdxAndUserIdx(commentIdx, reqCommentRecommendDTO.getUserIdx());
 
         if (commnetRecommendEntityOptional.isPresent()) {
-            throw new BadRequestException("이미 신고한 댓글입니다.");
+            throw new BadRequestException("이미 추천한 댓글입니다.");
         }
 
         CommentRecommendEntity commentRecommendEntityForSaving = CommentRecommendEntity.builder()
