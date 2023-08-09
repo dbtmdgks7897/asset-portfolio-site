@@ -28,6 +28,7 @@
           class="form-control"
           aria-describedby="inputGroupPrepend"
           placeholder="Password (*)"
+          @keydown.enter="loginButton"
           required
         />
         <div class="invalid-feedback">이메일 또는 비밀번호를 확인해주세요</div>

@@ -82,8 +82,20 @@ export default {
       alert('')
       this.trigger = !this.trigger
     },
+    search(){
+
+    },
+    disableButton(){
+
+    },
+    ableButton(){
+
+    },
     exileButton(){
       alert('')
+    },
+    restoreButton(){
+      
     }
   },
 };

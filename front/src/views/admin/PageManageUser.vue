@@ -7,17 +7,18 @@
       <div class="contents-head flex">
         <span>유저 관리</span>
         <div class="input-group mb-1">
-          <input
+          <input v-model="search"
             type="text"
             class="form-control"
             placeholder="검색어"
             aria-label="검색어"
             aria-describedby="button-addon2"
+            @keydown.enter="searchFn"
           />
           <!-- 버튼 클릭 시 위의 인풋의 데이터를 -->
           <!-- 쿼리스트링 변수 search에 넣어서 -->
           <!-- /api/boards 로 보내기 -->
-          <button
+          <button @click="searchFn"
             class="btn btn-outline-secondary"
             type="button"
             id="button-addon2"
@@ -42,7 +43,7 @@
             <!-- v-for로 반복 돌려서 데이터 가져와서 링크 넣고 뿌려주기 -->
             <tr v-for="user in userList" :key="user">
               <th scope="row">{{ user.idx }}</th>
-              <td><img :src="user.profileImg" alt="이미지"></td>
+              <td><img :src="user.profileImg" alt="이미지" /></td>
               <td>{{ user.email }}</td>
               <td>{{ user.name }}</td>
               <td>{{ user.age }}</td>
@@ -76,11 +77,7 @@
                 >
                   <span>탈</span>
                 </button>
-                <button
-                  v-else
-                  class="btn my-blue-button"
-                  @click="exileButton"
-                >
+                <button v-else class="btn my-blue-button" @click="exileButton">
                   <span>복</span>
                 </button>
               </td>
@@ -148,6 +145,7 @@ export default {
     return {
       trigger: true,
       userList: null,
+      search: null,
     };
   },
   mounted() {
@@ -178,7 +176,33 @@ export default {
           console.log(err);
         });
     },
+    searchFn() {
+      this.$axios
+        .get(`/api/v1/admin/user`,{
+          params: {
+            search : this.search
+          },
+        })
+        .then((res) => {
+          if (res.data.code === 0) {
+            this.userList = res.data.data.userList;
 
+            this.userList.forEach((element) => {
+              let blob = new Blob([new ArrayBuffer(element.profileImg)], {
+                type: "image/" + element.imgType,
+              });
+              const url = window.URL.createObjectURL(blob);
+              element.profileImg = url;
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    disableButton() {},
+    ableButton() {},
+    restoreButton() {},
     exileButton() {
       prompt("사유");
     },

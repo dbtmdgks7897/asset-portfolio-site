@@ -6,7 +6,6 @@ import java.util.List;
 import com.ysh.back.model.board.entity.BoardEntity;
 import com.ysh.back.model.comment.entity.CommentEntity;
 
-import jakarta.persistence.criteria.CriteriaBuilder.In;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

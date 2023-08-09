@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import org.springframework.cglib.core.Local;
-
 import com.ysh.back.model.board.entity.BoardEntity;
 import com.ysh.back.model.user.entity.UserEntity;
 
