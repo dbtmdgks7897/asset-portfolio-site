@@ -3,6 +3,9 @@ package com.ysh.back.model.board.entity;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicInsert;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -20,6 +23,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 @IdClass(BoardRecommendEntityKey.class)
+@DynamicInsert
 public class BoardRecommendEntity implements Serializable {
     @Id
     @Column(name = "board_idx", nullable = false, unique = true)
@@ -30,5 +34,6 @@ public class BoardRecommendEntity implements Serializable {
     private Long userIdx;
 
     @Column(name = "created_at")
+    @CreationTimestamp
     private LocalDateTime createdAt;
 }

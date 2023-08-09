@@ -2,6 +2,8 @@ package com.ysh.back.model.comment.entity;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.DynamicInsert;
+
 import com.ysh.back.model.board.entity.BoardEntity;
 import com.ysh.back.model.user.entity.UserEntity;
 
@@ -27,6 +29,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "idx", callSuper = false)
+@DynamicInsert
 public class CommentEntity {
     
     @Id

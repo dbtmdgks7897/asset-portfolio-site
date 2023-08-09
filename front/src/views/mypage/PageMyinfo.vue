@@ -125,7 +125,7 @@ export default {
         reader.onload = () => {
           console.log(reader.result)
           this.myData.profileImg = reader.result;
-          login.img = reader.result;
+          this.myData.imgType = reader.result.split('/')[1].split(';')[0];
         };
 
         // 이미지 파일을 Data URL 형태로 읽기
@@ -139,20 +139,31 @@ export default {
       this.isUpdateInfo = !this.isUpdateInfo;
     },
     updateButton() {
-      const dto = {
-        idx: login.idx,
-        profileImg: this.myData.profileImg.split(',')[1],
-        imgType: this.myData.imgType,
-        nickname: this.myData.nickname,
-        gender: this.myData.gender,
-        age: this.myData.age,
-        phone: this.myData.phone
-      }
+      // const dto = {
+      //   idx: login.idx,
+      //   profileImg: this.myData.profileImg.split(',')[1],
+      //   imgType: this.myData.imgType,
+      //   nickname: this.myData.nickname,
+      //   gender: this.myData.gender,
+      //   age: this.myData.age,
+      //   phone: this.myData.phone
+      // }
+      const formData = new FormData();
+      formData.append('idx', login.idx);
+      formData.append('profileImg', this.myData.profileImg);
+      formData.append('imgType', this.myData.imgType);
+      formData.append('nickname', this.myData.nickname);
+      formData.append('gender', this.myData.gender);
+      formData.append('age', this.myData.age);
+      formData.append('phone', this.myData.phone);
+
+      console.log(formData.get('idx'));
+
       // myData의 name만 지금 이름으로
       this.$axios
-      .put(`/api/v1/mypage/info`, dto, {
+      .post(`/api/v1/mypage/infoUp`, formData, {
         headers: {
-          'Content-Type' : 'application/json;charset=utf-8;'
+          'Content-Type' : 'multipart/form-data'
         }
       }).then((res) => {
         if(res.data.code === 0){
@@ -186,7 +197,23 @@ export default {
       });
     },
     leaveButton() {
-      prompt("");
+      if(prompt('삭제하시겠습니까?') === login.nickname){
+        this.$axios
+      .delete(`/api/v1/mypage/info/${login.idx}`,{
+        headers: {
+          'Content-Type' : 'application/json;charset=utf-8'
+        }
+      }).then((res) => {
+        if (res.data.code === 0) {
+          // TODO : 세션 삭제 후 메인페이지로
+          this.myData = res.data.data;
+        } else {
+          alert(res.data.message);
+        }
+      }).catch((err) => {
+        alert(err);
+      });
+      }
     },
   },
 };

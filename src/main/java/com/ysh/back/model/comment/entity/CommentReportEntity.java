@@ -3,6 +3,8 @@ package com.ysh.back.model.comment.entity;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.DynamicInsert;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -20,6 +22,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 @IdClass(CommentReportEntityKey.class)
+@DynamicInsert
 public class CommentReportEntity implements Serializable{
     @Id
     @Column(name = "comment_idx", nullable = false, unique = true)

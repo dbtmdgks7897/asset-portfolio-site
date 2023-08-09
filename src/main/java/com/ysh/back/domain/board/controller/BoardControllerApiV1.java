@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ysh.back.domain.board.dto.ReqBoardPostDTO;
 import com.ysh.back.domain.board.dto.ReqBoardRecommendDTO;
 import com.ysh.back.domain.board.dto.ReqBoardReportDTO;
 import com.ysh.back.domain.board.dto.ReqBoardUpdateDTO;
@@ -51,6 +52,16 @@ public class BoardControllerApiV1 {
         @PathVariable Long boardIdx
     ) {
         return boardServiceApiV1.getBoardDetailsData(boardIdx);
+    }
+
+    @Operation(summary = "게시물 작성",
+    description = "게시물 name, content 받아와 게시물 작성")
+    @PostMapping()
+    public ResponseEntity<?> postBoardData(
+        @Valid @RequestBody ReqBoardPostDTO reqBoardPostDTO
+        ){
+        System.out.println(reqBoardPostDTO);
+        return boardServiceApiV1.postBoardData(reqBoardPostDTO);
     }
 
     @Operation(summary = "게시물 삭제",

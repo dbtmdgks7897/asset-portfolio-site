@@ -61,8 +61,8 @@ CREATE TABLE board (
     `user_idx` BIGINT NOT NULL,
     `view_count` INT DEFAULT 0,
     `recommend_count` INT DEFAULT 0,
-    `is_hided` BOOL,
-    `created_at` DATETIME DEFAULT (CURRENT_TIMESTAMP),
+    `is_hided` BOOL DEFAULT FALSE,
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
     `updated_at` DATETIME,
     `deleted_at` DATETIME
 );

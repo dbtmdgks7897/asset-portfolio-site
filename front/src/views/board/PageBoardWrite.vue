@@ -1,7 +1,5 @@
 <template>
-  <div
-    :class="[toggle.show ? 'sidebar-margin' : 'sidebar-margin-none']"
-  >
+  <div :class="[toggle.show ? 'sidebar-margin' : 'sidebar-margin-none']">
     <div class="contents">
       <div class="contents-head flex">
         <span>게시물 작성</span>
@@ -10,6 +8,7 @@
         <div class="mb-3">
           <input
             type="email"
+            v-model="dto.name"
             class="form-control"
             id="exampleFormControlInput1"
             placeholder="제목을 입력해주세요"
@@ -18,6 +17,7 @@
         <div class="mb-3">
           <textarea
             class="form-control"
+            v-model="dto.content"
             id="exampleFormControlTextarea1"
             placeholder="내용을 입력해주세요"
             rows="20"
@@ -35,7 +35,10 @@
         <!-- 완료 클릭 시 -->
         <!-- 데이터 유효성 검사 후 값을 받아 -->
         <!-- 데이터를 post에 저장 -->
-        <button class="btn btn-outline-dark posting-button" @click="submitButton">
+        <button
+          class="btn btn-outline-dark posting-button"
+          @click="submitButton"
+        >
           <span>완료</span>
         </button>
       </div>
@@ -47,6 +50,7 @@
 
 <script setup>
 import { toggle } from "@/utils/toggle";
+import { login } from "@/utils/login";
 </script>
 
 <script>
@@ -55,16 +59,46 @@ export default {
     return {
       width: window.innerWidth || document.body.clientWidth,
       height: window.innerHeight || document.body.clientHeight,
+      dto: {
+        userIdx: login.idx,
+        name: null,
+        content: null,
+      },
     };
   },
-  methods :{
+  methods: {
     cancelButton() {
-      this.$router.push({name : 'PageBoardList'})
+      if (confirm("취소하시겠습니까?")) {
+        this.$router.push({ name: "PageBoardList" });
+      }
     },
     submitButton() {
-      this.$router.push({name : 'PageBoardList'})
+      if (confirm("게시하시겠습니까?")) {
+        this.$axios
+          .post("/api/v1/board", this.dto, {
+            headers: {
+              "Content-Type": "application/json;charset=utf-8;",
+            },
+          })
+          .then((res) => {
+            if (res.data.code === 0) {
+              alert("게시물이 저장되었습니다.");
+              this.$router.push({
+                name: "PageBoardDetail",
+                params: {
+                  id: res.data.data,
+                },
+              });
+            } else {
+              alert(res.data.message);
+            }
+          })
+          .catch((err) => {
+            alert(err);
+          });
+      }
     },
-  }
+  },
 };
 </script>
 <style lang="scss" scoped>

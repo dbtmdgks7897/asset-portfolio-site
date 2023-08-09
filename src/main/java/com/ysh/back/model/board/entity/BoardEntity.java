@@ -3,6 +3,9 @@ package com.ysh.back.model.board.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 import com.ysh.back.model.comment.entity.CommentEntity;
 import com.ysh.back.model.user.entity.UserEntity;
 
@@ -31,6 +34,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "idx", callSuper = false)
+@DynamicInsert
+@DynamicUpdate
 public class BoardEntity {
 
     @Id
@@ -57,7 +62,7 @@ public class BoardEntity {
     @Column(name = "is_hided")
     private Boolean isHided;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")

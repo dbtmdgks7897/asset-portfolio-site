@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ysh.back.common.dto.ResponseDTO;
 import com.ysh.back.common.exception.BadRequestException;
+import com.ysh.back.domain.board.dto.ReqBoardPostDTO;
 import com.ysh.back.domain.board.dto.ReqBoardRecommendDTO;
 import com.ysh.back.domain.board.dto.ReqBoardReportDTO;
 import com.ysh.back.domain.board.dto.ReqBoardUpdateDTO;
@@ -29,6 +30,8 @@ import com.ysh.back.model.board.repository.BoardReportRepository;
 import com.ysh.back.model.board.repository.BoardRepository;
 import com.ysh.back.model.comment.entity.CommentEntity;
 import com.ysh.back.model.comment.repository.CommentRepository;
+import com.ysh.back.model.user.entity.UserEntity;
+import com.ysh.back.model.user.repository.UserRepository;
 
 @Service
 public class BoardServiceApiV1 {
@@ -43,6 +46,8 @@ public class BoardServiceApiV1 {
     BoardReportRepository boardReportRepository;
     @Autowired
     BoardRecommendRepository boardRecommendRepository;
+    @Autowired
+    UserRepository userRepository;
 
     // 게시물 리스트 뿌려주기 검색어, 정렬기준 입력 가능
     public ResponseEntity<?> getBoardListData(String search, String sort, Boolean desc){
@@ -80,6 +85,46 @@ public class BoardServiceApiV1 {
 
     }
 
+    @Transactional
+    public ResponseEntity<?> postBoardData(ReqBoardPostDTO reqBoardPostDTO){
+
+        Optional<UserEntity> userEntityOptional = userRepository.findByIdx(reqBoardPostDTO.getUserIdx());
+
+        if(!userEntityOptional.isPresent()){
+            throw new BadRequestException("사용자 정보가 없습니다.");
+        }
+        UserEntity userEntity = userEntityOptional.get();
+
+        BoardEntity boardEntity = BoardEntity.builder()
+        .userEntity(userEntity)
+        .name(reqBoardPostDTO.getName())
+        .content(reqBoardPostDTO.getContent())
+        .build();
+
+        boardRepository.save(boardEntity);
+
+        AuditLogEntity auditLog = AuditLogEntity.builder()
+        .tableName("board")
+        // 유저 정보 가져올 수 있을 때 바꾸자.
+        .userIdx(reqBoardPostDTO.getUserIdx())
+        .rowId(boardRepository.count())
+        .operation("INSERT")
+        .reason("게시자 삭제")
+        .build();
+
+        auditLogRepository.save(auditLog);
+
+        return new ResponseEntity<>(
+            ResponseDTO.builder()
+            .code(0)
+            .message("게시물이 저장되었습니다.")
+            .data(boardRepository.count())
+            .build(),
+            HttpStatus.OK
+        );
+    }
+
+    @Transactional
     public ResponseEntity<?> getBoardDetailsData(Long boardIdx) {
         Optional<BoardEntity> boardEntityOptional = boardRepository.findById(boardIdx);
         
@@ -87,11 +132,15 @@ public class BoardServiceApiV1 {
             throw new BadRequestException("존재하지 않는 게시물입니다.");
         }
 
+        BoardEntity boardEntity = boardEntityOptional.get();
+
+        boardEntity.setViewCount(boardEntity.getViewCount()+1);
+
         return new ResponseEntity<>(
             ResponseDTO.builder()
             .code(0)
             .message("게시물 상세 조회 성공")
-            .data(ResBoardDetailsDTO.fromEntity(boardEntityOptional.get()))
+            .data(ResBoardDetailsDTO.fromEntity(boardEntity))
             .build()   
         ,HttpStatus.OK);
     }
@@ -167,6 +216,7 @@ public class BoardServiceApiV1 {
         AuditLogEntity auditLog = AuditLogEntity.builder()
         .tableName("board-report")
         .userIdx(reqBoardReportDTO.getUserIdx())
+        .rowId(boardReportRepository.count())
         .operation("INSERT")
         .reason("게시물 신고")
         .newValue("신고 게시물 : " + boardIdx)
@@ -203,6 +253,7 @@ public class BoardServiceApiV1 {
         AuditLogEntity auditLog = AuditLogEntity.builder()
         .tableName("board-recommend")
         .userIdx(reqBoardRecommendDTO.getUserIdx())
+        .rowId(boardRecommendRepository.count())
         .operation("INSERT")
         .reason("게시물 추천")
         .newValue("추천 게시물 :" + boardIdx)
