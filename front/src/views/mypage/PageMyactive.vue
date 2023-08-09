@@ -50,7 +50,7 @@
               </thead>
               <tbody>
                 <tr v-for="comment in commentList" :key="comment">
-                  <th scope="row">{{ comment.board.name }}</th>
+                  <th scope="row"><a @click="this.$router.push(`/board/${comment.board.idx}`)">{{ util.truncateText(comment.board.name, 15) }}</a></th>
                   <td>{{ comment.content }}</td>
                   <td>{{ comment.createdAt }}</td>
                   <td>{{ comment.recommendCount }}</td>

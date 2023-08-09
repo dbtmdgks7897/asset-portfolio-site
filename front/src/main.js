@@ -9,7 +9,6 @@ const app = createApp(App)
 
 // app.config.globalProperties.$toggle = true; 
 
-
 app.use(router)
 app.mount('#app')
 

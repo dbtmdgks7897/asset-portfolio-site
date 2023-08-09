@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ysh.back.common.dto.ResponseDTO;
 import com.ysh.back.common.exception.BadRequestException;
+import com.ysh.back.config.security.auth.CustomUserDetails;
 import com.ysh.back.domain.auth.dto.ReqJoinDTO;
 import com.ysh.back.model.user.entity.UserEntity;
 import com.ysh.back.model.user.repository.UserRepository;
@@ -52,4 +53,5 @@ public class AuthServiceApiV1 {
                 HttpStatus.OK
         );
     }
+
 }

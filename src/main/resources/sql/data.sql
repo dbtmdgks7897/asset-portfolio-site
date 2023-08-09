@@ -113,6 +113,16 @@ INSERT INTO `authority` (`name`) VALUES
 ('DELETE');
 
 
+INSERT INTO `user_roles` (`user_idx`,`roles_idx`) VALUES
+(101, 1),
+(101, 2);
+
+INSERT INTO `roles_authority` (`roles_idx`,`authority_idx`) VALUES
+(1, 1),
+(1, 2),
+(2, 1),
+(2, 2),
+(2, 3);
 
 
 

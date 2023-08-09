@@ -59,8 +59,8 @@ export default {
   },
 
   methods: {
+    
     loginButton() {
-  
       const formData = new FormData();
       formData.append("email", this.email);
       formData.append("password", this.password);

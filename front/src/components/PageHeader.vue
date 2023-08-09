@@ -159,8 +159,14 @@ export default {
       }
     },
     logout(){
-      login.isLogined = false;
-      this.$router.push({name: "PageBoardList"})
+      this.$axios
+      .get(`/api/v1/auth/logout`)
+      .then(() => {
+        login.isLogined = false;
+        login.email = null;
+        this.$router.push({name: "PageBoardList"})
+      })
+      
     },
     handleResize() {
       this.width = window.innerWidth;

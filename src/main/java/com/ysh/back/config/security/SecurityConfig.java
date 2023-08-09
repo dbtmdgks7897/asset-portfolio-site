@@ -6,6 +6,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 
 import com.ysh.back.config.security.auth.CustomAuthenticationFailureHandler;
 import com.ysh.back.config.security.auth.CustomAuthenticationSuccessHandler;
@@ -30,10 +31,13 @@ public class SecurityConfig {
        
         httpSecurity.authorizeHttpRequests(
             config -> config
+            .requestMatchers(
+                new MvcRequestMatcher(null, "/api/*/admin/**")
+            )
+            .hasRole("ADMIN")
             .anyRequest()
             .permitAll()
         );
-
         // // 요청 주소 인증 및 인가 세팅
         // httpSecurity.authorizeHttpRequests(
         //     config -> config
@@ -73,7 +77,7 @@ public class SecurityConfig {
 
         httpSecurity.logout(config -> config
                 // 로그아웃 페이지 매핑
-                .logoutUrl("/auth/logout")
+                .logoutUrl("/api/v1/auth/logout")
                 // 세션 초기화(?)
                 .invalidateHttpSession(true)
                 // 쿠키 삭제

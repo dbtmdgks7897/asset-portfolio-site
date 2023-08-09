@@ -1,7 +1,10 @@
 package com.ysh.back.domain.board.dto;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+
+import org.springframework.cglib.core.Local;
 
 import com.ysh.back.model.board.entity.BoardEntity;
 import com.ysh.back.model.user.entity.UserEntity;
@@ -42,6 +45,8 @@ public class ResBoardListDTO {
         private String createdAt;
         private Integer viewCount;
         private Integer recommendCount;
+        private Boolean isHided;
+        private LocalDateTime deletedAt;
 
         public static Board fromEntity(BoardEntity boardEntity){
             return Board.builder()
@@ -51,6 +56,8 @@ public class ResBoardListDTO {
             .createdAt(boardEntity.getCreatedAt().format(DateTimeFormatter.ofPattern(("yy/MM/dd hh:mm"))))
             .viewCount(boardEntity.getViewCount())
             .recommendCount(boardEntity.getRecommendCount())
+            .isHided(boardEntity.getIsHided())
+            .deletedAt(boardEntity.getDeletedAt())
             .build();
         }
 
