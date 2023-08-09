@@ -1,6 +1,5 @@
 package com.ysh.back.domain.mypage.controller;
 
-import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -61,6 +60,7 @@ public class MypageControllerApiV1 {
     public ResponseEntity<?> getMyactiveData(
         @AuthenticationPrincipal CustomUserDetails customUserDetails
     ){
+        System.out.println(customUserDetails.getUsername());
         return mypageServiceApiV1.getMyactiveData(customUserDetails);
     }
     

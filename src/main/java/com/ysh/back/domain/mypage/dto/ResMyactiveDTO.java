@@ -1,13 +1,12 @@
 package com.ysh.back.domain.mypage.dto;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import com.ysh.back.domain.comment.dto.ResBoardCommentListDTO.Comment;
 import com.ysh.back.model.board.entity.BoardEntity;
 import com.ysh.back.model.comment.entity.CommentEntity;
 
+import jakarta.persistence.criteria.CriteriaBuilder.In;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -47,6 +46,7 @@ public class ResMyactiveDTO {
         private String name;
         private String createdAt;
         private Integer viewCount;
+        private Integer recommendCount;
 
         public static Board fromEntity(BoardEntity boardEntity){
             return Board.builder()
@@ -54,6 +54,7 @@ public class ResMyactiveDTO {
             .name(boardEntity.getName())
             .createdAt(boardEntity.getCreatedAt().format(DateTimeFormatter.ofPattern(("yy/MM/dd"))))
             .viewCount(boardEntity.getViewCount())
+            .recommendCount(boardEntity.getRecommendCount())
             .build();
         }
     }
@@ -67,12 +68,14 @@ public class ResMyactiveDTO {
         private String content;
         private Board board;
         private String createdAt;
+        private Integer recommendCount;
 
         public static Comment fromEntity(CommentEntity commentEntity){
             return Comment.builder()
             .idx(commentEntity.getIdx())
             .content(commentEntity.getContent())
             .board(Board.fromEntity(commentEntity.getBoardEntity()))
+            .recommendCount(commentEntity.getRecommendCount())
             .build();
         }
 

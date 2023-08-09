@@ -22,11 +22,12 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <th scope="row">---------------(post.title)------------</th>
-                  <td>(post.created_at)</td>
-                  <td>1</td>
-                  <td>1</td>
+                <tr v-for="board in boardList" :key="board">
+                  
+                    <th scope="row"><a @click="this.$router.push(`/board/${board.idx}`)">{{ util.truncateText(board.name, 15) }}</a></th>
+                    <td>{{ board.createdAt }}</td>
+                    <td>{{ board.viewCount }}</td>
+                    <td>{{ board.recommendCount }}</td>
                 </tr>
               </tbody>
             </table>
@@ -41,16 +42,18 @@
             <table class="table">
               <thead class="table-light">
                 <tr>
-                  <th scope="col">제목</th>
+                  <th scope="col">게시물 제목</th>
+                  <th scope="col">내용</th>
                   <th scope="col">날짜</th>
                   <th scope="col">추천</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <th scope="row">-------------(comment.title)----------</th>
-                  <td>(comment.created_at)</td>
-                  <td>1</td>
+                <tr v-for="comment in commentList" :key="comment">
+                  <th scope="row">{{ comment.board.name }}</th>
+                  <td>{{ comment.content }}</td>
+                  <td>{{ comment.createdAt }}</td>
+                  <td>{{ comment.recommendCount }}</td>
                 </tr>
               </tbody>
             </table>
@@ -63,12 +66,14 @@
 
 <script setup>
 import { toggle } from "@/utils/toggle";
+import { util } from "@/utils/utils";
 </script>
 <script>
 export default {
   data() {
     return {
-      myData: null,
+      boardList: null,
+      commentList: null,
       profile: {
         name: "anonymous",
         img: require("../../assets/img/anonymous.png"),
@@ -79,21 +84,23 @@ export default {
     this.getMyactiveData();
   },
   methods: {
-    getMyactiveData(){
+    getMyactiveData() {
       this.$axios
-      .get(`/api/v1/mypage/active`)
-      .then((res) => {
-        if(res.data.code === 1){
-          console.log(res.data.data)
-          this.myData = res.data.data
-        } else {
-          alert(res.data.message)
-        }
-      }).catch((err) => {
-        alert(err.message)
-      })
-    }
-  }
+        .get(`/api/v1/mypage/active`)
+        .then((res) => {
+          if (res.data.code === 0) {
+            console.log(res.data.data.boardList);
+            this.boardList = res.data.data.boardList;
+            this.commentList = res.data.data.commentList;
+          } else {
+            alert(res.data.message);
+          }
+        })
+        .catch((err) => {
+          alert(err.message);
+        });
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

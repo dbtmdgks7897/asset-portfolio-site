@@ -77,7 +77,7 @@
               "
             >
               <th scope="row">{{ board.idx }}</th>
-              <td>{{ truncateText(board.name, 25) }}</td>
+              <td>{{ util.truncateText(board.name, 25) }}</td>
               <td>{{ board.user.name }}</td>
               <td>{{ board.createdAt }}</td>
               <td>{{ board.viewCount }}</td>
@@ -130,6 +130,7 @@
 <script setup>
 import { toggle } from "@/utils/toggle";
 import { login } from "@/utils/login";
+import { util } from "@/utils/utils";
 </script>
 <script>
 export default {
@@ -191,12 +192,6 @@ export default {
         .catch((res) => {
           console.error(res);
         });
-    },
-    truncateText(text, maxLength) {
-      if (text.length > maxLength) {
-        return text.substring(0, maxLength) + "...";
-      }
-      return text;
     },
   },
 };

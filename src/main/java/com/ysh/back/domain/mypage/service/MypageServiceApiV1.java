@@ -165,8 +165,8 @@ public class MypageServiceApiV1 {
 
         UserEntity userEntity = userEntityOptional.get();
 
-        List<BoardEntity> boardEntityList = boardRepository.findAllByUserEntity_Idx(userEntity.getIdx());
-        List<CommentEntity> commentEntityList = commentRepository.findAllByUserEntity_Idx(userEntity.getIdx());
+        List<BoardEntity> boardEntityList = boardRepository.findAllByUserEntity_IdxOrderByCreatedAtDesc(userEntity.getIdx());
+        List<CommentEntity> commentEntityList = commentRepository.findAllByUserEntity_IdxOrderByCreatedAtDesc(userEntity.getIdx());
 
         ResMyactiveDTO resMyactiveDTO = ResMyactiveDTO.of(boardEntityList, commentEntityList);
 

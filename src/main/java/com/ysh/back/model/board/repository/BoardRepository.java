@@ -70,5 +70,5 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Long>{
     @Query("UPDATE BoardEntity b SET b.recommendCount = b.recommendCount + 1 WHERE b.idx = :boardIdx")
     void incrementRecommendCount(@Param("boardIdx") Long boardIdx);
 
-    List<BoardEntity> findAllByUserEntity_Idx(Long userIdx);
+    List<BoardEntity> findAllByUserEntity_IdxOrderByCreatedAtDesc(Long userIdx);
 }
