@@ -1,8 +1,11 @@
 package com.ysh.back.domain.mypage.controller;
 
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ysh.back.config.security.auth.CustomUserDetails;
 import com.ysh.back.domain.mypage.dto.ReqMyinfoInitDTO;
 import com.ysh.back.domain.mypage.dto.ReqMyinfoUpdateDTO;
 import com.ysh.back.domain.mypage.service.MypageServiceApiV1;
@@ -50,4 +54,14 @@ public class MypageControllerApiV1 {
         @RequestParam Long userIdx){
         return mypageServiceApiV1.deleteMyinfoData(userIdx);
     }
+
+    @Operation(summary = "내 활동",
+    description = "내 게시물 / 댓글 가져오기")
+    @GetMapping("/active")
+    public ResponseEntity<?> getMyactiveData(
+        @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ){
+        return mypageServiceApiV1.getMyactiveData(customUserDetails);
+    }
+    
 }

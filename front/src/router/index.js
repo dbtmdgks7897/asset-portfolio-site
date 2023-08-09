@@ -53,12 +53,12 @@ const routes = [
         component: PageJoin
     },
     {
-        path: '/myinfo',
+        path: '/mypage/info',
         name: 'PageMyinfo',
         component: PageMyinfo
     },
     {
-        path: '/myactive',
+        path: '/mypage/active',
         name: 'PageMyactive',
         component: PageMyactive
     },

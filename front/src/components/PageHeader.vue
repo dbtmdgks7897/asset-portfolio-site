@@ -64,20 +64,20 @@
           <li class="list-group-item list-group-item-dark category">내 계정</li>
           <li
             class="list-group-item list-group-item-dark"
-            @click="this.$router.push('/myinfo')"
+            @click="this.$router.push('/mypage/info')"
           >
             내 정보
           </li>
           <li
             class="list-group-item list-group-item-dark"
-            @click="this.$router.push('/myactive')"
+            @click="this.$router.push('/mypage/active')"
           >
             내 활동
           </li>
           <li class="list-group-item list-group-item-dark" @click="logout">로그아웃</li>
         </div>
         <div v-else>
-          <li class="list-group-item list-group-item-dark category" @click="this.$router.push('/myinfo')">내 계정</li>
+          <li class="list-group-item list-group-item-dark category" @click="this.$router.push('/mypage/info')">내 계정</li>
         </div>
         <br />
         <!-- 커뮤니티 카테고리 -->

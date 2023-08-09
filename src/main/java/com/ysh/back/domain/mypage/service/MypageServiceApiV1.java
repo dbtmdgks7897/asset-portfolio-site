@@ -1,6 +1,7 @@
 package com.ysh.back.domain.mypage.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +11,17 @@ import org.springframework.stereotype.Service;
 
 import com.ysh.back.common.dto.ResponseDTO;
 import com.ysh.back.common.exception.BadRequestException;
+import com.ysh.back.config.security.auth.CustomUserDetails;
 import com.ysh.back.domain.mypage.dto.ReqMyinfoInitDTO;
 import com.ysh.back.domain.mypage.dto.ReqMyinfoUpdateDTO;
+import com.ysh.back.domain.mypage.dto.ResMyactiveDTO;
 import com.ysh.back.domain.mypage.dto.ResMyinfoInitDTO;
 import com.ysh.back.model.auditLog.entity.AuditLogEntity;
 import com.ysh.back.model.auditLog.repository.AuditLogRepository;
+import com.ysh.back.model.board.entity.BoardEntity;
+import com.ysh.back.model.board.repository.BoardRepository;
+import com.ysh.back.model.comment.entity.CommentEntity;
+import com.ysh.back.model.comment.repository.CommentRepository;
 import com.ysh.back.model.user.entity.UserEntity;
 import com.ysh.back.model.user.repository.UserRepository;
 
@@ -27,6 +34,10 @@ public class MypageServiceApiV1 {
     UserRepository userRepository;
     @Autowired
     AuditLogRepository auditLogRepository;
+    @Autowired
+    BoardRepository boardRepository;
+    @Autowired
+    CommentRepository commentRepository;
     
     public ResponseEntity<?> getMyinfoInitData(ReqMyinfoInitDTO reqMyinfoInitDTO){
         Optional<UserEntity> userEntityOptional = userRepository.findByIdx(reqMyinfoInitDTO.getIdx());
@@ -142,5 +153,30 @@ public class MypageServiceApiV1 {
             .message("GOOD BYE!")
             .build()
         ,HttpStatus.OK);
+    }
+
+    @Transactional
+    public ResponseEntity<?> getMyactiveData(CustomUserDetails customUserDetails){
+        Optional<UserEntity> userEntityOptional = userRepository.findByEmail(customUserDetails.getUsername());
+
+        if(!userEntityOptional.isPresent()){
+            throw new BadRequestException("유저 정보가 존재하지 않습니다.");
+        }
+
+        UserEntity userEntity = userEntityOptional.get();
+
+        List<BoardEntity> boardEntityList = boardRepository.findAllByUserEntity_Idx(userEntity.getIdx());
+        List<CommentEntity> commentEntityList = commentRepository.findAllByUserEntity_Idx(userEntity.getIdx());
+
+        ResMyactiveDTO resMyactiveDTO = ResMyactiveDTO.of(boardEntityList, commentEntityList);
+
+        return new ResponseEntity<>(
+            ResponseDTO.builder()
+            .code(0)
+            .message("활동 조회 성공")
+            .data(resMyactiveDTO)
+            .build(),
+            HttpStatus.OK
+        );        
     }
 }

@@ -18,4 +18,6 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Long>{
      @Modifying
     @Query("UPDATE CommentEntity b SET b.recommendCount = b.recommendCount + 1 WHERE b.idx = :commentIdx")
     void incrementRecommendCount(@Param("commentIdx") Long commentIdx);
+
+    List<CommentEntity> findAllByUserEntity_Idx(Long userIdx);
 }

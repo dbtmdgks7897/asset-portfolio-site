@@ -68,12 +68,32 @@ import { toggle } from "@/utils/toggle";
 export default {
   data() {
     return {
+      myData: null,
       profile: {
         name: "anonymous",
         img: require("../../assets/img/anonymous.png"),
       },
     };
   },
+  mounted() {
+    this.getMyactiveData();
+  },
+  methods: {
+    getMyactiveData(){
+      this.$axios
+      .get(`/api/v1/mypage/active`)
+      .then((res) => {
+        if(res.data.code === 1){
+          console.log(res.data.data)
+          this.myData = res.data.data
+        } else {
+          alert(res.data.message)
+        }
+      }).catch((err) => {
+        alert(err.message)
+      })
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>
