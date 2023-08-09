@@ -58,7 +58,7 @@
                   data-bs-toggle="modal"
                   data-bs-target="#exampleModal"
                   data-bs-whatever="@mdo"
-                  @click="changeTrigger(1)"
+                  @click="suspendUserIdx = user.idx"
                 >
                   <span>비</span>
                 </button>
@@ -111,11 +111,11 @@
               <label for="recipient-name" class="col-form-label"
                 >Recipient:</label
               >
-              <input type="text" class="form-control" id="recipient-name" />
+              <input v-model="suspendDuration" type="text" class="form-control" id="recipient-name" />
             </div>
             <div class="mb-3">
               <label for="message-text" class="col-form-label">Message:</label>
-              <textarea class="form-control" id="message-text"></textarea>
+              <textarea v-model="suspendReason" class="form-control" id="message-text"></textarea>
             </div>
           </form>
         </div>
@@ -127,7 +127,7 @@
           >
             Close
           </button>
-          <button type="button" class="btn btn-primary">Send message</button>
+          <button @click="suspendButton" data-bs-toggle="modal" type="button" class="btn btn-primary">Send message</button>
         </div>
       </div>
     </div>
@@ -146,6 +146,9 @@ export default {
       trigger: true,
       userList: null,
       search: null,
+      suspendUserIdx: null,
+      suspendDuration: null,
+      suspendReason: null,
     };
   },
   mounted() {
@@ -200,8 +203,31 @@ export default {
           console.log(err);
         });
     },
-    disableButton() {},
-    ableButton() {},
+    suspendButton() {
+      const dto = {
+        suspendDuration: this.suspendDuration,
+        suspendReason: this.suspendReason
+      }
+      this.$axios
+      .put(`/api/v1/admin/user/${this.suspendUserIdx}`, dto,{
+        headers: {
+          'Content-Type' : 'application/json;charset=utf-8;'
+        }
+      }).then((res) => {
+        if(res.data.code === 0){
+          alert(res.data.message)
+        } else {
+          alert(res.data)
+        }
+      }).catch((err) => {
+        console.log(err);
+      })
+    },
+    ableButton(userIdx) {
+      if(confirm(`${userIdx}번 유저를 활성화 하시겠습니까?`)){
+        
+      }
+    },
     restoreButton() {},
     exileButton() {
       prompt("사유");
