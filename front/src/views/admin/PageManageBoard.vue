@@ -76,12 +76,12 @@
                 <button
                   v-if="board.deletedAt == null"
                   class="btn my-button"
-                  @click="deleteUserIdx = board.idx; deleteButton()"
+                  @click="boardIdx = board.idx; deleteButton()"
                 >
                   <span>탈</span>
                 </button>
                 <button v-else class="btn my-blue-button"
-                @click="restoreUserIdx = board.idx; restoreButton()">
+                @click="boardIdx = board.idx; restoreButton()">
                   <span>복</span>
                 </button>
                 </td>

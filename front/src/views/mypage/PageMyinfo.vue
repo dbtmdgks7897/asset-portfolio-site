@@ -197,7 +197,7 @@ export default {
       });
     },
     leaveButton() {
-      if(prompt('삭제하시겠습니까?') === login.nickname){
+      if(prompt(`회원을 탈퇴하시려면 아래의 닉네임을 정확히 입력하여 주세요. \n${login.nickname}`) === login.nickname){
         this.$axios
       .delete(`/api/v1/mypage/info/${login.idx}`,{
         headers: {

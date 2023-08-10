@@ -3,7 +3,6 @@ package com.ysh.back.model.board.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.checkerframework.checker.units.qual.C;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 

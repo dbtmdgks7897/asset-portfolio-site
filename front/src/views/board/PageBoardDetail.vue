@@ -9,10 +9,10 @@
         <div>
           <!-- 현재 사용자와 작성자의 id가 같을 시 보이게-->
           <!-- v-if -->
-          <button class="btn btn-outline-dark" @click="updateButton">
+          <button v-if="login.isLogined && boardDetailsData.user.idx == login.idx" class="btn btn-outline-dark" @click="updateButton">
             수정
           </button>
-          <button class="btn btn-outline-dark" @click="deleteButton">
+          <button  v-if="login.isLogined && boardDetailsData.user.idx == login.idx" class="btn btn-outline-dark" @click="deleteButton">
             삭제
           </button>
         </div>

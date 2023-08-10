@@ -76,13 +76,14 @@
                 })
               "
             >
-              <th scope="row">{{ board.idx }}</th>
-              <td>{{ util.truncateText(board.name, 25) }}</td>
-              <td>{{ board.user.name }}</td>
-              <td>{{ board.createdAt }}</td>
-              <td>{{ board.viewCount }}</td>
-              <td>{{ board.recommendCount }}</td>
+              <th v-if="!board.isHided" scope="row">{{ board.idx }}</th>
+              <td v-if="!board.isHided">{{ util.truncateText(board.name, 25) }}</td>
+              <td v-if="!board.isHided">{{ board.user.name }}</td>
+              <td v-if="!board.isHided">{{ board.createdAt }}</td>
+              <td v-if="!board.isHided">{{ board.viewCount }}</td>
+              <td v-if="!board.isHided">{{ board.recommendCount }}</td>
             </tr>
+            
           </tbody>
         </table>
       </div>
