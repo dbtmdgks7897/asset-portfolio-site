@@ -10,9 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @Builder
-public class ReqAdminUserSuspendData {
-    @NotBlank(message = "정지 기간 입력 필요")
-    private Integer suspendDuration;
-    @NotBlank(message = "정지 사유 입력 필요")
-    private String suspendReason;
+public class ReqAdminUserDeletedDataDTO {
+    @NotBlank(message = "사유를 입력해주세요.")
+    private String reason;
 }

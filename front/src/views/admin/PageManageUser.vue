@@ -7,7 +7,8 @@
       <div class="contents-head flex">
         <span>유저 관리</span>
         <div class="input-group mb-1">
-          <input v-model="search"
+          <input
+            v-model="search"
             type="text"
             class="form-control"
             placeholder="검색어"
@@ -18,7 +19,8 @@
           <!-- 버튼 클릭 시 위의 인풋의 데이터를 -->
           <!-- 쿼리스트링 변수 search에 넣어서 -->
           <!-- /api/boards 로 보내기 -->
-          <button @click="searchFn"
+          <button
+            @click="searchFn"
             class="btn btn-outline-secondary"
             type="button"
             id="button-addon2"
@@ -65,7 +67,7 @@
                 <button
                   v-else
                   class="btn my-blue-button"
-                  @click="changeTrigger(1)"
+                  @click="dissuspendUserIdx = user.idx; dissuspendButton()"
                 >
                   <span>활</span>
                 </button>
@@ -73,11 +75,12 @@
                 <button
                   v-if="user.deletedAt == null"
                   class="btn my-button"
-                  @click="exileButton"
+                  @click="deleteUserIdx = user.idx; deleteButton()"
                 >
                   <span>탈</span>
                 </button>
-                <button v-else class="btn my-blue-button" @click="exileButton">
+                <button v-else class="btn my-blue-button"
+                @click="restoreUserIdx = user.idx; restoreButton()">
                   <span>복</span>
                 </button>
               </td>
@@ -109,13 +112,24 @@
           <form>
             <div class="mb-3">
               <label for="recipient-name" class="col-form-label"
-                >Recipient:</label
+                >정지 기간(일):</label
               >
-              <input v-model="suspendDuration" type="text" class="form-control" id="recipient-name" />
+              <input
+                v-model="suspendDuration"
+                type="text"
+                class="form-control"
+                id="recipient-name"
+              />
             </div>
             <div class="mb-3">
-              <label for="message-text" class="col-form-label">Message:</label>
-              <textarea v-model="suspendReason" class="form-control" id="message-text"></textarea>
+              <label for="message-text" class="col-form-label"
+                >정지 사유:</label
+              >
+              <textarea
+                v-model="suspendReason"
+                class="form-control"
+                id="message-text"
+              ></textarea>
             </div>
           </form>
         </div>
@@ -127,7 +141,14 @@
           >
             Close
           </button>
-          <button @click="suspendButton" data-bs-toggle="modal" type="button" class="btn btn-primary">Send message</button>
+          <button
+            @click="suspendButton"
+            data-bs-toggle="modal"
+            type="button"
+            class="btn btn-primary"
+          >
+            Send message
+          </button>
         </div>
       </div>
     </div>
@@ -147,8 +168,11 @@ export default {
       userList: null,
       search: null,
       suspendUserIdx: null,
+      dissuspendUserIdx: null,
       suspendDuration: null,
       suspendReason: null,
+      deleteUserIdx: null,
+      restoreUserIdx: null,
     };
   },
   mounted() {
@@ -181,9 +205,9 @@ export default {
     },
     searchFn() {
       this.$axios
-        .get(`/api/v1/admin/user`,{
+        .get(`/api/v1/admin/user`, {
           params: {
-            search : this.search
+            search: this.search,
           },
         })
         .then((res) => {
@@ -206,31 +230,87 @@ export default {
     suspendButton() {
       const dto = {
         suspendDuration: this.suspendDuration,
-        suspendReason: this.suspendReason
-      }
+        suspendReason: this.suspendReason,
+      };
       this.$axios
-      .put(`/api/v1/admin/user/${this.suspendUserIdx}`, dto,{
-        headers: {
-          'Content-Type' : 'application/json;charset=utf-8;'
-        }
-      }).then((res) => {
-        if(res.data.code === 0){
-          alert(res.data.message)
-        } else {
-          alert(res.data)
-        }
-      }).catch((err) => {
-        console.log(err);
-      })
+        .put(`/api/v1/admin/user/${this.suspendUserIdx}/suspend`, dto, {
+          headers: {
+            "Content-Type": "application/json;charset=utf-8;",
+          },
+        })
+        .then((res) => {
+          if (res.data.code === 0) {
+            alert(res.data.message);
+            this.getUserList();
+          } else {
+            alert(res.data);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
-    ableButton() {
-      // if(confirm(`${userIdx}번 유저를 활성화 하시겠습니까?`)){
-        // TODO
-      // }
+    dissuspendButton() {
+      if (confirm(`${this.dissuspendUserIdx}번 유저를 활성화 하시겠습니까?`)) {
+        this.$axios
+          .put(`/api/v1/admin/user/${this.dissuspendUserIdx}/suspend`, {
+            headers: {
+              "Content-Type": "application/json;charset=utf-8;",
+            },
+          })
+          .then((res) => {
+            if (res.data.code === 0) {
+              alert(res.data.message);
+              this.getUserList();
+            } else {
+              alert(res.data);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
     },
-    restoreButton() {},
-    exileButton() {
-      prompt("사유");
+    deleteButton() {
+      const reason = prompt('해당 유저의 정지 사유를 입력해주세요');
+      const dto = {
+        reason : reason
+      }
+      if(reason != ""){
+        console.log(reason)
+        this.$axios
+        .post(`/api/v1/admin/user/${this.deleteUserIdx}/deletedAt`, dto, {
+          headers: {
+            'Content-Type' : 'application/json;charset=utf-8;'
+          }
+        })
+        .then((res) => {
+          if (res.data.code === 0) {
+            alert(res.data.message);
+            this.getUserList();
+          } else {
+            alert(res.data);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      }
+    },
+    restoreButton() {
+      this.$axios
+        .post(`/api/v1/admin/user/${this.restoreUserIdx}/deletedAt`)
+        .then((res) => {
+          if (res.data.code === 0) {
+            alert(res.data.message);
+            this.getUserList();
+          } else {
+            alert(res.data);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
 };
