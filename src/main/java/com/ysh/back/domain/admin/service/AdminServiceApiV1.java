@@ -15,9 +15,12 @@ import com.ysh.back.common.exception.BadRequestException;
 import com.ysh.back.config.security.auth.CustomUserDetails;
 import com.ysh.back.domain.admin.dto.ReqAdminUserDeletedDataDTO;
 import com.ysh.back.domain.admin.dto.ReqAdminUserSuspendData;
+import com.ysh.back.domain.admin.dto.ResAdminBoardInitDTO;
 import com.ysh.back.domain.admin.dto.ResAdminUserInitDTO;
 import com.ysh.back.model.auditLog.entity.AuditLogEntity;
 import com.ysh.back.model.auditLog.repository.AuditLogRepository;
+import com.ysh.back.model.board.entity.BoardEntity;
+import com.ysh.back.model.board.repository.BoardRepository;
 import com.ysh.back.model.user.entity.UserEntity;
 import com.ysh.back.model.user.repository.UserRepository;
 
@@ -30,6 +33,8 @@ public class AdminServiceApiV1 {
     UserRepository userRepository;
     @Autowired
     AuditLogRepository auditLogRepository;
+    @Autowired
+    BoardRepository boardRepository;
 
     // TODO : board랑 비교해서 뭐가 나은지 (검색)
     public ResponseEntity<?> getAdminUserData() {
@@ -207,6 +212,46 @@ public class AdminServiceApiV1 {
                 ResponseDTO.builder()
                         .code(0)
                         .message("유저 탈퇴 복구 완료")
+                        .build(),
+                HttpStatus.OK);
+    }
+
+    public ResponseEntity<?> getAdminBoardData() {
+        List<BoardEntity> boardEntityList = boardRepository.findAll();
+
+        ResAdminBoardInitDTO resAdminBoardInitDTO = ResAdminBoardInitDTO.of(boardEntityList);
+
+        return new ResponseEntity<>(
+                ResponseDTO.builder()
+                        .code(0)
+                        .message("유저 리스트 조회 성공")
+                        .data(resAdminBoardInitDTO)
+                        .build(),
+                HttpStatus.OK);
+    }
+
+    public ResponseEntity<?> getAdminBoardSearchData(String search) {
+        List<BoardEntity> boardEntityList;
+        Long searchLong = -1L;
+        try {
+            searchLong = Long.parseLong(search);
+        } catch (Exception e) {
+
+        } finally {
+            boardEntityList = boardRepository.findByIdxOrNameContainingOrUserEntity_EmailContaining(searchLong, search, search);
+        }
+
+        if (boardEntityList.isEmpty()) {
+            throw new BadRequestException("검색 결과 없음");
+        }
+
+        ResAdminBoardInitDTO resAdminBoardInitDTO = ResAdminBoardInitDTO.of(boardEntityList);
+
+        return new ResponseEntity<>(
+                ResponseDTO.builder()
+                        .code(0)
+                        .message("게시물 검색 성공")
+                        .data(resAdminBoardInitDTO)
                         .build(),
                 HttpStatus.OK);
     }

@@ -1,6 +1,7 @@
 package com.ysh.back.domain.admin.dto;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import com.ysh.back.model.user.entity.UserEntity;
@@ -42,7 +43,7 @@ public class ResAdminUserInitDTO {
         private String gender;
         private String nickname;
         private String phone;
-        private LocalDateTime createdAt;
+        private String createdAt;
         private LocalDateTime suspendUntil;
         private LocalDateTime deletedAt;
 
@@ -57,7 +58,7 @@ public class ResAdminUserInitDTO {
                     .gender(userEntity.getGender())
                     .nickname(userEntity.getNickname())
                     .phone(userEntity.getPhone())
-                    .createdAt(userEntity.getCreatedAt())
+                    .createdAt(userEntity.getCreatedAt().format(DateTimeFormatter.ofPattern(("yy/MM/dd"))))
                     .suspendUntil(userEntity.getSuspendUntil())
                     .deletedAt(userEntity.getDeletedAt())
                     .build();

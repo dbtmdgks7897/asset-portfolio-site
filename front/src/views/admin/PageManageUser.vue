@@ -34,6 +34,7 @@
           <thead class="table-dark">
             <tr>
               <th scope="col" colspan="4">프로필</th>
+              <th scope="col">가입일</th>
               <th scope="col">나이</th>
               <th scope="col">성별</th>
               <th scope="col">닉네임</th>
@@ -48,6 +49,7 @@
               <td><img :src="user.profileImg" alt="이미지" /></td>
               <td>{{ user.email }}</td>
               <td>{{ user.name }}</td>
+              <td>{{ user.createdAt }}</td>
               <td>{{ user.age }}</td>
               <td>{{ user.gender }}</td>
               <td>{{ user.nickname }}</td>

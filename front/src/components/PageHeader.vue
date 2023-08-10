@@ -159,13 +159,17 @@ export default {
       }
     },
     logout(){
-      this.$axios
+      if(confirm('로그아웃 하시겠습니까?')){
+        this.$axios
       .get(`/api/v1/auth/logout`)
       .then(() => {
+        alert('로그아웃 되었습니다. \n 게시판 페이지로 이동합니다')
         login.isLogined = false;
         login.email = null;
         this.$router.push({name: "PageBoardList"})
       })
+      }
+
       
     },
     handleResize() {

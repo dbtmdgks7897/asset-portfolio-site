@@ -64,8 +64,8 @@ public class AdminControllerApiV1 {
         }
     }
 
-    @Operation(summary = "유저 리스트 / 검색",
-    description = "검색어 있으면 검색, 없으면 전체 리스트")
+    @Operation(summary = "유저 탈퇴 / 복구",
+    description = "탈퇴 사유 적고 탈퇴시키기, 복구시키기")
     @PostMapping("/user/{userIdx}/deletedAt")
     public ResponseEntity<?> putUserDeleteData(
         @PathVariable Long userIdx,
@@ -79,4 +79,33 @@ public class AdminControllerApiV1 {
         }
     }
     
+    @Operation(summary = "게시물 리스트 / 검색",
+    description = "검색어 있으면 검색, 없으면 전체 리스트")
+    @GetMapping("/board")
+    public ResponseEntity<?> getAdminBoardData(
+        @RequestParam(required = false) String search
+    ){
+        if(search == null){
+            return adminServiceApiV1.getAdminBoardData();
+        } else {
+            return adminServiceApiV1.getAdminBoardSearchData(search);
+        }
+        
+    }
+
+    // @Operation(summary = "",
+    // description = "정지 기간 / 정지 이유 적고 정지 맥이기, 활성화 <br />"
+    // + "req의 suspendDuration이 null이면 비활성화로 인식")
+    // @PutMapping("/user/{userIdx}/suspend")
+    // public ResponseEntity<?> putUserSuspendData(
+    //     @PathVariable Long userIdx,
+    //     @Valid @RequestBody(required = false) ReqAdminUserSuspendData reqAdminUserSuspendData,
+    //     @AuthenticationPrincipal CustomUserDetails customUserDetails
+    // ){
+    //     if(reqAdminUserSuspendData.getSuspendDuration() != null){
+    //         return adminServiceApiV1.insertUserSuspendData(userIdx, reqAdminUserSuspendData, customUserDetails);
+    //     }else{
+    //         return adminServiceApiV1.updateUserDisSuspendData(userIdx, customUserDetails);
+    //     }
+    // }
 }

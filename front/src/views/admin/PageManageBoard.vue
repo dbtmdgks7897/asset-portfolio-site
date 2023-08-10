@@ -7,7 +7,7 @@
       <div class="contents-head flex">
         <span>게시물 관리</span>
         <div class="input-group mb-1">
-          <input
+          <input v-model="search"
             type="text"
             class="form-control"
             placeholder="검색어"
@@ -36,26 +36,52 @@
               <th scope="col">등록일</th>
               <th scope="col">조회수</th>
               <th scope="col">추천수</th>
-              <th scope="col">상태</th>
+              <th scope="col">숨김 상태</th>
               <th scope="col">삭제일</th>
               <th scope="col"></th>
             </tr>
           </thead>
           <tbody>
             <!-- v-for로 반복 돌려서 데이터 가져와서 링크 넣고 뿌려주기 -->
-              <tr>
-                <th scope="row">(post.idx)</th>
-                <td>(post.name)</td>
-                <td>(post.user_idx)</td>
-                <td>(post.created_at)</td>
-                <td>(post.view_count)</td>
-                <td>(post.recommend_count)</td>
-                <td>(post.isHide)</td>
-                <td>(post.deleted_at)</td>
+              <tr v-for="board in boardList" :key="board">
+                <th scope="row">{{ board.idx }}</th>
+                <td>{{ board.name }}</td>
+                <td>{{ board.user.email }}</td>
+                <td>{{ board.createdAt }}</td>
+                <td>{{ board.viewCount }}</td>
+                <td>{{ board.recommendCount }}</td>
+                <td>{{ board.isHide }}</td>
+                <td>{{ board.deletedAt }}</td>
                 <td class="flex">
-                  <button v-if="trigger" class="btn my-red-button" @click="changeTrigger()"><span>비</span></button>
-                  <button v-else class="btn my-blue-button" @click="changeTrigger()"><span>활</span></button>
-                  <button class="btn my-button" @click="exileButton"><span>탈</span></button>
+                  <button
+                  v-if="!board.isHide"
+                  class="btn my-red-button"
+                  data-bs-toggle="modal"
+                  data-bs-target="#exampleModal"
+                  data-bs-whatever="@mdo"
+                  @click="suspendUserIdx = user.idx"
+                >
+                  <span>비</span>
+                </button>
+                <button
+                  v-else
+                  class="btn my-blue-button"
+                  @click="dissuspendUserIdx = user.idx; dissuspendButton()"
+                >
+                  <span>활</span>
+                </button>
+                <!-- 탈퇴 버튼 -->
+                <button
+                  v-if="board.deletedAt == null"
+                  class="btn my-button"
+                  @click="deleteUserIdx = user.idx; deleteButton()"
+                >
+                  <span>탈</span>
+                </button>
+                <button v-else class="btn my-blue-button"
+                @click="restoreUserIdx = user.idx; restoreButton()">
+                  <span>복</span>
+                </button>
                 </td>
               </tr>
           </tbody>
@@ -75,15 +101,45 @@ export default {
     //변수생성
     return {
       trigger: true,
+      boardList: null,
+      search: null,
     };
+  },
+  mounted () {
+    this.getBoardList();
   },
   methods: {
     changeTrigger(){
       alert('')
-      this.trigger = !this.trigger
+      this.trigger = !this.trigger;
     },
-    search(){
-      
+    getBoardList() {
+      this.$axios
+        .get(`/api/v1/admin/board`)
+        .then((res) => {
+          if (res.data.code === 0) {
+            this.boardList = res.data.data.boardList;
+          } else {
+            alert(res.data.message);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    searchFn() {
+      this.$axios
+        .get(`/api/v1/admin/board/${this.search}`)
+        .then((res) => {
+          if (res.data.code === 0) {
+            this.boardList = res.data.data.boardList;
+          } else {
+            alert(res.data.message);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     disableButton(){
 
@@ -103,6 +159,7 @@ export default {
 <style lang="scss" scoped>
 .contents {
   width: 90%;
+  height: 100%;
   &-head {
     div {
       width: 20vw;
