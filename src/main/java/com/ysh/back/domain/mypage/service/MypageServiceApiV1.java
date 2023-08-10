@@ -1,6 +1,8 @@
 package com.ysh.back.domain.mypage.service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,8 +41,8 @@ public class MypageServiceApiV1 {
     @Autowired
     CommentRepository commentRepository;
     
-    public ResponseEntity<?> getMyinfoInitData(ReqMyinfoInitDTO reqMyinfoInitDTO){
-        Optional<UserEntity> userEntityOptional = userRepository.findByIdx(reqMyinfoInitDTO.getIdx());
+    public ResponseEntity<?> getMyinfoInitData(CustomUserDetails customUserDetails){
+        Optional<UserEntity> userEntityOptional = userRepository.findByEmail(customUserDetails.getUsername());
 
         if(!userEntityOptional.isPresent()){
             throw new BadRequestException("님 누구세요?");
@@ -53,7 +55,7 @@ public class MypageServiceApiV1 {
         .gender(userEntity.getGender())
         .age(userEntity.getAge())
         .phone(userEntity.getPhone())
-        .profileImg(userEntity.getProfileImg())
+        // .profileImg(userEntity.getProfileImg())
         .imgType(userEntity.getImgType())
         .email(userEntity.getEmail())
         .build();
@@ -84,10 +86,15 @@ public class MypageServiceApiV1 {
         "phone : " + userEntity.getPhone() + ", " +
         "gender : " + userEntity.getGender() + ", " +
         "age : " + userEntity.getAge() + ", " +
-        "profile-img : " + userEntity.getProfileImg() + ", " +
         "img-type : " + userEntity.getImgType() + ", ";
 
-        // userEntity.setProfileImg(reqMyinfoUpdateDTO.getProfileImg());
+        // TODO : 이미지 업로드
+
+        // String imgBase64 = Base64.getEncoder().encodeToString(reqMyinfoUpdateDTO.getProfileImg().getBytes());
+
+        // String imgUrl = "data:"+ reqMyinfoUpdateDTO.getProfileImg().getContentType() + ";base64," + imgBase64;
+
+        userEntity.setProfileImg(reqMyinfoUpdateDTO.getProfileImg());
         userEntity.setImgType(reqMyinfoUpdateDTO.getImgType());
         userEntity.setNickname(reqMyinfoUpdateDTO.getNickname());
         userEntity.setGender(reqMyinfoUpdateDTO.getGender());
@@ -99,7 +106,6 @@ public class MypageServiceApiV1 {
         "phone : " + userEntity.getPhone() + ", " +
         "gender : " + userEntity.getGender() + ", " +
         "age : " + userEntity.getAge() + ", " +
-        "profile-img : " + userEntity.getProfileImg() + ", " +
         "img-type : " + userEntity.getImgType() + ", ";
 
         AuditLogEntity auditLog = AuditLogEntity.builder()
@@ -124,8 +130,8 @@ public class MypageServiceApiV1 {
     }
     
     @Transactional
-    public ResponseEntity<?> deleteMyinfoData(Long userIdx){
-        Optional<UserEntity> userEntityOptional = userRepository.findByIdx(userIdx);
+    public ResponseEntity<?> deleteMyinfoData(CustomUserDetails customUserDetails){
+        Optional<UserEntity> userEntityOptional = userRepository.findByEmail(customUserDetails.getUsername());
 
         if(!userEntityOptional.isPresent()){
             throw new BadRequestException("해당 사용자가 존재하지 않습니다.");
@@ -151,6 +157,7 @@ public class MypageServiceApiV1 {
             ResponseDTO.builder()
             .code(0)
             .message("GOOD BYE!")
+            .data(null)
             .build()
         ,HttpStatus.OK);
     }

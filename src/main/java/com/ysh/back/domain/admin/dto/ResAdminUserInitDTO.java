@@ -50,7 +50,7 @@ public class ResAdminUserInitDTO {
         public static User fromEntity(UserEntity userEntity) {
             return User.builder()
                     .idx(userEntity.getIdx())
-                    .profileImg(userEntity.getProfileImg())
+                    // .profileImg(userEntity.getProfileImg())
                     .imgType(userEntity.getImgType())
                     .email(userEntity.getEmail())
                     .name(userEntity.getName())
