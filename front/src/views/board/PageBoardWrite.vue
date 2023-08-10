@@ -50,7 +50,6 @@
 
 <script setup>
 import { toggle } from "@/utils/toggle";
-import { login } from "@/utils/login";
 </script>
 
 <script>
@@ -60,7 +59,6 @@ export default {
       width: window.innerWidth || document.body.clientWidth,
       height: window.innerHeight || document.body.clientHeight,
       dto: {
-        userIdx: login.idx,
         name: null,
         content: null,
       },

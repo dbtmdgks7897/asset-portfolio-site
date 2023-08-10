@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 public class ReqBoardPostDTO {
-    private Long userIdx;
     @NotBlank(message = "이름을 입력해주세요")
     private String name;
     @NotBlank(message = "게시물 내용을 입력해주세요")

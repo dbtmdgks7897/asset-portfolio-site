@@ -78,7 +78,7 @@
             >
               <th v-if="!board.isHided" scope="row">{{ board.idx }}</th>
               <td v-if="!board.isHided">{{ util.truncateText(board.name, 25) }}</td>
-              <td v-if="!board.isHided">{{ board.user.name }}</td>
+              <td v-if="!board.isHided">{{ board.user.nickname }}</td>
               <td v-if="!board.isHided">{{ board.createdAt }}</td>
               <td v-if="!board.isHided">{{ board.viewCount }}</td>
               <td v-if="!board.isHided">{{ board.recommendCount }}</td>

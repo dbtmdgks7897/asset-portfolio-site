@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ysh.back.common.dto.ResponseDTO;
 import com.ysh.back.common.exception.BadRequestException;
+import com.ysh.back.config.security.auth.CustomUserDetails;
 import com.ysh.back.domain.board.dto.ReqBoardPostDTO;
 import com.ysh.back.domain.board.dto.ReqBoardRecommendDTO;
 import com.ysh.back.domain.board.dto.ReqBoardReportDTO;
@@ -86,9 +87,9 @@ public class BoardServiceApiV1 {
     }
 
     @Transactional
-    public ResponseEntity<?> postBoardData(ReqBoardPostDTO reqBoardPostDTO){
-
-        Optional<UserEntity> userEntityOptional = userRepository.findByIdx(reqBoardPostDTO.getUserIdx());
+    public ResponseEntity<?> postBoardData(CustomUserDetails customUserDetails, ReqBoardPostDTO reqBoardPostDTO){
+        
+        Optional<UserEntity> userEntityOptional = userRepository.findByEmail(customUserDetails.getUsername());
 
         if(!userEntityOptional.isPresent()){
             throw new BadRequestException("사용자 정보가 없습니다.");
@@ -106,7 +107,7 @@ public class BoardServiceApiV1 {
         AuditLogEntity auditLog = AuditLogEntity.builder()
         .tableName("board")
         // 유저 정보 가져올 수 있을 때 바꾸자.
-        .userIdx(reqBoardPostDTO.getUserIdx())
+        .userIdx(userRepository.findByEmail(customUserDetails.getUsername()).get().getIdx())
         .rowId(boardRepository.count())
         .operation("INSERT")
         .reason("게시물 작성")
@@ -198,22 +199,24 @@ public class BoardServiceApiV1 {
     }
 
     @Transactional
-    public ResponseEntity<?> insertBoardReportData(Long boardIdx, ReqBoardReportDTO reqBoardReportDTO){
-        Optional<BoardReportEntity> boardReportEntityOptional = boardReportRepository.findByBoardIdxAndUserIdx(boardIdx, (Long)reqBoardReportDTO.getUserIdx());
+    public ResponseEntity<?> insertBoardReportData(Long boardIdx, ReqBoardReportDTO reqBoardReportDTO, CustomUserDetails customUserDetails){
+        Optional<BoardReportEntity> boardReportEntityOptional = boardReportRepository.findByBoardIdxAndUserIdx(boardIdx, userRepository.findByEmail(customUserDetails.getUsername()).get().getIdx());
 
         if(boardReportEntityOptional.isPresent()){
             throw new BadRequestException("이미 신고한 게시물입니다");
         }
 
+        Long userIdx = userRepository.findByEmail(customUserDetails.getUsername()).get().getIdx(); 
+
         BoardReportEntity boardReportEntityForSaving = BoardReportEntity.builder()
-        .userIdx(reqBoardReportDTO.getUserIdx())
+        .userIdx(userIdx)
         .boardIdx(boardIdx)
         .reason(reqBoardReportDTO.getReason())
         .build();
 
         AuditLogEntity auditLog = AuditLogEntity.builder()
         .tableName("board-report")
-        .userIdx(reqBoardReportDTO.getUserIdx())
+        .userIdx(userIdx)
         .rowId(boardReportRepository.count())
         .operation("INSERT")
         .reason("게시물 신고")
@@ -232,15 +235,17 @@ public class BoardServiceApiV1 {
     }
     
     @Transactional
-    public ResponseEntity<?> insertBoardRecommendData(Long boardIdx, ReqBoardRecommendDTO reqBoardRecommendDTO){
-        Optional<BoardRecommendEntity> boardRecommendEntityOptional = boardRecommendRepository.findByBoardIdxAndUserIdx(boardIdx, (Long)reqBoardRecommendDTO.getUserIdx());
+    public ResponseEntity<?> insertBoardRecommendData(Long boardIdx, CustomUserDetails customUserDetails){
+        Optional<BoardRecommendEntity> boardRecommendEntityOptional = boardRecommendRepository.findByBoardIdxAndUserIdx(boardIdx, userRepository.findByEmail(customUserDetails.getUsername()).get().getIdx());
 
         if(boardRecommendEntityOptional.isPresent()){
             throw new BadRequestException("이미 추천한 게시물입니다");
         }
 
+        Long userIdx = userRepository.findByEmail(customUserDetails.getUsername()).get().getIdx();
+
         BoardRecommendEntity boardRecommendEntityForSaving = BoardRecommendEntity.builder()
-        .userIdx(reqBoardRecommendDTO.getUserIdx())
+        .userIdx(userIdx)
         .boardIdx(boardIdx)
         .build();
 
@@ -250,7 +255,7 @@ public class BoardServiceApiV1 {
 
         AuditLogEntity auditLog = AuditLogEntity.builder()
         .tableName("board-recommend")
-        .userIdx(reqBoardRecommendDTO.getUserIdx())
+        .userIdx(userIdx)
         .rowId(boardRecommendRepository.count())
         .operation("INSERT")
         .reason("게시물 추천")

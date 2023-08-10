@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.ysh.back.common.dto.ResponseDTO;
 import com.ysh.back.common.exception.BadRequestException;
+import com.ysh.back.config.security.auth.CustomUserDetails;
 import com.ysh.back.domain.comment.dto.ReqCommentRecommendDTO;
 import com.ysh.back.domain.comment.dto.ReqCommentReportDTO;
 import com.ysh.back.model.auditLog.entity.AuditLogEntity;
@@ -18,6 +19,7 @@ import com.ysh.back.model.comment.entity.CommentReportEntity;
 import com.ysh.back.model.comment.repository.CommentRecommendRepository;
 import com.ysh.back.model.comment.repository.CommentReportRepository;
 import com.ysh.back.model.comment.repository.CommentRepository;
+import com.ysh.back.model.user.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -32,19 +34,23 @@ public class CommentServiceApiV1 {
     CommentReportRepository commentReportRepository;
     @Autowired
     CommentRecommendRepository commentRecommendRepository;
+    @Autowired
+    UserRepository userRepository;
 
     @Transactional
-    public ResponseEntity<?> insertCommentReportData(Long commentIdx, ReqCommentReportDTO reqCommentReportDTO) {
+    public ResponseEntity<?> insertCommentReportData(Long commentIdx, ReqCommentReportDTO reqCommentReportDTO, CustomUserDetails customUserDetails) {
         Optional<CommentReportEntity> commnetReportEntityOptional = commentReportRepository
-                .findByCommentIdxAndUserIdx(commentIdx, reqCommentReportDTO.getUserIdx());
+                .findByCommentIdxAndUserIdx(commentIdx, userRepository.findByEmail(customUserDetails.getUsername()).get().getIdx());
 
         if (commnetReportEntityOptional.isPresent()) {
             throw new BadRequestException("이미 신고한 댓글입니다.");
         }
 
+        Long userIdx = userRepository.findByEmail(customUserDetails.getUsername()).get().getIdx();
+
         CommentReportEntity commentReportEntityForSaving = CommentReportEntity.builder()
                 .commentIdx(commentIdx)
-                .userIdx(reqCommentReportDTO.getUserIdx())
+                .userIdx(userIdx)
                 .reason(reqCommentReportDTO.getReason())
                 .build();
         
@@ -52,7 +58,7 @@ public class CommentServiceApiV1 {
 
         AuditLogEntity auditLog = AuditLogEntity.builder()
         .tableName("comment-report")
-        .userIdx(reqCommentReportDTO.getUserIdx())
+        .userIdx(userIdx)
         .rowId(commentReportRepository.count())
         .operation("INSERT")
         .reason("댓글 신고")
@@ -70,16 +76,18 @@ public class CommentServiceApiV1 {
     }
 
     @Transactional
-    public ResponseEntity<?> insertCommentRecommendData(Long commentIdx, ReqCommentRecommendDTO reqCommentRecommendDTO) {
-        Optional<CommentRecommendEntity> commnetRecommendEntityOptional = commentRecommendRepository.findByCommentIdxAndUserIdx(commentIdx, reqCommentRecommendDTO.getUserIdx());
+    public ResponseEntity<?> insertCommentRecommendData(Long commentIdx, CustomUserDetails customUserDetails) {
+        Optional<CommentRecommendEntity> commnetRecommendEntityOptional = commentRecommendRepository.findByCommentIdxAndUserIdx(commentIdx,userRepository.findByEmail(customUserDetails.getUsername()).get().getIdx());
 
         if (commnetRecommendEntityOptional.isPresent()) {
             throw new BadRequestException("이미 추천한 댓글입니다.");
         }
 
+        Long userIdx = userRepository.findByEmail(customUserDetails.getUsername()).get().getIdx();
+
         CommentRecommendEntity commentRecommendEntityForSaving = CommentRecommendEntity.builder()
                 .commentIdx(commentIdx)
-                .userIdx(reqCommentRecommendDTO.getUserIdx())
+                .userIdx(userIdx)
                 .build();
         
         commentRecommendRepository.save(commentRecommendEntityForSaving);
@@ -88,7 +96,7 @@ public class CommentServiceApiV1 {
 
         AuditLogEntity auditLog = AuditLogEntity.builder()
         .tableName("comment-report")
-        .userIdx(reqCommentRecommendDTO.getUserIdx())
+        .userIdx(userIdx)
         .rowId(commentRecommendRepository.count())
         .operation("INSERT")
         .reason("댓글 신고")

@@ -4,21 +4,35 @@
       <div v-if="myData" class="contents-box">
         <div class="contents-head flex">
           <div class="flex">
-            <img class="flex-item" :src="myData.profileImg" alt="프로필 이미지" />
+            <img
+              class="flex-item"
+              :src="myData.profileImg"
+              alt="프로필 이미지"
+            />
             <transition name="fade" mode="out-in">
-              <input v-if="isUpdateInfo" id="file-input" type="file" name="profile" accept="image/*" @change="onFileSelected"/>
+              <input
+                v-if="isUpdateInfo"
+                id="file-input"
+                type="file"
+                name="profile"
+                accept="image/*"
+                @change="onFileSelected"
+              />
             </transition>
           </div>
           <div class="text">
-            <input v-model="myData.nickname"
+            <input
+              v-model="myData.nickname"
               id="nicknameInput"
               class="changeableInput"
-              style="display: block;"
+              style="display: block"
               type="text"
               disabled
             />
-            <span v-if="!myData.nickname" class="error-span">닉네임을 입력해주세요</span><br />
-            <span id="name">{{myData.name}}</span>
+            <span v-if="!myData.nickname" class="error-span"
+              >닉네임을 입력해주세요</span
+            ><br />
+            <span id="name">{{ myData.name }}</span>
           </div>
         </div>
         <div class="contents-body">
@@ -29,13 +43,26 @@
             </li>
             <li class="flex">
               <span>전화번호</span>
-              <input v-model="myData.phone" class="changeableInput" type="text" disabled /><br />
+              <input
+                v-model="myData.phone"
+                class="changeableInput"
+                type="text"
+                disabled
+              /><br />
             </li>
-            <span v-if="!(myData.phone.length == 13) || !(myData.phone.split('-')[0] == '010')" class="error-span">전화번호를 제대로 입력해주세요</span>
+            <span
+              v-if="
+                !(myData.phone.length == 13) ||
+                !(myData.phone.split('-')[0] == '010')
+              "
+              class="error-span"
+              >전화번호를 제대로 입력해주세요</span
+            >
             <li class="flex">
               <span>성별</span>
-              <select v-model="myData.gender"
-                id="genderSelect" 
+              <select
+                v-model="myData.gender"
+                id="genderSelect"
                 class="form-select form-select-sm changeableInput"
                 aria-label="Small select example"
                 disabled
@@ -47,8 +74,9 @@
             </li>
             <li class="flex">
               <span>나이</span>
-              <select v-model="myData.age"
-                id="ageSelect" 
+              <select
+                v-model="myData.age"
+                id="ageSelect"
                 class="form-select form-select-sm changeableInput"
                 aria-label="Small select example"
                 disabled
@@ -95,7 +123,6 @@
 import { toggle } from "@/utils/toggle";
 import { login } from "@/utils/login";
 // import { imgTrans } from "@/utils/imgTrans";
-
 </script>
 <script>
 export default {
@@ -103,7 +130,6 @@ export default {
     return {
       isUpdateInfo: false,
       myData: null,
-      fileReader: new FileReader(),
       anonProfileImg: require("../../assets/img/anonymous.png"),
     };
   },
@@ -111,11 +137,12 @@ export default {
     // 총 길이가 13, 앞에서 3글자가 010
   },
   mounted() {
-    this.getMyinfoInitData()
+    this.getMyinfoInitData();
   },
   methods: {
     onFileSelected(event) {
       const file = event.target.files[0];
+      this.myData.profileImg = file;
 
       if (file) {
         // FileReader 객체 생성
@@ -123,9 +150,9 @@ export default {
 
         // 파일 로드가 완료되면 이미지 URL을 업데이트
         reader.onload = () => {
-          console.log(reader.result)
-          this.myData.profileImg = reader.result;
-          this.myData.imgType = reader.result.split('/')[1].split(';')[0];
+          // console.log(reader.result);
+          // this.myData.profileImg = reader.result;
+          // this.myData.imgType = reader.result.split("/")[1].split(";")[0];
         };
 
         // 이미지 파일을 Data URL 형태로 읽기
@@ -133,8 +160,8 @@ export default {
       }
     },
     changeUpdateInter() {
-      document.querySelectorAll(".changeableInput").forEach(element => {
-          element.disabled = this.isUpdateInfo;
+      document.querySelectorAll(".changeableInput").forEach((element) => {
+        element.disabled = this.isUpdateInfo;
       });
       this.isUpdateInfo = !this.isUpdateInfo;
     },
@@ -149,70 +176,76 @@ export default {
       //   phone: this.myData.phone
       // }
       const formData = new FormData();
-      formData.append('idx', login.idx);
-      formData.append('profileImg', this.myData.profileImg);
-      formData.append('imgType', this.myData.imgType);
-      formData.append('nickname', this.myData.nickname);
-      formData.append('gender', this.myData.gender);
-      formData.append('age', this.myData.age);
-      formData.append('phone', this.myData.phone);
+      formData.append("idx", login.idx);
+      formData.append("profileImg", this.myData.profileImg);
+      formData.append("imgType", this.myData.imgType);
+      formData.append("nickname", this.myData.nickname);
+      formData.append("gender", this.myData.gender);
+      formData.append("age", this.myData.age);
+      formData.append("phone", this.myData.phone);
 
-      console.log(formData.get('idx'));
+      console.log(formData.get("idx"));
 
       // myData의 name만 지금 이름으로
       this.$axios
-      .post(`/api/v1/mypage/infoUp`, formData, {
-        headers: {
-          'Content-Type' : 'multipart/form-data'
-        }
-      }).then((res) => {
-        if(res.data.code === 0){
-          console.log(res.data);
-          this.changeUpdateInter()
-          
-        } else {
-          alert(res.data.message)
-        }
-      }).catch((err) => {
-        console.log(err);
-      })
+        .post(`/api/v1/mypage/infoUp`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((res) => {
+          if (res.data.code === 0) {
+            console.log(res.data);
+            this.changeUpdateInter();
+          } else {
+            alert(res.data.message);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
-    getMyinfoInitData(){
+    getMyinfoInitData() {
       this.$axios
-      .post(
-        `/api/v1/mypage/info`,
-        { idx: login.idx },
-        {
-          "Content-Type": "application/json;charset=utf-8;",
-        }
-      )
-      .then((res) => {
-        if (res.data.code === 0) {
-          this.myData = res.data.data;
-        } else {
-          alert(res.data.message);
-        }
-      }).catch((err) => {
-        alert(err);
-      });
+        .get(`/api/v1/mypage/info`)
+        .then((res) => {
+          if (res.data.code === 0) {
+            this.myData = res.data.data;
+            // this.myData.profileImg = ;
+            console.log(this.myData.profileImg);
+          } else {
+            alert(res.data.message);
+          }
+        })
+        .catch((err) => {
+          alert(err);
+        });
     },
     leaveButton() {
-      if(prompt(`회원을 탈퇴하시려면 아래의 닉네임을 정확히 입력하여 주세요. \n${login.nickname}`) === login.nickname){
+      if (
+        prompt(
+          `회원을 탈퇴하시려면 아래의 닉네임을 정확히 입력하여 주세요. \n${this.myData.nickname}`
+        ) === this.myData.nickname
+      ) {
         this.$axios
-      .delete(`/api/v1/mypage/info/${login.idx}`,{
-        headers: {
-          'Content-Type' : 'application/json;charset=utf-8'
-        }
-      }).then((res) => {
-        if (res.data.code === 0) {
-          // TODO : 세션 삭제 후 메인페이지로
-          this.myData = res.data.data;
-        } else {
-          alert(res.data.message);
-        }
-      }).catch((err) => {
-        alert(err);
-      });
+          .delete(`/api/v1/mypage/info`)
+          .then((res) => {
+            if (res.data.code === 0) {
+              // TODO : 세션 삭제 후 메인페이지로
+              this.$axios.get(`/api/v1/auth/logout`).then(() => {
+                alert("회원 탈퇴 되었습니다. \n 게시판 페이지로 이동합니다");
+                login.isLogined = false;
+                login.email = null;
+                this.$router.push({ name: "PageBoardList" });
+              });
+              this.myData = res.data.data;
+            } else {
+              alert(res.data.message);
+            }
+          })
+          .catch((err) => {
+            alert(err);
+          });
       }
     },
   },
@@ -296,7 +329,7 @@ export default {
       text-align: right;
     }
   }
-  .error-span{
+  .error-span {
     color: red;
   }
 }

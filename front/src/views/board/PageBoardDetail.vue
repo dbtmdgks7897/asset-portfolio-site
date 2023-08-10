@@ -20,7 +20,7 @@
       <div class="contents-body">
         <div class="post-info flex">
           <span>작성일 :{{ boardDetailsData.createdAt }}</span>
-          <span>작성자 : {{ boardDetailsData.user.name }}</span>
+          <span>작성자 : {{ boardDetailsData.user.nickname }}</span>
           <span>조회수 : {{ boardDetailsData.viewCount }}</span>
         </div>
         <div class="post-content">{{ boardDetailsData.content }}</div>
@@ -45,7 +45,7 @@
               class="flex-item flex comment-li"
             >
               <div class="text">
-                <span>{{ comment.user.name }}</span> |
+                <span>{{ comment.user.nickname }}</span> |
                 <span>{{ comment.createdAt }}</span
                 ><br />
                 <span>{{ comment.content }}</span>
@@ -162,7 +162,6 @@ export default {
       const reportReason = prompt("신고 사유를 입력해주세요");
       if (reportReason != null) {
         const dto = {
-          userIdx: login.idx,
           reason: reportReason,
         };
         this.$axios
@@ -185,11 +184,8 @@ export default {
       }
     },
     recommendButton() {
-      const dto = {
-        userIdx: login.idx,
-      };
       this.$axios
-        .post(`/api/v1/board/${this.boardIdx}/recommend`, dto, {
+        .post(`/api/v1/board/${this.boardIdx}/recommend`, {
           headers: {
             "content-type": "application/json;charset=utf-8;",
           },
@@ -210,7 +206,6 @@ export default {
       const reportReason = prompt("신고 사유를 입력해주세요");
       if (reportReason != null) {
         const dto = {
-          userIdx: login.idx,
           reason: reportReason,
         };
         this.$axios
@@ -233,11 +228,8 @@ export default {
       }
     },
     comRecommendButton(commentIdx) {
-      const dto = {
-        userIdx: login.idx,
-      };
       this.$axios
-        .post(`/api/v1/comment/${commentIdx}/recommend`, dto, {
+        .post(`/api/v1/comment/${commentIdx}/recommend`, {
           headers: {
             "content-type": "application/json;charset=utf-8;",
           },

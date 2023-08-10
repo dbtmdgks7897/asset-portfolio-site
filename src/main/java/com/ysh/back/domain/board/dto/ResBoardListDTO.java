@@ -65,11 +65,11 @@ public class ResBoardListDTO {
         @Builder
         private static class User{
 
-            private String name;
+            private String nickname;
 
             public static User fromEntity(UserEntity userEntity){
                 return User.builder()
-                .name(userEntity.getName())
+                .nickname(userEntity.getNickname())
                 .build();
             }
         }

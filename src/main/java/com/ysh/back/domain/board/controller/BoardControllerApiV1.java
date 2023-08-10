@@ -2,6 +2,7 @@ package com.ysh.back.domain.board.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ysh.back.config.security.auth.CustomUserDetails;
 import com.ysh.back.domain.board.dto.ReqBoardPostDTO;
 import com.ysh.back.domain.board.dto.ReqBoardRecommendDTO;
 import com.ysh.back.domain.board.dto.ReqBoardReportDTO;
@@ -53,9 +55,10 @@ public class BoardControllerApiV1 {
     @Operation(summary = "게시물 작성", description = "게시물 name, content 받아와 게시물 작성")
     @PostMapping()
     public ResponseEntity<?> postBoardData(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @Valid @RequestBody ReqBoardPostDTO reqBoardPostDTO) {
         System.out.println(reqBoardPostDTO);
-        return boardServiceApiV1.postBoardData(reqBoardPostDTO);
+        return boardServiceApiV1.postBoardData(customUserDetails, reqBoardPostDTO);
     }
 
     @Operation(summary = "게시물 삭제", description = "게시물 작성자와 현재 사용자를 검사 후 삭제 기능<br />"
@@ -78,8 +81,9 @@ public class BoardControllerApiV1 {
     @PostMapping("/{boardIdx}/report")
     public ResponseEntity<?> insertBoardReportData(
             @PathVariable Long boardIdx,
-            @RequestBody ReqBoardReportDTO reqBoardReportDTO) {
-        return boardServiceApiV1.insertBoardReportData(boardIdx, reqBoardReportDTO);
+            @RequestBody ReqBoardReportDTO reqBoardReportDTO,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return boardServiceApiV1.insertBoardReportData(boardIdx, reqBoardReportDTO, customUserDetails);
     }
 
     @Operation(summary = "게시물 추천", description = "추천 버튼 클릭 시 현재 유저가 누른 적 있는 지 판별<br />"
@@ -87,8 +91,8 @@ public class BoardControllerApiV1 {
     @PostMapping("/{boardIdx}/recommend")
     public ResponseEntity<?> insertBoardRecommendData(
             @PathVariable Long boardIdx,
-            @RequestBody ReqBoardRecommendDTO reqBoardRecommendDTO) {
-        return boardServiceApiV1.insertBoardRecommendData(boardIdx, reqBoardRecommendDTO);
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return boardServiceApiV1.insertBoardRecommendData(boardIdx, customUserDetails);
     }
 
     @Operation(summary = "게시물 수정 원본 데이터", description = "게시물 수정 페이지 진입 시 원래 게시물의 정보가 <br/>"

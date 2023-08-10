@@ -42,12 +42,12 @@ public class ResBoardDetailsDTO {
     @Builder
     public static class User {
         private Long idx;
-        private String name;
+        private String nickname;
 
         public static User fromEntity(UserEntity userEntity) {
             return User.builder()
                     .idx(userEntity.getIdx())
-                    .name(userEntity.getName())
+                    .nickname(userEntity.getNickname())
                     .build();
         }
     }

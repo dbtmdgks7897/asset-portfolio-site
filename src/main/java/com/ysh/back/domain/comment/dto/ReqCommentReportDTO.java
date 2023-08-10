@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @Getter
 public class ReqCommentReportDTO {
-    private Long userIdx;
     @NotBlank(message = "사유를 입력해주세요.")
     private String reason;
 }
