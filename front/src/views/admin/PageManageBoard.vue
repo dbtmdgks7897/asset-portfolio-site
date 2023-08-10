@@ -76,12 +76,12 @@
                 <button
                   v-if="board.deletedAt == null"
                   class="btn my-button"
-                  @click="deleteUserIdx = user.idx; deleteButton()"
+                  @click="deleteUserIdx = board.idx; deleteButton()"
                 >
                   <span>탈</span>
                 </button>
                 <button v-else class="btn my-blue-button"
-                @click="restoreUserIdx = user.idx; restoreButton()">
+                @click="restoreUserIdx = board.idx; restoreButton()">
                   <span>복</span>
                 </button>
                 </td>
@@ -190,11 +190,41 @@ export default {
           console.log(err);
         });
     },
-    exileButton(){
-      alert('')
+    deleteButton(){
+      const reason = prompt('삭제 사유를 입력해주세요.')
+      if(reason != null){
+        const dto = {
+          reason : reason
+        }
+        this.$axios
+        .put(`/api/v1/admin/board/${this.boardIdx}/deletedAt`, dto)
+        .then((res) => {
+          if (res.data.code === 0) {
+            alert(res.data.message);
+            this.getBoardList();
+          } else {
+            alert(res.data);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      }
     },
     restoreButton(){
-
+      this.$axios
+        .put(`/api/v1/admin/board/${this.boardIdx}/deletedAt`)
+        .then((res) => {
+          if (res.data.code === 0) {
+            alert(res.data.message);
+            this.getBoardList();
+          } else {
+            alert(res.data);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   },
 };

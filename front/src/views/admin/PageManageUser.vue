@@ -281,7 +281,7 @@ export default {
       if(reason != ""){
         console.log(reason)
         this.$axios
-        .post(`/api/v1/admin/user/${this.deleteUserIdx}/deletedAt`, dto, {
+        .put(`/api/v1/admin/user/${this.deleteUserIdx}/deletedAt`, dto, {
           headers: {
             'Content-Type' : 'application/json;charset=utf-8;'
           }
@@ -301,7 +301,7 @@ export default {
     },
     restoreButton() {
       this.$axios
-        .post(`/api/v1/admin/user/${this.restoreUserIdx}/deletedAt`)
+        .put(`/api/v1/admin/user/${this.restoreUserIdx}/deletedAt`)
         .then((res) => {
           if (res.data.code === 0) {
             alert(res.data.message);

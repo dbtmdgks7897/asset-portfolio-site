@@ -63,9 +63,6 @@ public class BoardEntity {
     @Column(name = "is_hided")
     private Boolean isHided;
 
-    @Column(name = "hide_reason")
-    private String hideReason;
-
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 

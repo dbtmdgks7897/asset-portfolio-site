@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ysh.back.config.security.auth.CustomUserDetails;
+import com.ysh.back.domain.admin.dto.ReqAdminBoardDeletedDataDTO;
 import com.ysh.back.domain.admin.dto.ReqAdminBoardHideData;
 import com.ysh.back.domain.admin.dto.ReqAdminUserDeletedDataDTO;
 import com.ysh.back.domain.admin.dto.ReqAdminUserSuspendData;
@@ -65,9 +66,10 @@ public class AdminControllerApiV1 {
         }
     }
 
+    // TODO : 이름 뭐가 좋을까
     @Operation(summary = "유저 탈퇴 / 복구",
     description = "탈퇴 사유 적고 탈퇴시키기, 복구시키기")
-    @PostMapping("/user/{userIdx}/deletedAt")
+    @PutMapping("/user/{userIdx}/deletedAt")
     public ResponseEntity<?> putUserDeleteData(
         @PathVariable Long userIdx,
         @Valid @RequestBody(required = false) ReqAdminUserDeletedDataDTO reqAdminUserDeletedDataDTO,
@@ -106,6 +108,21 @@ public class AdminControllerApiV1 {
             return adminServiceApiV1.insertBoardHideData(boardIdx, reqAdminBoardHideData, customUserDetails);
         }else{
             return adminServiceApiV1.updateBoardHideData(boardIdx, customUserDetails);
+        }
+    }
+
+    @Operation(summary = "게시물 삭제 / 복구",
+    description = "탈퇴 사유 적고 탈퇴시키기, 복구시키기")
+    @PutMapping("/board/{boardIdx}/deletedAt")
+    public ResponseEntity<?> putBoardDeletedData(
+        @PathVariable Long boardIdx,
+        @Valid @RequestBody(required = false) ReqAdminBoardDeletedDataDTO reqAdminBoardDeletedDataDTO,
+        @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ){
+        if(reqAdminBoardDeletedDataDTO != null){
+            return adminServiceApiV1.insertBoardDeletedData(boardIdx, reqAdminBoardDeletedDataDTO, customUserDetails);
+        } else {
+            return adminServiceApiV1.updateBoardRestoreData(boardIdx, customUserDetails);
         }
     }
 }

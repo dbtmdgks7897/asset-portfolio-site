@@ -62,7 +62,6 @@ CREATE TABLE board (
     `view_count` INT DEFAULT 0,
     `recommend_count` INT DEFAULT 0,
     `is_hided` BOOL DEFAULT FALSE,
-    `hide_reason` VARCHAR(300),
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
     `updated_at` DATETIME,
     `deleted_at` DATETIME
