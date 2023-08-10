@@ -10,15 +10,20 @@ import org.springframework.stereotype.Service;
 import com.ysh.back.common.dto.ResponseDTO;
 import com.ysh.back.common.exception.BadRequestException;
 import com.ysh.back.config.security.auth.CustomUserDetails;
+import com.ysh.back.domain.comment.dto.ReqCommentPostDTO;
 import com.ysh.back.domain.comment.dto.ReqCommentRecommendDTO;
 import com.ysh.back.domain.comment.dto.ReqCommentReportDTO;
 import com.ysh.back.model.auditLog.entity.AuditLogEntity;
 import com.ysh.back.model.auditLog.repository.AuditLogRepository;
+import com.ysh.back.model.board.entity.BoardEntity;
+import com.ysh.back.model.board.repository.BoardRepository;
+import com.ysh.back.model.comment.entity.CommentEntity;
 import com.ysh.back.model.comment.entity.CommentRecommendEntity;
 import com.ysh.back.model.comment.entity.CommentReportEntity;
 import com.ysh.back.model.comment.repository.CommentRecommendRepository;
 import com.ysh.back.model.comment.repository.CommentReportRepository;
 import com.ysh.back.model.comment.repository.CommentRepository;
+import com.ysh.back.model.user.entity.UserEntity;
 import com.ysh.back.model.user.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
@@ -36,6 +41,45 @@ public class CommentServiceApiV1 {
     CommentRecommendRepository commentRecommendRepository;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    BoardRepository boardRepository;
+
+    @Transactional
+    public ResponseEntity<?> postCommentData(Long boardIdx, ReqCommentPostDTO reqCommentPostDTO, CustomUserDetails customUserDetails) {
+        Optional<BoardEntity> boardEntityOptional = boardRepository.findByIdx(boardIdx);
+
+        if(!boardEntityOptional.isPresent()){
+            throw new BadRequestException("해당 게시물이 존재하지 않습니다.");
+        }
+
+        UserEntity userEntity = userRepository.findByEmail(customUserDetails.getUsername()).get();
+
+        CommentEntity commentEntity = CommentEntity.builder()
+        .userEntity(userEntity)
+        .boardEntity(boardEntityOptional.get())
+        .content(reqCommentPostDTO.getContent())
+        .build();
+
+        commentRepository.save(commentEntity);
+
+        AuditLogEntity auditLog = AuditLogEntity.builder()
+        .tableName("comment")
+        .userIdx(userEntity.getIdx())
+        .rowId(commentRepository.count())
+        .operation("INSERT")
+        .reason("댓글 작성")
+        .newValue(reqCommentPostDTO.getContent())
+        .build();
+
+        auditLogRepository.save(auditLog);
+
+        return new ResponseEntity<>(
+            ResponseDTO.builder()
+            .code(0)
+            .message("댓글 작성 완료")
+            .build()   
+        ,HttpStatus.OK);
+    }
 
     @Transactional
     public ResponseEntity<?> insertCommentReportData(Long commentIdx, ReqCommentReportDTO reqCommentReportDTO, CustomUserDetails customUserDetails) {

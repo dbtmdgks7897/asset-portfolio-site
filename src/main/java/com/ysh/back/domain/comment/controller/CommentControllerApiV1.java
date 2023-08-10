@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ysh.back.config.security.auth.CustomUserDetails;
+import com.ysh.back.domain.comment.dto.ReqCommentPostDTO;
 import com.ysh.back.domain.comment.dto.ReqCommentRecommendDTO;
 import com.ysh.back.domain.comment.dto.ReqCommentReportDTO;
 import com.ysh.back.domain.comment.service.CommentServiceApiV1;
@@ -25,6 +26,19 @@ public class CommentControllerApiV1{
     
     @Autowired
     CommentServiceApiV1 commentServiceApiV1;
+
+
+    @Operation(summary = "댓글 작성",
+    description = "작성한다. 댓글")
+    @PostMapping("/{boardIdx}")
+    public ResponseEntity<?> postCommentData(
+        @PathVariable Long boardIdx,
+        @Valid @RequestBody ReqCommentPostDTO reqCommentPostDTO,
+        @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ){
+        return commentServiceApiV1.postCommentData(boardIdx, reqCommentPostDTO, customUserDetails);
+    }
+
 
     @Operation(summary = "댓글 신고",
     description = "신고 버튼 클릭 시 현재 유저가 누른 적 있는 지 판별<br />"
@@ -48,5 +62,4 @@ public class CommentControllerApiV1{
     ) {
         return commentServiceApiV1.insertCommentRecommendData(commentIdx, customUserDetails);
     }
-
 }

@@ -13,7 +13,7 @@ import com.ysh.back.model.comment.entity.CommentEntity;
 @Repository
 public interface CommentRepository extends JpaRepository<CommentEntity, Long>{
     List<CommentEntity> findByBoardEntityIdx(Long boardIdx);
-    List<CommentEntity> findByBoardEntityIdxOrderByCreatedAtAsc(Long boardIdx);
+    List<CommentEntity> findByBoardEntityIdxOrderByCreatedAtDesc(Long boardIdx);
 
      @Modifying
     @Query("UPDATE CommentEntity b SET b.recommendCount = b.recommendCount + 1 WHERE b.idx = :commentIdx")

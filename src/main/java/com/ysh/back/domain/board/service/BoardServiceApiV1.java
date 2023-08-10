@@ -147,7 +147,7 @@ public class BoardServiceApiV1 {
     }
 
     public ResponseEntity<?> getBoardCommentListData(Long boardIdx) {
-        List<CommentEntity> commentEntityList = commentRepository.findByBoardEntityIdxOrderByCreatedAtAsc(boardIdx);
+        List<CommentEntity> commentEntityList = commentRepository.findByBoardEntityIdxOrderByCreatedAtDesc(boardIdx);
         
         if(commentEntityList.isEmpty()){
             return null;

@@ -9,10 +9,18 @@
         <div>
           <!-- 현재 사용자와 작성자의 id가 같을 시 보이게-->
           <!-- v-if -->
-          <button v-if="login.isLogined && boardDetailsData.user.idx == login.idx" class="btn btn-outline-dark" @click="updateButton">
+          <button
+            v-if="login.isLogined && boardDetailsData.user.idx == login.idx"
+            class="btn btn-outline-dark"
+            @click="updateButton"
+          >
             수정
           </button>
-          <button  v-if="login.isLogined && boardDetailsData.user.idx == login.idx" class="btn btn-outline-dark" @click="deleteButton">
+          <button
+            v-if="login.isLogined && boardDetailsData.user.idx == login.idx"
+            class="btn btn-outline-dark"
+            @click="deleteButton"
+          >
             삭제
           </button>
         </div>
@@ -35,8 +43,31 @@
         </div>
       </div>
       <div class="comment">
-        <div class="comment-title">댓글</div>
+        <div class="flex comment-header">
+          <div class="comment-title">댓글</div>
+          <button v-if="login.isLogined" @click="commentShow = !commentShow" class="btn comment-button"><span>댓글창</span></button>
+        </div>
         <div class="comment-main">
+          <div v-show="commentShow" class="comment-write flex">
+            <span>내용</span>
+            <div class="input-group mb-3">
+              <input v-model="commentContent"
+                type="text"
+                class="form-control"
+                placeholder=""
+                aria-describedby="button-addon2"
+                @keydown.enter="commentButton"
+              />
+              <button
+                class="btn btn-outline-secondary"
+                type="button"
+                id="button-addon2"
+                @click="commentButton"
+              >
+                Button
+              </button>
+            </div>
+          </div>
           <ul>
             <!-- v-for로 반복 돌림 -->
             <li
@@ -56,7 +87,10 @@
                 <span>{{ comment.recommendCount }}</span
                 ><br />
                 <!-- 댓글 추천, 신고 -->
-                <button class="btn btn-outline-dark" @click="comReportButton(comment.idx)">
+                <button
+                  class="btn btn-outline-dark"
+                  @click="comReportButton(comment.idx)"
+                >
                   <i class="bi bi-cone"></i>
                 </button>
                 <button
@@ -76,8 +110,8 @@
 </template>
 
 <script setup>
-import { toggle } from "@/utils/toggle";
 import { login } from "@/utils/login";
+import { toggle } from "@/utils/toggle";
 </script>
 <script>
 import router from "@/router";
@@ -90,7 +124,9 @@ export default {
       boardIdx: this.$route.params.id,
       boardDetailsData: null,
       boardCommentListData: null,
-      router
+      router,
+      commentContent: null,
+      commentShow: false,
     };
   },
   mounted() {
@@ -202,6 +238,26 @@ export default {
           alert(err);
         });
     },
+    commentButton() {
+      const dto = {
+        content: this.commentContent,
+      };
+      this.$axios.post(`/api/v1/comment/${this.boardIdx}`, dto, {
+        headers: {
+          'Content-Type' : 'application/json;charset=utf-8;'
+        }
+      }).then((res) => {
+        if(res.data.code === 0){
+          alert(res.data.message)
+          this.getBoardCommentListFn();
+          this.commentShow = false;
+        } else {
+          alert(res.data.data)
+        }
+      }).catch((err) => {
+        console.log(err)
+      });
+    },
     comReportButton(commentIdx) {
       const reportReason = prompt("신고 사유를 입력해주세요");
       if (reportReason != null) {
@@ -311,12 +367,52 @@ button {
   .comment {
     width: 100%;
     padding: 2%;
-    .comment-title {
-      text-align: left;
-      font-size: 2vw;
+
+    .comment-header {
+      justify-content: space-between;
       border-bottom: 1px solid black;
+      .comment-title {
+        width: 100%;
+        text-align: left;
+        font-size: 2vw;
+      }
+      .comment-button {
+        width: 7vw;
+        height: 3vw;
+        border-color: blueviolet;
+        &:hover {
+          background-color: blueviolet;
+          border-color: rgb(61, 16, 102);
+          color: white;
+          span {
+            color: white;
+          }
+        }
+        span {
+          text-align: center;
+          font-size: 1vw;
+          color: blueviolet;
+        }
+      }
     }
+
     .comment-main {
+      .comment-write {
+        height: 15vh;
+        background-color: rgb(199, 199, 199);
+        align-items: center;
+        span {
+          width: 5vw;
+          font-size: 1.5vw;
+        }
+        div {
+          height: 80%;
+          margin: 2vh 2vw;
+          button{
+            height: 100%;
+          }
+        }
+      }
       .comment-li {
         justify-content: space-between;
         padding: 5px 0px;

@@ -77,7 +77,6 @@ export default {
             login.isLogined = true;
             this.$router.push({name: "PageBoardList"});
           }
-          console.log(res.data)
           // alert("실패");
         })
         .catch(function (error) {
