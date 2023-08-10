@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.ysh.back.common.dto.ResponseDTO;
 import com.ysh.back.common.exception.BadRequestException;
 import com.ysh.back.config.security.auth.CustomUserDetails;
+import com.ysh.back.domain.admin.dto.ReqAdminBoardHideData;
 import com.ysh.back.domain.admin.dto.ReqAdminUserDeletedDataDTO;
 import com.ysh.back.domain.admin.dto.ReqAdminUserSuspendData;
 import com.ysh.back.domain.admin.dto.ResAdminBoardInitDTO;
@@ -97,7 +98,7 @@ public class AdminServiceApiV1 {
                 // 유저 정보 가져올 수 있을 때 바꾸자.
                 .userIdx(userRepository.findByEmail(customUserDetails.getUsername()).get().getIdx())
                 .rowId(userIdx)
-                .operation("UPDATE")
+                .operation("INSERT")
                 .newValue(reqAdminUserSuspendData.getSuspendDuration().toString())
                 .reason(reqAdminUserSuspendData.getSuspendReason())
                 .build();
@@ -123,6 +124,7 @@ public class AdminServiceApiV1 {
         UserEntity userEntity = userEntityOptional.get();
 
         userEntity.setSuspendUntil(null);
+        String oldVal = userEntity.getSuspendReason();
         userEntity.setSuspendReason(null);
 
         AuditLogEntity auditLog = AuditLogEntity.builder()
@@ -132,6 +134,7 @@ public class AdminServiceApiV1 {
                 .userIdx(userRepository.findByEmail(customUserDetails.getUsername()).get().getIdx())
                 .rowId(userIdx)
                 .operation("UPDATE")
+                .oldValue(oldVal)
                 .newValue(null)
                 .reason(null)
                 .build();
@@ -193,6 +196,7 @@ public class AdminServiceApiV1 {
 
 
         userEntity.setDeletedAt(null);
+        String oldVal = userEntity.getDeletedReason();
         userEntity.setDeletedReason(null);
 
         AuditLogEntity auditLog = AuditLogEntity.builder()
@@ -202,6 +206,7 @@ public class AdminServiceApiV1 {
                 .userIdx(userRepository.findByEmail(customUserDetails.getUsername()).get().getIdx())
                 .rowId(userIdx)
                 .operation("UPDATE")
+                .oldValue(oldVal)
                 .newValue(null)
                 .reason(null)
                 .build();
@@ -252,6 +257,77 @@ public class AdminServiceApiV1 {
                         .code(0)
                         .message("게시물 검색 성공")
                         .data(resAdminBoardInitDTO)
+                        .build(),
+                HttpStatus.OK);
+    }
+
+    @Transactional
+    public ResponseEntity<?> insertBoardHideData(Long boardIdx, ReqAdminBoardHideData reqAdminBoardHideData,
+            CustomUserDetails customUserDetails) {
+        Optional<BoardEntity> boardEntityOptional = boardRepository.findByIdx(boardIdx);
+
+        if (!boardEntityOptional.isPresent()) {
+            throw new BadRequestException("게시물 정보가 없습니다.");
+        }
+
+        BoardEntity boardEntity = boardEntityOptional.get();
+
+        boardEntity.setIsHided(true);
+        boardEntity.setHideReason(reqAdminBoardHideData.getHideReason());
+
+        AuditLogEntity auditLog = AuditLogEntity.builder()
+                .tableName("board")
+                .columnName("isHide")
+                // 유저 정보 가져올 수 있을 때 바꾸자.
+                .userIdx(userRepository.findByEmail(customUserDetails.getUsername()).get().getIdx())
+                .rowId(boardIdx)
+                .operation("INSERT")
+                .newValue("true")
+                .reason(reqAdminBoardHideData.getHideReason())
+                .build();
+
+        auditLogRepository.save(auditLog);
+
+        return new ResponseEntity<>(
+                ResponseDTO.builder()
+                        .code(0)
+                        .message("게시물 숨김 처리 완료")
+                        .build(),
+                HttpStatus.OK);
+    }
+
+    @Transactional
+    public ResponseEntity<?> updateBoardHideData(Long boardIdx, CustomUserDetails customUserDetails){
+        Optional<BoardEntity> boardEntityOptional = boardRepository.findByIdx(boardIdx);
+
+        if(!boardEntityOptional.isPresent()){
+            throw new BadRequestException("게시물 정보가 없습니다.");
+        }
+
+        BoardEntity boardEntity = boardEntityOptional.get();
+
+        boardEntity.setIsHided(false);
+        String oldVal = boardEntity.getHideReason();
+        boardEntity.setHideReason(null);
+
+        AuditLogEntity auditLog = AuditLogEntity.builder()
+                .tableName("user")
+                .columnName("isHide")
+                // 유저 정보 가져올 수 있을 때 바꾸자.
+                .userIdx(userRepository.findByEmail(customUserDetails.getUsername()).get().getIdx())
+                .rowId(boardIdx)
+                .operation("UPDATE")
+                .oldValue(oldVal)
+                .newValue(null)
+                .reason(null)
+                .build();
+
+        auditLogRepository.save(auditLog);
+
+        return new ResponseEntity<>(
+                ResponseDTO.builder()
+                        .code(0)
+                        .message("게시물 숨김 해제 완료")
                         .build(),
                 HttpStatus.OK);
     }

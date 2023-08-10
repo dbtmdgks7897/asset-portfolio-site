@@ -3,6 +3,7 @@ package com.ysh.back.model.board.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.checkerframework.checker.units.qual.C;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -61,6 +62,9 @@ public class BoardEntity {
 
     @Column(name = "is_hided")
     private Boolean isHided;
+
+    @Column(name = "hide_reason")
+    private String hideReason;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

@@ -13,6 +13,7 @@
             placeholder="검색어"
             aria-label="검색어"
             aria-describedby="button-addon2"
+            @keydown.enter="searchFn"
           />
           <!-- 버튼 클릭 시 위의 인풋의 데이터를 -->
           <!-- 쿼리스트링 변수 search에 넣어서 -->
@@ -21,6 +22,7 @@
             class="btn btn-outline-secondary"
             type="button"
             id="button-addon2"
+            @click="searchFn"
           >
             <i class="bi bi-search"></i>
           </button>
@@ -45,7 +47,7 @@
             <!-- v-for로 반복 돌려서 데이터 가져와서 링크 넣고 뿌려주기 -->
               <tr v-for="board in boardList" :key="board">
                 <th scope="row">{{ board.idx }}</th>
-                <td>{{ board.name }}</td>
+                <td>{{ util.truncateText(board.name, 15) }}</td>
                 <td>{{ board.user.email }}</td>
                 <td>{{ board.createdAt }}</td>
                 <td>{{ board.viewCount }}</td>
@@ -59,14 +61,14 @@
                   data-bs-toggle="modal"
                   data-bs-target="#exampleModal"
                   data-bs-whatever="@mdo"
-                  @click="suspendUserIdx = user.idx"
+                  @click="boardIdx = board.idx; disableButton()"
                 >
                   <span>비</span>
                 </button>
                 <button
                   v-else
                   class="btn my-blue-button"
-                  @click="dissuspendUserIdx = user.idx; dissuspendButton()"
+                  @click="boardIdx = board.idx; ableButton()"
                 >
                   <span>활</span>
                 </button>
@@ -94,6 +96,7 @@
 
 <script setup>
 import { toggle } from "@/utils/toggle";
+import { util } from "@/utils/utils";
 </script>
 <script>
 export default {
@@ -103,6 +106,7 @@ export default {
       trigger: true,
       boardList: null,
       search: null,
+      boardIdx: null,
     };
   },
   mounted () {
@@ -129,7 +133,11 @@ export default {
     },
     searchFn() {
       this.$axios
-        .get(`/api/v1/admin/board/${this.search}`)
+        .get(`/api/v1/admin/board`,{
+          params: {
+            search: this.search,
+          }
+        })
         .then((res) => {
           if (res.data.code === 0) {
             this.boardList = res.data.data.boardList;
@@ -142,10 +150,45 @@ export default {
         });
     },
     disableButton(){
-
+      const hideReason = prompt(`게시물이 숨겨진 이유를 입력해주세요`)
+      if(hideReason != null) {
+        const dto = {
+        hideReason: hideReason,
+      };
+      this.$axios
+        .put(`/api/v1/admin/board/${this.boardIdx}/hide`, dto, {
+          headers: {
+            "Content-Type": "application/json;charset=utf-8;",
+          },
+        })
+        .then((res) => {
+          if (res.data.code === 0) {
+            alert(res.data.message);
+            this.getBoardList();
+          } else {
+            alert(res.data);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      }
+      
     },
     ableButton(){
-
+      this.$axios
+        .put(`/api/v1/admin/board/${this.boardIdx}/hide`)
+        .then((res) => {
+          if (res.data.code === 0) {
+            alert(res.data.message);
+            this.getBoardList();
+          } else {
+            alert(res.data);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     exileButton(){
       alert('')

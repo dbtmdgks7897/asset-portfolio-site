@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ysh.back.config.security.auth.CustomUserDetails;
+import com.ysh.back.domain.admin.dto.ReqAdminBoardHideData;
 import com.ysh.back.domain.admin.dto.ReqAdminUserDeletedDataDTO;
 import com.ysh.back.domain.admin.dto.ReqAdminUserSuspendData;
 import com.ysh.back.domain.admin.service.AdminServiceApiV1;
@@ -93,19 +94,18 @@ public class AdminControllerApiV1 {
         
     }
 
-    // @Operation(summary = "",
-    // description = "정지 기간 / 정지 이유 적고 정지 맥이기, 활성화 <br />"
-    // + "req의 suspendDuration이 null이면 비활성화로 인식")
-    // @PutMapping("/user/{userIdx}/suspend")
-    // public ResponseEntity<?> putUserSuspendData(
-    //     @PathVariable Long userIdx,
-    //     @Valid @RequestBody(required = false) ReqAdminUserSuspendData reqAdminUserSuspendData,
-    //     @AuthenticationPrincipal CustomUserDetails customUserDetails
-    // ){
-    //     if(reqAdminUserSuspendData.getSuspendDuration() != null){
-    //         return adminServiceApiV1.insertUserSuspendData(userIdx, reqAdminUserSuspendData, customUserDetails);
-    //     }else{
-    //         return adminServiceApiV1.updateUserDisSuspendData(userIdx, customUserDetails);
-    //     }
-    // }
+    @Operation(summary = "게시물 숨김 / 보임",
+    description = "게시물 숨김 / 보임 설정 Req가 null이면 활성화로 인식")
+    @PutMapping("/board/{boardIdx}/hide")
+    public ResponseEntity<?> putBoardHideData(
+        @PathVariable Long boardIdx,
+        @Valid @RequestBody(required = false) ReqAdminBoardHideData reqAdminBoardHideData,
+        @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ){
+        if(reqAdminBoardHideData != null){
+            return adminServiceApiV1.insertBoardHideData(boardIdx, reqAdminBoardHideData, customUserDetails);
+        }else{
+            return adminServiceApiV1.updateBoardHideData(boardIdx, customUserDetails);
+        }
+    }
 }

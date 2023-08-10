@@ -1,6 +1,6 @@
 
 
-
+게시물 리스트에서 숨긴 것 안보이게
 이미지 업로드, security @authenticationprincipal
 로그인 상태 유지, 라우터 가드
 유저 로그인 시 비활성화 / 탈퇴 공지
