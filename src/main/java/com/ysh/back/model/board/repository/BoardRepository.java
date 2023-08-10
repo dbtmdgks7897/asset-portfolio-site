@@ -15,16 +15,20 @@ import com.ysh.back.model.board.entity.BoardEntity;
 public interface BoardRepository extends JpaRepository<BoardEntity, Long>{
        Optional<BoardEntity> findByIdx(Long boardIdx);
 
-    List<BoardEntity> findByNameContainingOrContentContainingOrUserEntity_NameContaining(String nameSearch, String contentSearch, String userSearch);
+    List<BoardEntity> findByNameContainingOrContentContainingOrUserEntity_NameContainingAndDeletedAtIsNull(String nameSearch, String contentSearch, String userSearch);
 
-    @Query("SELECT board FROM BoardEntity board ORDER BY "
+    @Query("SELECT board FROM BoardEntity board "
+           + "WHERE board.deletedAt IS NULL "
+           + "ORDER BY "
            + "CASE WHEN :sort = 'idx' THEN LPAD(CAST(board.idx AS STRING), 10, '0') "
            + "     WHEN :sort = 'created_at' THEN board.createdAt "
            + "     WHEN :sort = 'view_count' THEN LPAD(CAST(board.viewCount AS STRING), 10, '0') "
            + "     WHEN :sort = 'recommend_count' THEN LPAD(CAST(board.recommendCount AS STRING), 10, '0') "
            + "END DESC") // DESC 키워드를 추가하여 내림차순 정렬
     List<BoardEntity> findAllOrderBySortDesc(@Param("sort") String sort);
-    @Query("SELECT board FROM BoardEntity board ORDER BY "
+    @Query("SELECT board FROM BoardEntity board "
+           + "WHERE board.deletedAt IS NULL "
+           + "ORDER BY "
            + "CASE WHEN :sort = 'idx' THEN LPAD(CAST(board.idx AS STRING), 10, '0') "
            + "     WHEN :sort = 'created_at' THEN board.createdAt "
            + "     WHEN :sort = 'view_count' THEN LPAD(CAST(board.viewCount AS STRING), 10, '0') "
@@ -34,9 +38,10 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Long>{
 
 
     @Query("SELECT board FROM BoardEntity board JOIN FETCH board.userEntity u "
-           + "WHERE board.name LIKE CONCAT('%', :nameSearch, '%') "
+           + "WHERE (board.name LIKE CONCAT('%', :nameSearch, '%') "
            + "OR board.content LIKE CONCAT('%', :contentSearch, '%') "
-           + "OR u.name LIKE CONCAT('%', :userSearch, '%') "
+           + "OR u.name LIKE CONCAT('%', :userSearch, '%')) "
+           + "AND board.deletedAt IS NULL "
            + "ORDER BY "
            + "CASE WHEN :sort = 'idx' THEN LPAD(CAST(board.idx AS STRING), 10, '0') "
            + "     WHEN :sort = 'created_at' THEN board.createdAt "
@@ -50,9 +55,10 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Long>{
             @Param("sort") String sort
     );
     @Query("SELECT board FROM BoardEntity board JOIN FETCH board.userEntity u "
-           + "WHERE board.name LIKE CONCAT('%', :nameSearch, '%') "
+           + "WHERE (board.name LIKE CONCAT('%', :nameSearch, '%') "
            + "OR board.content LIKE CONCAT('%', :contentSearch, '%') "
-           + "OR u.name LIKE CONCAT('%', :userSearch, '%') "
+           + "OR u.name LIKE CONCAT('%', :userSearch, '%')) "
+           + "AND board.deletedAt IS NULL "
            + "ORDER BY "
            + "CASE WHEN :sort = 'idx' THEN LPAD(CAST(board.idx AS STRING), 10, '0') "
            + "     WHEN :sort = 'created_at' THEN board.createdAt "

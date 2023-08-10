@@ -62,7 +62,7 @@ public class BoardServiceApiV1 {
             
         } else if (search != null){
             // 검색어만 입력시
-            boardEntityList = boardRepository.findByNameContainingOrContentContainingOrUserEntity_NameContaining(search, search, search);
+            boardEntityList = boardRepository.findByNameContainingOrContentContainingOrUserEntity_NameContainingAndDeletedAtIsNull(search, search, search);
         } else if (sort != null){
             // 정렬 기준만 입력 시
             if(desc.equals(true)){
@@ -109,7 +109,7 @@ public class BoardServiceApiV1 {
         .userIdx(reqBoardPostDTO.getUserIdx())
         .rowId(boardRepository.count())
         .operation("INSERT")
-        .reason("게시자 삭제")
+        .reason("게시물 작성")
         .build();
 
         auditLogRepository.save(auditLog);
@@ -187,8 +187,6 @@ public class BoardServiceApiV1 {
         .reason("게시자 삭제")
         .build();
         
-        
-        boardRepository.delete(boardEntity);
         auditLogRepository.save(auditLog);
 
         return new ResponseEntity<>(

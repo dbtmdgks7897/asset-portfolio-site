@@ -1,3 +1,9 @@
+
+
+
 이미지 업로드, security @authenticationprincipal
 로그인 상태 유지
+유저 로그인 시 비활성화 / 탈퇴 공지
 유저 관리, 게시물 관리
+
+게시물 아예 삭제가 아닌 deleted_at값을 입력하는 방식으로 바꿈

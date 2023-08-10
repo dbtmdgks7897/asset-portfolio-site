@@ -82,6 +82,7 @@ export default {
           })
           .then((res) => {
             if (res.data.code === 0) {
+              console.log(res.data.data);
               alert("게시물이 저장되었습니다.");
               this.$router.push({
                 name: "PageBoardDetail",

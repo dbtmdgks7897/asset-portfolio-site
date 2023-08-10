@@ -223,10 +223,10 @@ export default {
         console.log(err);
       })
     },
-    ableButton(userIdx) {
-      if(confirm(`${userIdx}번 유저를 활성화 하시겠습니까?`)){
-        
-      }
+    ableButton() {
+      // if(confirm(`${userIdx}번 유저를 활성화 하시겠습니까?`)){
+        // TODO
+      // }
     },
     restoreButton() {},
     exileButton() {
