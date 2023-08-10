@@ -1,11 +1,13 @@
 package com.ysh.back.config.security.auth;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.ysh.back.common.dto.LoginUserDTO;
+import com.ysh.back.common.exception.BadRequestException;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,11 +38,23 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
+        if(loginUserDTO.getUser().getDeletedAt() != null){
+            return LocalDateTime.now().isAfter(loginUserDTO.getUser().getDeletedAt()) ? true : false;
+        }
         return true;
     }
 
+    // TODO : LoginUserDTO 값 바꾼다고 DB값이 바뀌나?
+    // TODO : Entity 불러와서 바꿔야 하나?
     @Override
     public boolean isAccountNonLocked() {
+        if(loginUserDTO.getUser().getSuspendUntil() != null){
+            if(LocalDateTime.now().isAfter(loginUserDTO.getUser().getSuspendUntil())){
+                // 정지일, 정지사유 삭제해야함
+                return true;
+            }
+            throw new BadRequestException("계정이 정지되었습니다. \n사유: " + loginUserDTO.getUser().getSuspendReason());
+        }
         return true;
     }
 

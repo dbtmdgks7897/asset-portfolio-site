@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @NoArgsConstructor
@@ -30,13 +32,21 @@ public class LoginUserDTO {
         private Long idx;
         private String email;
         private String password;
+        private LocalDateTime suspendUntil;
+        private String suspendReason;
+        private LocalDateTime deletedAt;
+        private String deletedReason;
         private List<String> roleList;
-
+        
         public static User fromEntity(UserEntity userEntity) {
             return User.builder()
                     .idx(userEntity.getIdx())
                     .email(userEntity.getEmail())
                     .password(userEntity.getPassword())
+                    .suspendUntil(userEntity.getSuspendUntil())
+                    .suspendReason(userEntity.getSuspendReason())
+                    .deletedAt(userEntity.getDeletedAt())
+                    .deletedReason(userEntity.getDeletedReason())
                     .roleList(
                             userEntity.getRoleEntityList()
                                     .stream()

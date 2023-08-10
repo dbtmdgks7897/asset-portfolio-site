@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ysh.back.common.dto.ResponseDTO;
+import com.ysh.back.common.exception.BadRequestException;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -24,6 +25,16 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
         AuthenticationSuccessHandler.super.onAuthenticationSuccess(request, response, chain, authentication);
+        CustomUserDetails customUserDetails = (CustomUserDetails)authentication.getPrincipal();
+        
+        // TODO : 오류 따로?
+        if(!customUserDetails.isAccountNonExpired()){
+            throw new BadRequestException("계정이 탈퇴되었습니다. \n 사유: " + customUserDetails.getLoginUserDTO().getUser().getDeletedReason());
+        }
+
+        if(!customUserDetails.isAccountNonLocked()){
+            throw new BadRequestException("계정이 정지되었습니다. \n 사유: " + customUserDetails.getLoginUserDTO().getUser().getSuspendReason());
+        }
 
         response.setStatus(HttpServletResponse.SC_OK);
         response.setCharacterEncoding("UTF-8");
