@@ -1,6 +1,9 @@
 <template>
   <div :class="[toggle.show ? 'sidebar-margin' : 'sidebar-margin-none']">
     <div class="contents">
+      <div class="move-div" style="display: flex;">
+        <button @click="this.$router.push('/mypage/active')" class="btn"><span><i class="bi bi-caret-left-fill"></i>내 활동</span></button>
+      </div>
       <div v-if="myData" class="contents-box">
         <div class="contents-head flex">
           <div class="flex">

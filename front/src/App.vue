@@ -19,8 +19,8 @@ export default {
       ],
       noFooterComponentsName: [
         'PageMain', 'PageJoin', 'PageLogin', 'PageMyinfo', 'PageMyactive'
-      ]
-
+      ],
+      isLogin: true,
     };
   },
 

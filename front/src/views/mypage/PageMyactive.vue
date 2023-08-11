@@ -1,6 +1,9 @@
 <template>
   <div :class="[toggle.show ? 'sidebar-margin' : 'sidebar-margin-none']">
     <div class="contents">
+      <div class="move-div" style="display: flex;">
+        <button @click="this.$router.push('/mypage/info')" class="btn"><span><i class="bi bi-caret-left-fill"></i>내 정보</span></button>
+      </div>
       <div class="contents-head">
         <img class="flex-item" :src="login.img" alt="프로필 이미지" />
         <span>{{ login.nickname }}</span>

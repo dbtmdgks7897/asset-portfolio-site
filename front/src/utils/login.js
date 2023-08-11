@@ -17,8 +17,9 @@ export const login = reactive({
             this.nickname = res.data.data.nickname;
             this.img = res.data.data.profileImg;
             this.roles = res.data.data.roleList;
+            return true;
         }).catch(() => {
-            return null
+            return false;
         })
     }
 })

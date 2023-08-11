@@ -3,7 +3,28 @@
     :class="[toggle.show ? 'sidebar-margin' : 'sidebar-margin-none']"
     class=""
   >
+    <div class="move-buttons">
+      <button
+        v-if="boardIdx != 1"
+        class="btn detail-move-button1"
+        @click="preDetail"
+      >
+        <span>
+          <i class="bi bi-caret-left-fill"></i>
+        </span>
+      </button>
+      <button class="btn detail-move-button2" @click="nextDetail">
+        <span>
+          <i class="bi bi-caret-right-fill"></i>
+        </span>
+      </button>
+    </div>
     <div v-if="boardDetailsData" class="contents">
+      <div class="move-div" style="display: flex">
+        <button @click="this.$router.go(-1)" class="btn">
+          <span><i class="bi bi-caret-left-fill"></i>뒤로가기</span>
+        </button>
+      </div>
       <div class="contents-head flex">
         <span class="auto-resize-text">{{ boardDetailsData.name }}</span>
         <div>
@@ -45,13 +66,20 @@
       <div class="comment">
         <div class="flex comment-header">
           <div class="comment-title">댓글</div>
-          <button v-if="login.isLogined" @click="commentShow = !commentShow" class="btn comment-button"><span>댓글창</span></button>
+          <button
+            v-if="login.isLogined"
+            @click="commentShow = !commentShow"
+            class="btn comment-button"
+          >
+            <span>댓글창</span>
+          </button>
         </div>
         <div class="comment-main">
           <div v-show="commentShow" class="comment-write flex">
             <span>내용</span>
             <div class="input-group mb-3">
-              <input v-model="commentContent"
+              <input
+                v-model="commentContent"
                 type="text"
                 class="form-control"
                 placeholder=""
@@ -79,12 +107,36 @@
                 <span>{{ comment.user.nickname }}</span> |
                 <span>{{ comment.createdAt }}</span
                 ><br />
-                <input v-if="commentRewriteBoxShow && login.idx == comment.user.idx" type="text" id="commentRewriteContent" :value="comment.content" @keydown.enter="comRewriteButton(comment.idx);commentRewriteBoxShow = false;">
-                <span v-else>{{ comment.content }}</span>
+                <input
+                  v-if="commentRewriteBoxShow && login.idx == comment.user.idx"
+                  type="text"
+                  id="commentRewriteContent"
+                  :value="comment.content"
+                  @keydown.enter="
+                    comRewriteButton(comment.idx);
+                    commentRewriteBoxShow = false;
+                  "
+                />
+                <span class="comment-content" v-else>{{
+                  comment.content
+                }}</span>
               </div>
-              <div v-if="login.isLogined && login.idx == comment.user.idx" class="comment-tool">
-                <button @click="commentRewriteBoxShow = !commentRewriteBoxShow" class="btn comment-tool-button"><span><i class="bi bi-pencil-square"></i></span></button>
-                <button @click="comDeleteButton(comment.idx)" class="btn comment-tool-button"><span><i class="bi bi-x-lg"></i></span></button>
+              <div
+                v-if="login.isLogined && login.idx == comment.user.idx"
+                class="comment-tool"
+              >
+                <button
+                  @click="commentRewriteBoxShow = !commentRewriteBoxShow"
+                  class="btn comment-tool-button"
+                >
+                  <span><i class="bi bi-pencil-square"></i></span>
+                </button>
+                <button
+                  @click="comDeleteButton(comment.idx)"
+                  class="btn comment-tool-button"
+                >
+                  <span><i class="bi bi-x-lg"></i></span>
+                </button>
               </div>
               <div v-if="login.isLogined" class="buttons">
                 <!-- comment 테이블에서 1대N 매핑한 후 -->
@@ -130,7 +182,7 @@ export default {
       boardDetailsData: null,
       boardCommentListData: null,
       router,
-      
+
       commentContent: null,
       commentShow: false,
       commentRewriteContent: null,
@@ -142,6 +194,26 @@ export default {
     this.getBoardCommentListFn();
   },
   methods: {
+    nextDetail() {
+      const next = parseInt(this.boardIdx) + 1;
+      this.$router.push({
+        name: "PageBoardDetail",
+        params: { id: next },
+      });
+      this.boardIdx = next;
+      this.getBoardDetailsFn()
+      this.getBoardCommentListFn()
+    },
+    preDetail() {
+      const pre = parseInt(this.boardIdx) - 1;
+      this.$router.push({
+        name: "PageBoardDetail",
+        params: { id: pre },
+      });
+      this.boardIdx = pre;
+      this.getBoardDetailsFn()
+      this.getBoardCommentListFn()
+    },
     getBoardDetailsFn() {
       this.$axios
         .get(`/api/v1/board/` + this.boardIdx)
@@ -151,8 +223,9 @@ export default {
             this.boardDetailsData = res.data.data;
           }
         })
-        .catch((res) => {
-          console.log(res);
+        .catch((err) => {
+          alert(err.response.data.message)
+          this.$router.go(-1)
         });
     },
     getBoardCommentListFn() {
@@ -162,7 +235,7 @@ export default {
           if (res.data.code === 0) {
             console.log(res.data.data);
             this.boardCommentListData = res.data.data.commentList;
-          } else if(res.data === '') {
+          } else if (res.data === "") {
             this.boardCommentListData = null;
           }
         })
@@ -238,7 +311,7 @@ export default {
           if (res.data.code === 0) {
             alert("추천 성공");
             this.getBoardDetailsFn();
-          } 
+          }
         })
         .catch((err) => {
           alert(err.response.data.message);
@@ -248,21 +321,24 @@ export default {
       const dto = {
         content: this.commentContent,
       };
-      this.$axios.post(`/api/v1/comment/${this.boardIdx}`, dto, {
-        headers: {
-          'Content-Type' : 'application/json;charset=utf-8;'
-        }
-      }).then((res) => {
-        if(res.data.code === 0){
-          alert(res.data.message)
-          this.getBoardCommentListFn();
-          this.commentShow = false;
-        } else {
-          alert(res.data.data)
-        }
-      }).catch((err) => {
-        alert(err.response.data.message);
-      });
+      this.$axios
+        .post(`/api/v1/comment/${this.boardIdx}`, dto, {
+          headers: {
+            "Content-Type": "application/json;charset=utf-8;",
+          },
+        })
+        .then((res) => {
+          if (res.data.code === 0) {
+            alert(res.data.message);
+            this.getBoardCommentListFn();
+            this.commentShow = false;
+          } else {
+            alert(res.data.data);
+          }
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+        });
     },
     comReportButton(commentIdx) {
       const reportReason = prompt("신고 사유를 입력해주세요");
@@ -309,40 +385,45 @@ export default {
         });
     },
     comRewriteButton(commentIdx) {
-      this.commentRewriteContent = document.querySelector("#commentRewriteContent").value;
+      this.commentRewriteContent = document.querySelector(
+        "#commentRewriteContent"
+      ).value;
       const dto = {
         content: this.commentRewriteContent,
-      }
+      };
       this.$axios
-      .put(`/api/v1/comment/${commentIdx}`, dto, {
-        headers: {
-          'Content-Type' : 'application/json;charset=utf-8;'
-        }
-      }).then((res) => {
-        if(res.data.code === 0){
-          alert(res.data.message)
-          this.getBoardCommentListFn();
-        } else {
-          alert(res.data)
-        }
-      }).catch((err) => {
-        alert(err.response.data.message);
-      })
+        .put(`/api/v1/comment/${commentIdx}`, dto, {
+          headers: {
+            "Content-Type": "application/json;charset=utf-8;",
+          },
+        })
+        .then((res) => {
+          if (res.data.code === 0) {
+            alert(res.data.message);
+            this.getBoardCommentListFn();
+          } else {
+            alert(res.data);
+          }
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+        });
     },
     comDeleteButton(commentIdx) {
       this.$axios
-      .delete(`/api/v1/comment/${commentIdx}`)
-      .then((res) => {
-        if(res.data.code === 0){
-          alert(res.data.message)
-          this.getBoardCommentListFn();
-        } else {
-          alert(res.data)
-        }
-      }).catch((err) => {
-        alert(err.response.data.message);
-      })
-    }
+        .delete(`/api/v1/comment/${commentIdx}`)
+        .then((res) => {
+          if (res.data.code === 0) {
+            alert(res.data.message);
+            this.getBoardCommentListFn();
+          } else {
+            alert(res.data);
+          }
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+        });
+    },
   },
 };
 </script>
@@ -358,6 +439,31 @@ button {
   margin: 0 1vw;
   font-size: 1vw;
 }
+
+.move-buttons {
+  position: absolute;
+  top: 40vh;
+  span {
+    font-size: 5vw;
+  }
+  button {
+    width: 5vw;
+    height: 30vh;
+    padding: 0;
+  }
+  .detail-move-button1 {
+    i {
+      color: blueviolet;
+    }
+  }
+  .detail-move-button2 {
+    i {
+      color: blueviolet;
+    }
+    margin-left: 70vw;
+  }
+}
+
 .contents {
   height: 100%;
   &-body {
@@ -365,6 +471,7 @@ button {
     height: 50vh;
     font-size: 1vw;
     border: 1px solid black;
+
     .post-info {
       width: 100%;
       height: 7%;
@@ -449,7 +556,7 @@ button {
         div {
           height: 80%;
           margin: 2vh 2vw;
-          button{
+          button {
             height: 100%;
           }
         }
@@ -463,29 +570,33 @@ button {
           text-align: left;
         }
 
-        .comment-tool{
+        .comment-content {
+          font-weight: bold;
+        }
+
+        .comment-tool {
           margin-left: auto;
           .comment-tool-button {
-        width: 2vw;
-        height: 2vw;
-        font-size: 0.5vw;
-        border-color: blueviolet;
-        padding: 0;
-        margin: 1px;
-        &:hover {
-          background-color: blueviolet;
-          border-color: rgb(61, 16, 102);
-          color: white;
-          span {
-            color: white;
+            width: 2vw;
+            height: 2vw;
+            font-size: 0.5vw;
+            border-color: blueviolet;
+            padding: 0;
+            margin: 1px;
+            &:hover {
+              background-color: blueviolet;
+              border-color: rgb(61, 16, 102);
+              color: white;
+              span {
+                color: white;
+              }
+            }
+            span {
+              text-align: center;
+              font-size: 1vw;
+              color: blueviolet;
+            }
           }
-        }
-        span {
-          text-align: center;
-          font-size: 1vw;
-          color: blueviolet;
-        }
-      }
         }
 
         .buttons {
