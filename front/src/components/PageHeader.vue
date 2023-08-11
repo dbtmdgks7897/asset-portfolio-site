@@ -47,33 +47,33 @@
 
         <!-- 포트폴리오 카테고리 -->
         <!-- 로그인 전엔 안보임 -->
-        <div v-if="login.isLogined">
-          <div v-if="!isSidebarHide">
+        <div class="side-item" v-if="login.isLogined">
+          <div class="SMN_effect-24" v-if="!isSidebarHide">
             <li class="list-group-item list-group-item-dark category">자산</li>
-            <li class="list-group-item list-group-item-dark">내 포트폴리오</li>
+            <li class="list-group-item list-group-item-dark"><a><span>내 포트폴리오</span></a></li>
             <li
               class="list-group-item list-group-item-dark"
               @click="this.$router.push('/asset')"
             >
-              자산 검색
+            <a><span>자산 검색</span></a>
             </li>
-            <li class="list-group-item list-group-item-dark">분석</li>
+            <li class="list-group-item list-group-item-dark"><a><span>분석</span></a></li>
             <li
               class="list-group-item list-group-item-dark"
               @click="this.$router.push('/asset/transaction')"
             >
-              거래내역
+            <a><span>거래내역</span></a>
             </li>
           </div>
-          <div v-else>
-            <li class="list-group-item list-group-item-dark category">자산</li>
+          <div class="SMN_effect-24" v-else>
+            <li class="list-group-item list-group-item-dark category"><a><span>자산</span></a></li>
           </div>
         </div>
         <br />
-        <div v-if="login.isLogined">
+        <div class="side-item" v-if="login.isLogined">
           <!-- 내 계정 카테고리 -->
           <!-- 로그인 전엔 안보임 -->
-          <div v-if="!isSidebarHide">
+          <div class="SMN_effect-24" v-if="!isSidebarHide">
             <li class="list-group-item list-group-item-dark category">
               내 계정
             </li>
@@ -81,31 +81,31 @@
               class="list-group-item list-group-item-dark"
               @click="this.$router.push('/mypage/info')"
             >
-              내 정보
+            <a><span>내 정보</span></a>
             </li>
             <li
               class="list-group-item list-group-item-dark"
               @click="this.$router.push('/mypage/active')"
             >
-              내 활동
+            <a><span>내 활동</span></a>
             </li>
             <li class="list-group-item list-group-item-dark" @click="logout">
-              로그아웃
+              <a><span>로그아웃</span></a>
             </li>
           </div>
-          <div v-else>
+          <div class="SMN_effect-24" v-else>
             <li
               class="list-group-item list-group-item-dark category"
               @click="this.$router.push('/mypage/info')"
             >
-              내 계정
+            <a><span>내 계정</span></a>
             </li>
           </div>
         </div>
         <br />
         <!-- 커뮤니티 카테고리 -->
         <!-- 로그인 안해도 보임 -->
-        <div v-if="!isSidebarHide">
+        <div class="side-item SMN_effect-24" v-if="!isSidebarHide">
           <li class="list-group-item list-group-item-dark category">
             커뮤니티
           </li>
@@ -113,20 +113,20 @@
             class="list-group-item list-group-item-dark"
             @click="this.$router.push('/board')"
           >
-            자유 게시판
+          <a><span>자유 게시판</span></a>
           </li>
         </div>
-        <div v-else>
+        <div class="side-item SMN_effect-24" v-else>
           <li
             class="list-group-item list-group-item-dark category"
             @click="this.$router.push('/board')"
           >
-            커뮤니티
+          <a><span>게시판</span></a>
           </li>
         </div>
         <br />
         <!--  -->
-        <div v-if="login.isLogined && login.roles != null && login.roles.find(obj => obj.name === 'ROLE_ADMIN') != null">
+        <div class="side-item" v-if="login.isLogined && login.roles != null && login.roles.find(obj => obj.name === 'ROLE_ADMIN') != null">
           <!-- 관리 페이지 -->
           <!-- 관리자 권한만 볼 수 있음 -->
           <div v-if="!isSidebarHide">
@@ -137,21 +137,21 @@
               class="list-group-item list-group-item-dark"
               @click="this.$router.push('/admin/user')"
             >
-              유저 관리
+            <a><span>유저 관리</span></a>
             </li>
             <li
               class="list-group-item list-group-item-dark"
               @click="this.$router.push('/admin/board')"
             >
-              게시물 관리
+            <a><span>게시물 관리</span></a>
             </li>
           </div>
-          <div v-else>
+          <div class="SMN_effect-24" v-else>
             <li
               class="list-group-item list-group-item-dark category"
               @click="this.$router.push('/admin/user')"
             >
-              관리
+            <a><span>관리</span></a>
             </li>
           </div>
         </div>
@@ -232,8 +232,9 @@ ul {
 
 .category {
   font-weight: bold;
-  font-size: 1.5vw;
+  font-size: 2vw;
   text-align: left;
+  margin-left: 2vw;
   color: rgb(153, 153, 153) !important;
 }
 
@@ -262,7 +263,14 @@ ul {
   }
 }
 
-.list-group-item {
+.side-item{
+  li{
+    font-size: 1.2vw;
+    padding: 0;
+  }
+}
+
+  .list-group-item {
   background-color: rgba(255, 255, 255, 0);
   border: 0px;
   color: white;
@@ -326,5 +334,107 @@ ul {
 .toggleshow {
   left: 0;
   transition: 1s;
+}
+
+.SMN_effect-24 a {
+  padding: 10px 20px;
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  -webkit-transition: 0.3s ease-out;
+  -moz-transition: 0.3s ease-out;
+  transition: 0.3s ease-out;
+}
+
+.SMN_effect-24 a span:before {
+  width: 5px;
+  height: 5px;
+  background: transparent;
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-top: 2px solid #34645a;
+  border-left: 2px solid #218c74;
+  -webkit-transition: 0.3s;
+  -moz-transition: 0.3s;
+  transition: 0.3s;
+  opacity: 0;
+}
+
+.SMN_effect-24 a span:after {
+  width: 6px;
+  height: 6px;
+  background: transparent;
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  border-right: 2px solid #218c74;
+  border-bottom: 2px solid #218c74;
+  -webkit-transition: 0.3s;
+  -moz-transition: 0.3s;
+  transition: 0.3s;
+  opacity: 0;
+}
+
+.SMN_effect-24 a:before {
+  width: 6px;
+  height: 6px;
+  background: transparent;
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  border-right: 2px solid #218c74;
+  border-top: 2px solid #218c74;
+  -webkit-transition: 0.3s;
+  -moz-transition: 0.3s;
+  transition: 0.3s;
+  opacity: 0;
+}
+
+.SMN_effect-24 a:after {
+  width: 6px;
+  height: 6px;
+  background: transparent;
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  border-left: 2px solid #218c74;
+  border-bottom: 2px solid #218c74;
+  -webkit-transition: 0.3s;
+  -moz-transition: 0.3s;
+  transition: 0.3s;
+  opacity: 0;
+}
+
+.SMN_effect-24 a:hover {
+  color: #218c74;
+}
+
+.SMN_effect-24 a:hover:before {
+  opacity: 1;
+  right: 5px;
+  top: 5px;
+}
+
+.SMN_effect-24 a:hover:after {
+  opacity: 1;
+  left: 5px;
+  bottom: 5px;
+}
+
+.SMN_effect-24 a:hover span:before {
+  opacity: 1;
+  left: 5px;
+  top: 5px;
+}
+
+.SMN_effect-24 a:hover span:after {
+  opacity: 1;
+  right: 5px;
+  bottom: 5px;
 }
 </style>

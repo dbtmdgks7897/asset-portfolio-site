@@ -37,7 +37,7 @@ public class AdminServiceApiV1 {
     @Autowired
     BoardRepository boardRepository;
 
-    // TODO : board랑 비교해서 뭐가 나은지 (검색)
+    // TODO : 개인취향
     public ResponseEntity<?> getAdminUserData() {
         List<UserEntity> userEntityList = userRepository.findAll();
 

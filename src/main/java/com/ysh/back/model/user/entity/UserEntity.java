@@ -60,7 +60,6 @@ public class UserEntity {
             "\"")
     private String phone;
 
-    // TODO : 이미지 업로드
     @Lob
     @Column(name = "profile_img")
     private String profileImg;

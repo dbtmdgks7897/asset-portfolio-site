@@ -42,9 +42,9 @@ spring:
       max-file-size: 10MB
       # location: classpath:/uploads
   resources:
-    static-locations: ${user.dir}/src/main/resources/static/upload
+    static-locations: ${user.dir}/src/main/resources/static/img
 upload:
-  path: ${user.dir}/src/main/resources/static/upload
+  path: ${user.dir}/src/main/resources/static/img
 
       
 springdoc:

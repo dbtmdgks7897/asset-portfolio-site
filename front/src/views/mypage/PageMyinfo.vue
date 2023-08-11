@@ -9,7 +9,7 @@
           <div class="flex">
             <img
               class="flex-item"
-              :src="myData.profileImg"
+              :src="login.img"
               alt="프로필 이미지"
             />
             <transition name="fade" mode="out-in">

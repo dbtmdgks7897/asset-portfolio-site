@@ -108,6 +108,8 @@ public class AdminControllerApiV1 {
         }
     }
 
+    // TODO : uri 겹칠 시 뒤에 추가 ㄱㅊ
+    // TODO : 데이터 실제로 삭제 안하고 남겨놓음
     @Operation(summary = "게시물 삭제 / 복구",
     description = "탈퇴 사유 적고 탈퇴시키기, 복구시키기")
     @PutMapping("/board/{boardIdx}/deletedAt")

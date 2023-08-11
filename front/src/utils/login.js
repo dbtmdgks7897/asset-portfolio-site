@@ -15,7 +15,11 @@ export const login = reactive({
             this.isLogined = true;
             this.idx = res.data.data.idx;
             this.nickname = res.data.data.nickname;
-            this.img = res.data.data.profileImg;
+            if(res.data.data.profileImg != null){
+                this.img = res.data.data.profileImg;
+            } else {
+                this.img = require(`@/assets/img/anonymous.png`)
+            }
             this.roles = res.data.data.roleList;
             return true;
         }).catch(() => {

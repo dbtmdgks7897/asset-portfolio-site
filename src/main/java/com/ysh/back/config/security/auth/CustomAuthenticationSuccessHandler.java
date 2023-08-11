@@ -26,7 +26,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         AuthenticationSuccessHandler.super.onAuthenticationSuccess(request, response, chain, authentication);
         // CustomUserDetails customUserDetails = (CustomUserDetails)authentication.getPrincipal();
         
-        // TODO : 오류 따로?
+        // TODO : 오류 따로? : setStatus에서 응답 코드, 해당하는 응답 class exception handler에서 처리
 
         response.setStatus(HttpServletResponse.SC_OK);
         response.setCharacterEncoding("UTF-8");

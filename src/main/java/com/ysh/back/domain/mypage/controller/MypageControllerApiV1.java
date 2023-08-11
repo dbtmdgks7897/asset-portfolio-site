@@ -7,11 +7,8 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.ysh.back.config.security.auth.CustomUserDetails;
 import com.ysh.back.domain.mypage.dto.ReqMyinfoUpdateDTO;
@@ -19,7 +16,6 @@ import com.ysh.back.domain.mypage.service.MypageServiceApiV1;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 
 @Tag(name = "내 계정(정보)", description = "내 정보 / 내 활동")
 @RestController
@@ -36,7 +32,6 @@ public class MypageControllerApiV1 {
         return mypageServiceApiV1.getMyinfoInitData(customUserDetails);
     }
 
-    // TODO : 이미지 업로드
     @Operation(summary = "내 정보 수정", description = "수정 버튼 클릭 시 정보 수정 창 진입")
     // @RequestMapping(method = RequestMethod.POST, path = "/infoUp", consumes =
     // "multipart/form-data")

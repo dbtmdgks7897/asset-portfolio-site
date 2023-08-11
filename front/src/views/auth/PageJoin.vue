@@ -104,8 +104,8 @@ export default {
             this.$router.push({ name: "PageLogin" });
           }
         })
-        .catch((res) => {
-          console.error(res);
+        .catch((err) => {
+          alert(err.response.data.message);
         });
     },
   },
@@ -115,7 +115,7 @@ export default {
 .content {
   margin: 15vh auto;
   width: 500px;
-  height: 70vh;
+  height: 80vh;
   border-radius: 1%;
   background: #fff;
   flex-direction: column;

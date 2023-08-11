@@ -21,8 +21,8 @@
     </div>
     <div v-if="boardDetailsData" class="contents">
       <div class="move-div" style="display: flex">
-        <button @click="this.$router.go(-1)" class="btn">
-          <span><i class="bi bi-caret-left-fill"></i>뒤로가기</span>
+        <button @click="this.$router.push('/board')" class="btn">
+          <span><i class="bi bi-caret-left-fill"></i>목록으로</span>
         </button>
       </div>
       <div class="contents-head flex">
@@ -450,6 +450,11 @@ button {
     width: 5vw;
     height: 30vh;
     padding: 0;
+    opacity: 0;
+    transition: 0.5s;
+    &:hover{
+      opacity: 1;
+    }
   }
   .detail-move-button1 {
     i {

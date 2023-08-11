@@ -23,6 +23,8 @@ public class CustomUserDetailsService implements UserDetailsService{
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<UserEntity> userEntityOptional = userRepository.findByEmail(username);
+        // TODO : 정지된 유저인지 확인 후
+        // 유저 정지일 삭제
         System.out.println("이거다" + username);
         if(userEntityOptional.isEmpty()){
             throw new BadRequestException("아이디 또는 비밀번호 정확히 입력해주세요.");

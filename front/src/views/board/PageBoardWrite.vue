@@ -102,6 +102,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .contents {
+  height: 100%;
   &-head {
     span {
       font-size: 3vw;

@@ -18,7 +18,6 @@ import lombok.ToString;
 @Builder
 @ToString
 public class ReqMyinfoUpdateDTO {
-    // TODO : 이미지 업로드
     // private Long idx;
     // private Byte[] profileImg;
     // private MultipartFile profileImg;

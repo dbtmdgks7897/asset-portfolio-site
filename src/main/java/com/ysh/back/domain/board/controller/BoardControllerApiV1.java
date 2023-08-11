@@ -64,8 +64,9 @@ public class BoardControllerApiV1 {
             + "검사 기능 추가 필요")
     @DeleteMapping("/{boardIdx}")
     public ResponseEntity<?> deleteBoardData(
-            @PathVariable Long boardIdx) {
-        return boardServiceApiV1.deleteBoardData(boardIdx);
+            @PathVariable Long boardIdx,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return boardServiceApiV1.deleteBoardData(boardIdx, customUserDetails);
     }
 
     @Operation(summary = "게시물 댓글 조회", description = "현재 게시물의 idx로 댓글들 조회")

@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.ysh.back.common.dto.ResponseDTO;
 import com.ysh.back.common.exception.BadRequestException;
@@ -91,7 +90,6 @@ public class MypageServiceApiV1 {
         "age : " + userEntity.getAge() + ", " +
         "img-type : " + userEntity.getImgType() + ", ";
 
-        // TODO : 이미지 업로드
 
         String filePath;
         String fileName = "profile_" + customUserDetails.getLoginUserDTO().getUser().getIdx() + "." + reqMyinfoUpdateDTO.getFile().getContentType().split("/")[1];
@@ -107,7 +105,7 @@ public class MypageServiceApiV1 {
         // String imgBase64 = Base64.getEncoder().encodeToString(reqMyinfoUpdateDTO.getProfileImg().getBytes());
         // String imgUrl = "data:"+ reqMyinfoUpdateDTO.getProfileImg().getContentType() + ";base64," + imgBase64;
 
-        userEntity.setProfileImg("/upload/"+ fileName);
+        userEntity.setProfileImg("/img/"+ fileName);
         // userEntity.setImgType(reqMyinfoUpdateDTO.getImgType());
         userEntity.setNickname(reqMyinfoUpdateDTO.getNickname());
         userEntity.setGender(reqMyinfoUpdateDTO.getGender());
@@ -189,6 +187,7 @@ public class MypageServiceApiV1 {
         List<CommentEntity> commentEntityList = commentRepository.findAllByUserEntity_IdxOrderByCreatedAtDesc(userEntity.getIdx());
 
         ResMyactiveDTO resMyactiveDTO = ResMyactiveDTO.of(boardEntityList, commentEntityList);
+
 
         return new ResponseEntity<>(
             ResponseDTO.builder()

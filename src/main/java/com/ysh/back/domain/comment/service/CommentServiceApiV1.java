@@ -133,6 +133,7 @@ public class CommentServiceApiV1 {
 
         String oldVal = commentEntity.getContent();
         commentEntity.setDeletedAt(LocalDateTime.now().minusSeconds(5));
+        commentEntity.setContent("삭제된 댓글입니다.");
 
         AuditLogEntity auditLog = AuditLogEntity.builder()
         .tableName("comment")

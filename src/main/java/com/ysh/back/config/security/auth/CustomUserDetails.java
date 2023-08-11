@@ -43,8 +43,6 @@ public class CustomUserDetails implements UserDetails {
         return true;
     }
 
-    // TODO : LoginUserDTO 값 바꾼다고 DB값이 바뀌나?
-    // TODO : Entity 불러와서 바꿔야 하나?
     @Override
     public boolean isAccountNonLocked() {
         if(loginUserDTO.getUser().getSuspendUntil() != null){
