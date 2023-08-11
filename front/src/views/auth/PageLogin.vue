@@ -15,6 +15,9 @@
           placeholder="Email (*)"
           required
         />
+        <div>
+          {{ email }}
+        </div>
       </div>
     </div>
     <div class="col-md-8">
@@ -39,7 +42,7 @@
         class="btn my-button"
         @click="this.$router.push({ name: 'PageJoin' })"
       >
-        <span>회원가입</span>
+        <span>가입하기</span>
       </button>
       <button class="btn my-button" @click="loginButton"><span>로그인</span></button>
     </div>
@@ -62,6 +65,7 @@ export default {
   methods: {
     
     loginButton() {
+
       const formData = new FormData();
       formData.append("email", this.email);
       formData.append("password", this.password);
@@ -77,11 +81,9 @@ export default {
             login.isLogined = true;
             this.$router.push({name: "PageBoardList"});
           }
-          // alert("실패");
         })
-        .catch(function (error) {
+        .catch((error) => {
           alert(error.response.data.message);
-          console.log(error)
         });
     },
   },

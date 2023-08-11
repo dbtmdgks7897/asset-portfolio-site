@@ -2,8 +2,8 @@
   <div :class="[toggle.show ? 'sidebar-margin' : 'sidebar-margin-none']">
     <div class="contents">
       <div class="contents-head">
-        <img class="flex-item" :src="profile.img" alt="프로필 이미지" />
-        <span>(user.name)</span>
+        <img class="flex-item" :src="login.img" alt="프로필 이미지" />
+        <span>{{ login.nickname }}</span>
       </div>
       <div class="contents-body">
         <div class="contents-body-boards">
@@ -67,6 +67,8 @@
 <script setup>
 import { toggle } from "@/utils/toggle";
 import { util } from "@/utils/utils";
+import { login } from "@/utils/login";
+
 </script>
 <script>
 export default {
@@ -82,6 +84,7 @@ export default {
   },
   mounted() {
     this.getMyactiveData();
+    login.getUserProfile();
   },
   methods: {
     getMyactiveData() {

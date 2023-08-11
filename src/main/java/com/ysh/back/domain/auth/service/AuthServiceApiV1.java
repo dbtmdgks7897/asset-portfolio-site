@@ -11,7 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ysh.back.common.dto.ResponseDTO;
 import com.ysh.back.common.exception.BadRequestException;
+import com.ysh.back.config.security.auth.CustomUserDetails;
 import com.ysh.back.domain.auth.dto.ReqJoinDTO;
+import com.ysh.back.domain.auth.dto.ResMyDTO;
 import com.ysh.back.model.user.entity.UserEntity;
 import com.ysh.back.model.user.repository.UserRepository;
 
@@ -24,6 +26,28 @@ public class AuthServiceApiV1 {
     @Autowired
     PasswordEncoder passwordEncoder;
     
+    @Transactional
+    public ResponseEntity<?> getMy(CustomUserDetails customUserDetails) {
+        Optional<UserEntity> userEntityOptional = userRepository.findByEmail(customUserDetails.getUsername());
+
+        if(!userEntityOptional.isPresent()){
+            throw new BadRequestException("유저 정보가 없습니다.");
+        }
+
+
+        UserEntity userEntity = userEntityOptional.get();
+        ResMyDTO resMyDTO = ResMyDTO.fromEntity(userEntity);
+
+        return new ResponseEntity<>(
+                ResponseDTO.builder()
+                        .code(0)
+                        .message("유저 정보 들고오기 성공")
+                        .data(resMyDTO)
+                        .build(),
+                HttpStatus.OK
+        );
+    }
+
     @Transactional
     public ResponseEntity<?> join(ReqJoinDTO dto) {
 

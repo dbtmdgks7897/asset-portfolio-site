@@ -21,13 +21,14 @@
           <a @click="profileClick">
             <div class="profile flex">
               <img
-                v-if="login.isLogined"
+                v-if="login.isLogined && login.img != null"
                 class="flex-item"
-                :src="profile.img"
+                style="border-radius: 100%"
+                :src="login.img"
                 alt="프로필 이미지"
               />
               <span v-if="login.isLogined" class="flex-item name">{{
-                profile.name
+                login.nickname
               }}</span>
               <span
                 v-else-if="!login.isLogined && !isSidebarHide"
@@ -46,38 +47,60 @@
 
         <!-- 포트폴리오 카테고리 -->
         <!-- 로그인 전엔 안보임 -->
-        <div v-if="!isSidebarHide">
-          <li class="list-group-item list-group-item-dark category">자산</li>
-          <li class="list-group-item list-group-item-dark">내 포트폴리오</li>
-          <li class="list-group-item list-group-item-dark" @click="this.$router.push('/asset')">자산 검색</li>
-          <li class="list-group-item list-group-item-dark">분석</li>
-          <li class="list-group-item list-group-item-dark" @click="this.$router.push('/asset/transaction')">거래내역</li>
+        <div v-if="login.isLogined">
+          <div v-if="!isSidebarHide">
+            <li class="list-group-item list-group-item-dark category">자산</li>
+            <li class="list-group-item list-group-item-dark">내 포트폴리오</li>
+            <li
+              class="list-group-item list-group-item-dark"
+              @click="this.$router.push('/asset')"
+            >
+              자산 검색
+            </li>
+            <li class="list-group-item list-group-item-dark">분석</li>
+            <li
+              class="list-group-item list-group-item-dark"
+              @click="this.$router.push('/asset/transaction')"
+            >
+              거래내역
+            </li>
+          </div>
+          <div v-else>
+            <li class="list-group-item list-group-item-dark category">자산</li>
+          </div>
         </div>
-        <div v-else>
-          <li class="list-group-item list-group-item-dark category">자산</li>
-        </div>
-
         <br />
-        <!-- 내 계정 카테고리 -->
-        <!-- 로그인 전엔 안보임 -->
-        <div v-if="!isSidebarHide">
-          <li class="list-group-item list-group-item-dark category">내 계정</li>
-          <li
-            class="list-group-item list-group-item-dark"
-            @click="this.$router.push('/mypage/info')"
-          >
-            내 정보
-          </li>
-          <li
-            class="list-group-item list-group-item-dark"
-            @click="this.$router.push('/mypage/active')"
-          >
-            내 활동
-          </li>
-          <li class="list-group-item list-group-item-dark" @click="logout">로그아웃</li>
-        </div>
-        <div v-else>
-          <li class="list-group-item list-group-item-dark category" @click="this.$router.push('/mypage/info')">내 계정</li>
+        <div v-if="login.isLogined">
+          <!-- 내 계정 카테고리 -->
+          <!-- 로그인 전엔 안보임 -->
+          <div v-if="!isSidebarHide">
+            <li class="list-group-item list-group-item-dark category">
+              내 계정
+            </li>
+            <li
+              class="list-group-item list-group-item-dark"
+              @click="this.$router.push('/mypage/info')"
+            >
+              내 정보
+            </li>
+            <li
+              class="list-group-item list-group-item-dark"
+              @click="this.$router.push('/mypage/active')"
+            >
+              내 활동
+            </li>
+            <li class="list-group-item list-group-item-dark" @click="logout">
+              로그아웃
+            </li>
+          </div>
+          <div v-else>
+            <li
+              class="list-group-item list-group-item-dark category"
+              @click="this.$router.push('/mypage/info')"
+            >
+              내 계정
+            </li>
+          </div>
         </div>
         <br />
         <!-- 커뮤니티 카테고리 -->
@@ -93,33 +116,45 @@
             자유 게시판
           </li>
         </div>
-        <div v-else><li class="list-group-item list-group-item-dark category" @click="this.$router.push('/board')">
+        <div v-else>
+          <li
+            class="list-group-item list-group-item-dark category"
+            @click="this.$router.push('/board')"
+          >
             커뮤니티
-          </li></div>
-        <br />
-
-        <!-- 관리 페이지 -->
-        <!-- 관리자 권한만 볼 수 있음 -->
-        <div v-if="!isSidebarHide">
-          <li class="list-group-item list-group-item-dark category">
-            관리 페이지
-          </li>
-          <li
-            class="list-group-item list-group-item-dark"
-            @click="this.$router.push('/admin/user')"
-          >
-            유저 관리
-          </li>
-          <li
-            class="list-group-item list-group-item-dark"
-            @click="this.$router.push('/admin/board')"
-          >
-            게시물 관리
           </li>
         </div>
-        <div v-else><li class="list-group-item list-group-item-dark category"  @click="this.$router.push('/admin/user')">
-            관리
-          </li></div>
+        <br />
+        <!--  -->
+        <div v-if="login.isLogined && login.roles != null && login.roles.find(obj => obj.name === 'ROLE_ADMIN') != null">
+          <!-- 관리 페이지 -->
+          <!-- 관리자 권한만 볼 수 있음 -->
+          <div v-if="!isSidebarHide">
+            <li class="list-group-item list-group-item-dark category">
+              관리 페이지
+            </li>
+            <li
+              class="list-group-item list-group-item-dark"
+              @click="this.$router.push('/admin/user')"
+            >
+              유저 관리
+            </li>
+            <li
+              class="list-group-item list-group-item-dark"
+              @click="this.$router.push('/admin/board')"
+            >
+              게시물 관리
+            </li>
+          </div>
+          <div v-else>
+            <li
+              class="list-group-item list-group-item-dark category"
+              @click="this.$router.push('/admin/user')"
+            >
+              관리
+            </li>
+          </div>
+        </div>
       </ul>
     </div>
   </div>
@@ -139,38 +174,31 @@ export default {
       width: 0,
       isSidebarHide: false,
       flag: false,
-      profile: {
-        name: login.idx,
-        img: login.img,
-      },
     };
   },
+
   methods: {
     profileClick() {
       // 현재 로그인 상태를 가정하여, 조건에 따라 라우터 이동
-       // 로그인 상태라면 true, 로그인하지 않은 상태라면 false로 변경
+      // 로그인 상태라면 true, 로그인하지 않은 상태라면 false로 변경
       if (login.isLogined) {
         // this.isActive = !this.isActive; // 로그인 상태에서 클릭 시 내 정보 페이지로 이동
         // this.$router.push("/"); // 실제 라우터 이동이 필요한 경우 주석 해제
-        this.$router.push({name : "PageMyinfo"})
+        this.$router.push({ name: "PageMyinfo" });
       } else {
         // this.$router.push('/login'); // 실제 라우터 이동이 필요한 경우 주석 해제
-        this.$router.push({name : "PageLogin"})
+        this.$router.push({ name: "PageLogin" });
       }
     },
-    logout(){
-      if(confirm('로그아웃 하시겠습니까?')){
-        this.$axios
-      .get(`/api/v1/auth/logout`)
-      .then(() => {
-        alert('로그아웃 되었습니다. \n 게시판 페이지로 이동합니다')
-        login.isLogined = false;
-        login.email = null;
-        this.$router.push({name: "PageBoardList"})
-      })
+    logout() {
+      if (confirm("로그아웃 하시겠습니까?")) {
+        this.$axios.get(`/api/v1/auth/logout`).then(() => {
+          alert("로그아웃 되었습니다. \n 게시판 페이지로 이동합니다");
+          login.isLogined = false;
+          login.email = null;
+          this.$router.push({ name: "PageBoardList" });
+        });
       }
-
-      
     },
     handleResize() {
       this.width = window.innerWidth;
@@ -182,6 +210,7 @@ export default {
     },
   },
   mounted() {
+    login.getUserProfile();
     this.handleResize();
     window.addEventListener("resize", this.handleResize);
   },
@@ -225,9 +254,9 @@ ul {
   }
 }
 
-@media(max-width: 767px) {
-  .profile{
-    .name{
+@media (max-width: 767px) {
+  .profile {
+    .name {
       display: none;
     }
   }

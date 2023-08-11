@@ -1,13 +1,16 @@
 package com.ysh.back.domain.mypage.service;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ysh.back.common.dto.ResponseDTO;
 import com.ysh.back.common.exception.BadRequestException;
@@ -37,7 +40,10 @@ public class MypageServiceApiV1 {
     BoardRepository boardRepository;
     @Autowired
     CommentRepository commentRepository;
-    
+
+    @Value("${upload.path}")
+    private String uploadPath;
+
     public ResponseEntity<?> getMyinfoInitData(CustomUserDetails customUserDetails){
         Optional<UserEntity> userEntityOptional = userRepository.findByEmail(customUserDetails.getUsername());
 
@@ -52,7 +58,7 @@ public class MypageServiceApiV1 {
         .gender(userEntity.getGender())
         .age(userEntity.getAge())
         .phone(userEntity.getPhone())
-        // .profileImg(userEntity.getProfileImg())
+        .profileImg(userEntity.getProfileImg())
         .imgType(userEntity.getImgType())
         .email(userEntity.getEmail())
         .build();
@@ -69,8 +75,8 @@ public class MypageServiceApiV1 {
     }
 
     @Transactional
-    public ResponseEntity<?> updateMyinfoData(ReqMyinfoUpdateDTO reqMyinfoUpdateDTO){
-        Optional<UserEntity> userEntityOptional = userRepository.findByIdx(reqMyinfoUpdateDTO.getIdx());
+    public ResponseEntity<?> updateMyinfoData(ReqMyinfoUpdateDTO reqMyinfoUpdateDTO, CustomUserDetails customUserDetails){
+        Optional<UserEntity> userEntityOptional = userRepository.findByEmail(customUserDetails.getUsername());
 
         if(!userEntityOptional.isPresent()){
             throw new BadRequestException("해당 사용자가 존재하지 않습니다.");
@@ -87,12 +93,22 @@ public class MypageServiceApiV1 {
 
         // TODO : 이미지 업로드
 
-        // String imgBase64 = Base64.getEncoder().encodeToString(reqMyinfoUpdateDTO.getProfileImg().getBytes());
+        String filePath;
+        String fileName = "profile_" + customUserDetails.getLoginUserDTO().getUser().getIdx() + "." + reqMyinfoUpdateDTO.getFile().getContentType().split("/")[1];
+        try {
+            
+            filePath = uploadPath + File.separator + fileName;
+            reqMyinfoUpdateDTO.getFile().transferTo(new File(filePath));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BadRequestException("파일 업로드 오류");
+        }
 
+        // String imgBase64 = Base64.getEncoder().encodeToString(reqMyinfoUpdateDTO.getProfileImg().getBytes());
         // String imgUrl = "data:"+ reqMyinfoUpdateDTO.getProfileImg().getContentType() + ";base64," + imgBase64;
 
-        userEntity.setProfileImg(reqMyinfoUpdateDTO.getProfileImg());
-        userEntity.setImgType(reqMyinfoUpdateDTO.getImgType());
+        userEntity.setProfileImg("/upload/"+ fileName);
+        // userEntity.setImgType(reqMyinfoUpdateDTO.getImgType());
         userEntity.setNickname(reqMyinfoUpdateDTO.getNickname());
         userEntity.setGender(reqMyinfoUpdateDTO.getGender());
         userEntity.setAge(reqMyinfoUpdateDTO.getAge());

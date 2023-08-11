@@ -35,6 +35,16 @@ public class SecurityConfig {
                 new MvcRequestMatcher(null, "/api/*/admin/**")
             )
             .hasRole("ADMIN")
+            .requestMatchers(
+                new MvcRequestMatcher(null, "/css/**"),
+                new MvcRequestMatcher(null, "/js/**"),
+                new MvcRequestMatcher(null, "/img/**")
+            )
+            .permitAll()
+            .requestMatchers(
+                new MvcRequestMatcher(null, "/static/**")
+            )
+            .permitAll()
             .anyRequest()
             .permitAll()
         );

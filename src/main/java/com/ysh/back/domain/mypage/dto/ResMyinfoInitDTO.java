@@ -12,7 +12,7 @@ import lombok.ToString;
 @Builder
 @ToString
 public class ResMyinfoInitDTO {
-    private Byte[] profileImg;
+    private String profileImg;
     private String imgType;
     private String nickname;
     private String name;

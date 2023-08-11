@@ -63,7 +63,7 @@ public class UserEntity {
     // TODO : 이미지 업로드
     @Lob
     @Column(name = "profile_img")
-    private Byte[] profileImg;
+    private String profileImg;
 
     @Column(name = "img_type")
     @ColumnDefault("png")

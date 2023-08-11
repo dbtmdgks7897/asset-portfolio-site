@@ -1,5 +1,7 @@
 package com.ysh.back.domain.mypage.dto;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -17,10 +19,11 @@ import lombok.ToString;
 @ToString
 public class ReqMyinfoUpdateDTO {
     // TODO : 이미지 업로드
-    private Long idx;
-    private Byte[] profileImg;
+    // private Long idx;
+    // private Byte[] profileImg;
     // private MultipartFile profileImg;
-    private String imgType;
+    // private String imgType;
+    private MultipartFile file;
     @NotBlank(message = "닉네임을 입력해주세요")
     private String nickname;
     private String gender;

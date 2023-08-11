@@ -74,6 +74,7 @@ public class ResMyactiveDTO {
             .idx(commentEntity.getIdx())
             .content(commentEntity.getContent())
             .board(Board.fromEntity(commentEntity.getBoardEntity()))
+            .createdAt(commentEntity.getCreatedAt().format(DateTimeFormatter.ofPattern(("yy/MM/dd"))))
             .recommendCount(commentEntity.getRecommendCount())
             .build();
         }

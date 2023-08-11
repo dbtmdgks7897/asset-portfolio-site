@@ -128,6 +128,7 @@ import { login } from "@/utils/login";
 export default {
   data() {
     return {
+      selectedFile: null,
       isUpdateInfo: false,
       myData: null,
       anonProfileImg: require("../../assets/img/anonymous.png"),
@@ -141,23 +142,7 @@ export default {
   },
   methods: {
     onFileSelected(event) {
-      const file = event.target.files[0];
-      this.myData.profileImg = file;
-
-      if (file) {
-        // FileReader 객체 생성
-        const reader = new FileReader();
-
-        // 파일 로드가 완료되면 이미지 URL을 업데이트
-        reader.onload = () => {
-          // console.log(reader.result);
-          // this.myData.profileImg = reader.result;
-          // this.myData.imgType = reader.result.split("/")[1].split(";")[0];
-        };
-
-        // 이미지 파일을 Data URL 형태로 읽기
-        reader.readAsDataURL(file);
-      }
+      this.selectedFile = event.target.files[0];
     },
     changeUpdateInter() {
       document.querySelectorAll(".changeableInput").forEach((element) => {
@@ -175,20 +160,30 @@ export default {
       //   age: this.myData.age,
       //   phone: this.myData.phone
       // }
+      // const dto = {
+      //   nickname: this.myData.nickname,
+      //   gender: this.myData.gender,
+      //   age: this.myData.age,
+      //   phone: this.myData.phone,
+      // };
+
+      // console.log(dto.nickname)
       const formData = new FormData();
-      formData.append("idx", login.idx);
-      formData.append("profileImg", this.myData.profileImg);
-      formData.append("imgType", this.myData.imgType);
+      this.myData.age == null ? 0 : this.myData.age;
+      formData.append("file", this.selectedFile);
+      // formData.append("dto", dto);
+      // formData.append("profileImg", this.myData.profileImg);
+      // formData.append("imgType", this.myData.imgType);
       formData.append("nickname", this.myData.nickname);
       formData.append("gender", this.myData.gender);
       formData.append("age", this.myData.age);
       formData.append("phone", this.myData.phone);
 
-      console.log(formData.get("idx"));
+      // console.log(formData.get("idx"));
 
       // myData의 name만 지금 이름으로
       this.$axios
-        .post(`/api/v1/mypage/infoUp`, formData, {
+        .post(`/api/v1/mypage/info/update`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -197,12 +192,14 @@ export default {
           if (res.data.code === 0) {
             console.log(res.data);
             this.changeUpdateInter();
+            this.getMyinfoInitData();
           } else {
             alert(res.data.message);
           }
         })
         .catch((err) => {
-          alert(err.response.data.message);
+          // alert(err.response.data.message);
+          console.log(err);
         });
     },
     getMyinfoInitData() {
