@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ysh.back.config.security.auth.CustomUserDetails;
 import com.ysh.back.domain.board.dto.ReqBoardPostDTO;
-import com.ysh.back.domain.board.dto.ReqBoardRecommendDTO;
 import com.ysh.back.domain.board.dto.ReqBoardReportDTO;
 import com.ysh.back.domain.board.dto.ReqBoardUpdateDTO;
 import com.ysh.back.domain.board.service.BoardServiceApiV1;

@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.ysh.back.model.board.entity.BoardEntity;
 

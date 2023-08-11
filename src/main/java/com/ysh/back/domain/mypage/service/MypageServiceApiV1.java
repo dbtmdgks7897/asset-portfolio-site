@@ -1,8 +1,6 @@
 package com.ysh.back.domain.mypage.service;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,7 +12,6 @@ import org.springframework.stereotype.Service;
 import com.ysh.back.common.dto.ResponseDTO;
 import com.ysh.back.common.exception.BadRequestException;
 import com.ysh.back.config.security.auth.CustomUserDetails;
-import com.ysh.back.domain.mypage.dto.ReqMyinfoInitDTO;
 import com.ysh.back.domain.mypage.dto.ReqMyinfoUpdateDTO;
 import com.ysh.back.domain.mypage.dto.ResMyactiveDTO;
 import com.ysh.back.domain.mypage.dto.ResMyinfoInitDTO;

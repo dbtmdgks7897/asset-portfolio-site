@@ -79,7 +79,12 @@
                 <span>{{ comment.user.nickname }}</span> |
                 <span>{{ comment.createdAt }}</span
                 ><br />
-                <span>{{ comment.content }}</span>
+                <input v-if="commentRewriteBoxShow && login.idx == comment.user.idx" type="text" id="commentRewriteContent" :value="comment.content" @keydown.enter="comRewriteButton(comment.idx);commentRewriteBoxShow = false;">
+                <span v-else>{{ comment.content }}</span>
+              </div>
+              <div v-if="login.isLogined && login.idx == comment.user.idx" class="comment-tool">
+                <button @click="commentRewriteBoxShow = !commentRewriteBoxShow" class="btn comment-tool-button"><span><i class="bi bi-pencil-square"></i></span></button>
+                <button @click="comDeleteButton(comment.idx)" class="btn comment-tool-button"><span><i class="bi bi-x-lg"></i></span></button>
               </div>
               <div v-if="login.isLogined" class="buttons">
                 <!-- comment 테이블에서 1대N 매핑한 후 -->
@@ -125,8 +130,11 @@ export default {
       boardDetailsData: null,
       boardCommentListData: null,
       router,
+      
       commentContent: null,
       commentShow: false,
+      commentRewriteContent: null,
+      commentRewriteBoxShow: false,
     };
   },
   mounted() {
@@ -302,6 +310,41 @@ export default {
           alert(err);
         });
     },
+    comRewriteButton(commentIdx) {
+      this.commentRewriteContent = document.querySelector("#commentRewriteContent").value;
+      const dto = {
+        content: this.commentRewriteContent,
+      }
+      this.$axios
+      .put(`/api/v1/comment/${commentIdx}`, dto, {
+        headers: {
+          'Content-Type' : 'application/json;charset=utf-8;'
+        }
+      }).then((res) => {
+        if(res.data.code === 0){
+          alert(res.data.message)
+          this.getBoardCommentListFn();
+        } else {
+          alert(res.data)
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    comDeleteButton(commentIdx) {
+      this.$axios
+      .delete(`/api/v1/comment/${commentIdx}`)
+      .then((res) => {
+        if(res.data.code === 0){
+          alert(res.data.message)
+          this.getBoardCommentListFn();
+        } else {
+          alert(res.data)
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    }
   },
 };
 </script>
@@ -420,6 +463,31 @@ button {
         .text {
           max-width: 40vw;
           text-align: left;
+        }
+
+        .comment-tool{
+          margin-left: auto;
+          .comment-tool-button {
+        width: 2vw;
+        height: 2vw;
+        font-size: 0.5vw;
+        border-color: blueviolet;
+        padding: 0;
+        margin: 1px;
+        &:hover {
+          background-color: blueviolet;
+          border-color: rgb(61, 16, 102);
+          color: white;
+          span {
+            color: white;
+          }
+        }
+        span {
+          text-align: center;
+          font-size: 1vw;
+          color: blueviolet;
+        }
+      }
         }
 
         .buttons {

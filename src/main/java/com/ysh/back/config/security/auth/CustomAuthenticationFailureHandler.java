@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ysh.back.common.dto.ResponseDTO;
-import com.ysh.back.common.exception.BadRequestException;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

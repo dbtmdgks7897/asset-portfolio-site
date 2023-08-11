@@ -14,7 +14,6 @@ import com.ysh.back.common.dto.ResponseDTO;
 import com.ysh.back.common.exception.BadRequestException;
 import com.ysh.back.config.security.auth.CustomUserDetails;
 import com.ysh.back.domain.board.dto.ReqBoardPostDTO;
-import com.ysh.back.domain.board.dto.ReqBoardRecommendDTO;
 import com.ysh.back.domain.board.dto.ReqBoardReportDTO;
 import com.ysh.back.domain.board.dto.ReqBoardUpdateDTO;
 import com.ysh.back.domain.board.dto.ResBoardDetailsDTO;
@@ -147,7 +146,7 @@ public class BoardServiceApiV1 {
     }
 
     public ResponseEntity<?> getBoardCommentListData(Long boardIdx) {
-        List<CommentEntity> commentEntityList = commentRepository.findByBoardEntityIdxOrderByCreatedAtDesc(boardIdx);
+        List<CommentEntity> commentEntityList = commentRepository.findByBoardEntityIdxAndDeletedAtNullOrderByCreatedAtDesc(boardIdx);
         
         if(commentEntityList.isEmpty()){
             return null;

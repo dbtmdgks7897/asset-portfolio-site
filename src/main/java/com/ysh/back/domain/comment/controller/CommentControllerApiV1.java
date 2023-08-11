@@ -3,16 +3,18 @@ package com.ysh.back.domain.comment.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ysh.back.config.security.auth.CustomUserDetails;
 import com.ysh.back.domain.comment.dto.ReqCommentPostDTO;
-import com.ysh.back.domain.comment.dto.ReqCommentRecommendDTO;
 import com.ysh.back.domain.comment.dto.ReqCommentReportDTO;
+import com.ysh.back.domain.comment.dto.ReqCommentUpdateDTO;
 import com.ysh.back.domain.comment.service.CommentServiceApiV1;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,6 +40,28 @@ public class CommentControllerApiV1{
     ){
         return commentServiceApiV1.postCommentData(boardIdx, reqCommentPostDTO, customUserDetails);
     }
+
+    @Operation(summary = "댓글 수정",
+    description = "수정한다. 댓글")
+    @PutMapping("/{commentIdx}")
+    public ResponseEntity<?> updateCommentData(
+        @PathVariable Long commentIdx,
+        @Valid @RequestBody ReqCommentUpdateDTO reqCommentUpdateDTO,
+        @AuthenticationPrincipal CustomUserDetails customUserDetails
+   ){
+        return commentServiceApiV1.updateCommentData(commentIdx, reqCommentUpdateDTO, customUserDetails);
+    }
+
+    @Operation(summary = "댓글 삭제",
+    description = "삭제한다. 댓글")
+    @DeleteMapping("/{commentIdx}")
+    public ResponseEntity<?> deleteCommentData(
+        @PathVariable Long commentIdx,
+        @AuthenticationPrincipal CustomUserDetails customUserDetails
+   ){
+        return commentServiceApiV1.deleteCommentData(commentIdx, customUserDetails);
+    }
+
 
 
     @Operation(summary = "댓글 신고",

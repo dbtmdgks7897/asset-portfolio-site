@@ -73,7 +73,8 @@ ul {
 
 .block-2 {
   @include block;
-  background-color: rgba(93, 92, 94, 0.151);
+  // background-color: rgba(93, 92, 94, 0.151);
+  background: linear-gradient(rgba(255, 255, 255, 0), #6e00a1);
   font-size: 5vw;
   color: white;
   letter-spacing: 1vw;

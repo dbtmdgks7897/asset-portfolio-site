@@ -1,8 +1,10 @@
 package com.ysh.back.domain.comment.service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -11,8 +13,8 @@ import com.ysh.back.common.dto.ResponseDTO;
 import com.ysh.back.common.exception.BadRequestException;
 import com.ysh.back.config.security.auth.CustomUserDetails;
 import com.ysh.back.domain.comment.dto.ReqCommentPostDTO;
-import com.ysh.back.domain.comment.dto.ReqCommentRecommendDTO;
 import com.ysh.back.domain.comment.dto.ReqCommentReportDTO;
+import com.ysh.back.domain.comment.dto.ReqCommentUpdateDTO;
 import com.ysh.back.model.auditLog.entity.AuditLogEntity;
 import com.ysh.back.model.auditLog.repository.AuditLogRepository;
 import com.ysh.back.model.board.entity.BoardEntity;
@@ -77,6 +79,77 @@ public class CommentServiceApiV1 {
             ResponseDTO.builder()
             .code(0)
             .message("댓글 작성 완료")
+            .build()   
+        ,HttpStatus.OK);
+    }
+
+    @Transactional
+    public ResponseEntity<?> updateCommentData(Long commentIdx, ReqCommentUpdateDTO reqCommentUpdateDTO, CustomUserDetails customUserDetails) {
+        Optional<CommentEntity> commentEntityOptional = commentRepository.findByIdx(commentIdx);
+
+        if(!commentEntityOptional.isPresent()){
+            throw new BadRequestException("해당 댓글 정보가 없습니다.");
+        }
+        CommentEntity commentEntity = commentEntityOptional.get();
+
+        if(commentEntity.getUserEntity().getIdx() != userRepository.findByEmail(customUserDetails.getUsername()).get().getIdx()){
+            throw new BadRequestException("다른 사용자의 댓글입니다.");
+        }
+        String oldVal = commentEntity.getContent();
+        commentEntity.setContent(reqCommentUpdateDTO.getContent());
+
+        AuditLogEntity auditLog = AuditLogEntity.builder()
+        .tableName("comment")
+        .userIdx(userRepository.findByEmail(customUserDetails.getUsername()).get().getIdx())
+        .rowId(commentIdx)
+        .operation("UPDATE")
+        .reason("댓글 수정")
+        .oldValue(oldVal)
+        .newValue(reqCommentUpdateDTO.getContent())
+        .build();
+
+        auditLogRepository.save(auditLog);
+
+        return new ResponseEntity<>(
+            ResponseDTO.builder()
+            .code(0)
+            .message("댓글 수정 완료")
+            .build()   
+        ,HttpStatus.OK);
+    }
+
+    @Transactional
+    public ResponseEntity<?> deleteCommentData(Long commentIdx, CustomUserDetails customUserDetails) {
+        Optional<CommentEntity> commentEntityOptional = commentRepository.findByIdx(commentIdx);
+
+        if(!commentEntityOptional.isPresent()){
+            throw new BadRequestException("해당 댓글 정보가 없습니다.");
+        }
+
+        CommentEntity commentEntity = commentEntityOptional.get();
+
+        if(commentEntity.getUserEntity().getIdx() != userRepository.findByEmail(customUserDetails.getUsername()).get().getIdx()){
+            throw new BadRequestException("다른 사용자의 댓글입니다.");
+        }
+
+        String oldVal = commentEntity.getContent();
+        commentEntity.setDeletedAt(LocalDateTime.now());
+
+        AuditLogEntity auditLog = AuditLogEntity.builder()
+        .tableName("comment")
+        .userIdx(userRepository.findByEmail(customUserDetails.getUsername()).get().getIdx())
+        .rowId(commentIdx)
+        .operation("DELETE")
+        .reason("댓글 삭제")
+        .oldValue(oldVal)
+        .build();
+
+        auditLogRepository.save(auditLog);
+
+        return new ResponseEntity<>(
+            ResponseDTO.builder()
+            .code(0)
+            .message("댓글 삭제 완료")
             .build()   
         ,HttpStatus.OK);
     }
