@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { login } from '@/utils/login'
 import PageMain from '@/views/PageMain'
 import PageBoardList from '@/views/board/PageBoardList'
 import PageBoardWrite from '@/views/board/PageBoardWrite'
@@ -94,6 +95,9 @@ const routes = [
     },
 ]
 
+const authNotRequiredComponents = ['PageMain', 'PageBoardList', 'PageJoin', 'PageLogin'];
+
+
 const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
     scrollBehavior () {
@@ -102,4 +106,14 @@ const router = createRouter({
     routes
   })
   
+  router.beforeEach((to, from, next) => {
+    if (!authNotRequiredComponents.includes(to.name) && !login.isLogined) {
+      // 인증이 필요한 페이지에 접근하려고 할 때
+      alert('로그인이 필요한 서비스입니다.');
+      next({ name: 'PageLogin' }); // 로그인 페이지로 이동
+    } else {
+      next(); // 다음 단계로 진행
+    }
+  });
+
   export default router
