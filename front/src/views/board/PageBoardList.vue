@@ -190,8 +190,8 @@ export default {
             this.pageNum = 1;
           }
         })
-        .catch((res) => {
-          console.error(res);
+        .catch((err) => {
+          alert(err.response.data.message);
         });
     },
   },

@@ -7,7 +7,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.ysh.back.common.dto.LoginUserDTO;
-import com.ysh.back.common.exception.BadRequestException;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -53,7 +52,7 @@ public class CustomUserDetails implements UserDetails {
                 // 정지일, 정지사유 삭제해야함
                 return true;
             }
-            throw new BadRequestException("계정이 정지되었습니다. \n사유: " + loginUserDTO.getUser().getSuspendReason());
+            return false;
         }
         return true;
     }

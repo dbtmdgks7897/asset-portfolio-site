@@ -68,7 +68,7 @@
               </button>
             </div>
           </div>
-          <ul>
+          <ul v-if="boardCommentListData">
             <!-- v-for로 반복 돌림 -->
             <li
               v-for="comment in boardCommentListData"
@@ -162,6 +162,8 @@ export default {
           if (res.data.code === 0) {
             console.log(res.data.data);
             this.boardCommentListData = res.data.data.commentList;
+          } else if(res.data === '') {
+            this.boardCommentListData = null;
           }
         })
         .catch((res) => {
@@ -195,7 +197,7 @@ export default {
               }
             })
             .catch((err) => {
-              console.log(err);
+              alert(err.response.data.message);
             });
         } else {
           console.log("누구냐 너");
@@ -218,12 +220,10 @@ export default {
             if (res.data.code === 0) {
               alert("신고 성공");
               this.getBoardDetailsFn();
-            } else {
-              alert(res.data.message);
             }
           })
           .catch((err) => {
-            alert(err);
+            alert(err.response.data.message);
           });
       }
     },
@@ -238,12 +238,10 @@ export default {
           if (res.data.code === 0) {
             alert("추천 성공");
             this.getBoardDetailsFn();
-          } else {
-            alert(res.data.message);
-          }
+          } 
         })
         .catch((err) => {
-          alert(err);
+          alert(err.response.data.message);
         });
     },
     commentButton() {
@@ -263,7 +261,7 @@ export default {
           alert(res.data.data)
         }
       }).catch((err) => {
-        console.log(err)
+        alert(err.response.data.message);
       });
     },
     comReportButton(commentIdx) {
@@ -287,7 +285,7 @@ export default {
             }
           })
           .catch((err) => {
-            alert(err);
+            alert(err.response.data.message);
           });
       }
     },
@@ -307,7 +305,7 @@ export default {
           }
         })
         .catch((err) => {
-          alert(err);
+          alert(err.response.data.message);
         });
     },
     comRewriteButton(commentIdx) {
@@ -328,7 +326,7 @@ export default {
           alert(res.data)
         }
       }).catch((err) => {
-        console.log(err)
+        alert(err.response.data.message);
       })
     },
     comDeleteButton(commentIdx) {
@@ -342,7 +340,7 @@ export default {
           alert(res.data)
         }
       }).catch((err) => {
-        console.log(err)
+        alert(err.response.data.message);
       })
     }
   },

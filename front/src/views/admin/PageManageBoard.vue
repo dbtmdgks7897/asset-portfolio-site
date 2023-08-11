@@ -128,7 +128,7 @@ export default {
           }
         })
         .catch((err) => {
-          console.log(err);
+          alert(err.response.data.message);
         });
     },
     searchFn() {
@@ -146,7 +146,7 @@ export default {
           }
         })
         .catch((err) => {
-          console.log(err);
+          alert(err.response.data.message);
         });
     },
     disableButton(){
@@ -170,7 +170,7 @@ export default {
           }
         })
         .catch((err) => {
-          console.log(err);
+          alert(err.response.data.message);
         });
       }
       
@@ -187,7 +187,7 @@ export default {
           }
         })
         .catch((err) => {
-          console.log(err);
+          alert(err.response.data.message);
         });
     },
     deleteButton(){
@@ -207,7 +207,7 @@ export default {
           }
         })
         .catch((err) => {
-          console.log(err);
+          alert(err.response.data.message);
         });
       }
     },
@@ -223,7 +223,7 @@ export default {
           }
         })
         .catch((err) => {
-          console.log(err);
+          alert(err.response.data.message);
         });
     }
   },

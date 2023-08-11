@@ -202,7 +202,7 @@ export default {
           }
         })
         .catch((err) => {
-          console.log(err);
+          alert(err.response.data.message);
         });
     },
     getMyinfoInitData() {
@@ -218,7 +218,7 @@ export default {
           }
         })
         .catch((err) => {
-          alert(err);
+          alert(err.response.data.message);
         });
     },
     leaveButton() {
@@ -244,7 +244,7 @@ export default {
             }
           })
           .catch((err) => {
-            alert(err);
+            alert(err.response.data.message);
           });
       }
     },

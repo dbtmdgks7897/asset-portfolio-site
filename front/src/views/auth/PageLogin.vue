@@ -80,7 +80,8 @@ export default {
           // alert("실패");
         })
         .catch(function (error) {
-          console.log(error);
+          alert(error.response.data.message);
+          console.log(error)
         });
     },
   },

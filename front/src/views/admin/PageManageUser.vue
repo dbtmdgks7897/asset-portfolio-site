@@ -202,7 +202,7 @@ export default {
           }
         })
         .catch((err) => {
-          console.log(err);
+          alert(err.response.data.message);
         });
     },
     searchFn() {
@@ -226,7 +226,7 @@ export default {
           }
         })
         .catch((err) => {
-          console.log(err);
+          alert(err.response.data.message);
         });
     },
     suspendButton() {
@@ -249,7 +249,7 @@ export default {
           }
         })
         .catch((err) => {
-          console.log(err);
+          alert(err.response.data.message);
         });
     },
     dissuspendButton() {
@@ -269,7 +269,7 @@ export default {
             }
           })
           .catch((err) => {
-            console.log(err);
+            alert(err.response.data.message);
           });
       }
     },
@@ -295,7 +295,7 @@ export default {
           }
         })
         .catch((err) => {
-          console.log(err);
+          alert(err.response.data.message);
         });
       }
     },
@@ -311,7 +311,7 @@ export default {
           }
         })
         .catch((err) => {
-          console.log(err);
+          alert(err.response.data.message);
         });
     },
   },

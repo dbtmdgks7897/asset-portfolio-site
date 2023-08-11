@@ -237,6 +237,7 @@ ul {
   background-color: rgba(255, 255, 255, 0);
   border: 0px;
   color: white;
+  font-size: 1.5vh;
 }
 
 .border-2px {

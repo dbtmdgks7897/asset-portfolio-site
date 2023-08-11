@@ -75,6 +75,8 @@ export default {
       } else {
         alert(res.data.message);
       }
+    }).catch((err) => {
+      alert(err.response.data.message);
     });
   },
   methods: {
@@ -119,7 +121,7 @@ export default {
             }
           })
           .catch((err) => {
-            alert(err);
+            alert(err.response.data.message);
           });
       }
     },

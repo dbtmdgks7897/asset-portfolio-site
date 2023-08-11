@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.ysh.back.common.dto.ResponseDTO;
 import com.ysh.back.common.exception.BadRequestException;
+import com.ysh.back.common.exception.LoginException;
 
 @RestControllerAdvice
 public class CommonExceptionHandler {
@@ -20,7 +21,17 @@ public class CommonExceptionHandler {
                         .code(1)
                         .message(exception.getMessage())
                         .build(),
-                HttpStatus.OK
+                HttpStatus.BAD_REQUEST
+        );
+    }
+    @ExceptionHandler(LoginException.class)
+    public HttpEntity<?> handleLoginException(Exception exception){
+        return new ResponseEntity<>(
+                ResponseDTO.builder()
+                        .code(1)
+                        .message(exception.getMessage())
+                        .build(),
+                HttpStatus.INTERNAL_SERVER_ERROR
         );
     }
 }
