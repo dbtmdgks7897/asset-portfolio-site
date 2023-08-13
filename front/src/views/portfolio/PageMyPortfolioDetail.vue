@@ -2,7 +2,7 @@
   <div :class="[toggle.show ? 'sidebar-margin' : 'sidebar-margin-none']">
     <div class="contents">
       <div class="contents-head">
-        <span>내 포트폴리오</span>
+        <span>{{ portfolioName }} 포트폴리오</span>
       </div>
       <div class="contents-body grid">
         <!-- idx 가져와서 링크 받아야함 -->
@@ -108,11 +108,10 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 export default {
   data() {
     return {
+      portfolioIdx: localStorage.getItem("portfolioIdx"),
+      portfolioName: localStorage.getItem("portfolioName"),
       data,
       options,
-      portfolioList: null,
-      portfolioName: null,
-      portfolioDescription: "설명 없음",
     };
   },
   mounted() {
@@ -163,10 +162,7 @@ export default {
     selectPortfolio(idx, name){
       localStorage.setItem("portfolioIdx", idx);
       localStorage.setItem("portfolioName", name);
-      this.$router.push({
-                  name: 'PageMyPortfolioDetail',
-                  params: { idx: idx },
-                })
+      this.$router.push(`/portfolio/${idx}`);
     }
   },
 };

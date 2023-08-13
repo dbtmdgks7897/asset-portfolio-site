@@ -16,6 +16,7 @@ import PageStockDomestic from '@/views/portfolio/asset/stock/PageStockDomestic'
 import PageStockOverseas from '@/views/portfolio/asset/stock/PageStockOverseas'
 import PagePortfolioTransaction from '@/views/portfolio/PagePortfolioTransaction'
 import PageMyPortfolio from '@/views/portfolio/PageMyPortfolio'
+import PageMyPortfolioDetail from '@/views/portfolio/PageMyPortfolioDetail'
 
 
 
@@ -81,6 +82,11 @@ const routes = [
         component: PageMyPortfolio
     },
     {
+        path: '/portfolio/:idx',
+        name: 'PageMyPortfolioDetail',
+        component: PageMyPortfolioDetail
+    },
+    {
         path: '/portfolio/asset',
         name: 'PageAssetMain',
         component: PageAssetMain
@@ -99,7 +105,7 @@ const routes = [
         path: '/portfolio/transaction',
         name: 'PageAssetTransaction',
         component: PagePortfolioTransaction
-    }
+    },
 ]
 
 // const authNotRequiredComponents = ['PageMain', 'PageBoardList', 'PageJoin', 'PageLogin'];

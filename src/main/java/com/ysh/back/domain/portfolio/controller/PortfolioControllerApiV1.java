@@ -3,6 +3,7 @@ package com.ysh.back.domain.portfolio.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +25,13 @@ public class PortfolioControllerApiV1 {
     @Autowired
     PortfolioServiceApiV1 portfolioServiceApiV1;
 
-
+    @Operation(summary = "내 포트폴리오 리스트", description = "현재 유저 idx로 생성된 포트폴리오 리스트 가져옴")
+    @GetMapping()
+    public ResponseEntity<?> getPortfolioListData(
+        @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ){
+        return portfolioServiceApiV1.getPortfolioListData(customUserDetails);
+    }
 
     @Operation(summary = "포트폴리오 생성", description = "포트폴리오 이름만 받아와 생성")
     @PostMapping()

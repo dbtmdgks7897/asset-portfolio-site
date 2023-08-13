@@ -7,7 +7,6 @@ export const login = reactive({
     nickname: null,
     img: null,
     roles: null,
-
     getUserProfile() {
         axios
         .get('/api/v1/auth/my')
