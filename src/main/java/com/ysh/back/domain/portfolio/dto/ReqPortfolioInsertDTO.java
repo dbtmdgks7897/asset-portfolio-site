@@ -15,4 +15,6 @@ public class ReqPortfolioInsertDTO {
     @NotBlank(message = "포트폴리오 이름을 작성해주세요")
     private String name;
 
+    private String description;
+
 }

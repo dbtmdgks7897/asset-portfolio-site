@@ -120,6 +120,7 @@ CREATE TABLE `portfolio` (
     `idx` INT PRIMARY KEY AUTO_INCREMENT,
     `user_idx` BIGINT NOT NULL,
     `name` VARCHAR(100) NOT NULL,
+    `description` VARCHAR(500),
     `created_at` DATETIME DEFAULT (CURRENT_TIMESTAMP),
     `updated_at` DATETIME,
     `deleted_at` DATETIME

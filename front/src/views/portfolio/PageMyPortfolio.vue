@@ -6,15 +6,87 @@
       </div>
       <div class="contents-body grid">
         <!-- idx 가져와서 링크 받아야함 -->
-        <div v-for="portfolio in portfolioList" :key="portfolio" class="portfolio">
+        <div
+          v-for="portfolio in portfolioList"
+          :key="portfolio"
+          class="portfolio"
+        >
           <div class="portfolio-head"><span>(포트폴리오 이름)</span></div>
-          <div class="portfolio-body"><span>
-            <Pie :data="data" :options="options" />
-          </span></div>
+          <div class="portfolio-body">
+            <span>
+              <Pie :data="data" :options="options" />
+            </span>
+          </div>
         </div>
-        <div class="portfolio portfolio-add flex" @click="addPortfolioButton">
+        <div
+          class="portfolio portfolio-add flex"
+          data-bs-toggle="modal"
+          data-bs-target="#exampleModal"
+          data-bs-whatever="@mdo"
+        >
           <span class="icon"><i class="bi bi-plus-square"></i></span>
           <span> Add Portfolio </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="modal fade"
+    id="exampleModal"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">New message</h1>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label"
+                >포트폴리오 이름 :</label
+              >
+              <input
+                v-model="portfolioName"
+                type="text"
+                class="form-control"
+                id="recipient-name"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="message-text" class="col-form-label">추가 설명</label>
+              <textarea
+                v-model="portfolioDescription"
+                class="form-control"
+                id="message-text"
+              ></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            닫기
+          </button>
+          <button
+            @click="addPortfolioButton"
+            data-bs-toggle="modal"
+            type="button"
+            class="btn btn-primary"
+          >
+            추가
+          </button>
         </div>
       </div>
     </div>
@@ -23,32 +95,54 @@
 
 <script setup>
 import { toggle } from "@/utils/toggle";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
-import { Pie } from 'vue-chartjs'
-import { data, options } from '@/utils/chartConfig'
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Pie } from "vue-chartjs";
+import { data, options } from "@/utils/chartConfig";
 
-ChartJS.register(ArcElement, Tooltip, Legend)
-
+ChartJS.register(ArcElement, Tooltip, Legend);
 </script>
 <script>
 export default {
   data() {
     return {
-        data,
-        options,
-        portfolioList: null,
+      data,
+      options,
+      portfolioList: null,
+      portfolioName: null,
+      portfolioDescription: "설명 없음",
     };
   },
   mounted() {
     console.log();
   },
   components: { Pie },
-  methods :{
-    addPortfolioButton () {
-
-    }
-  }
-
+  methods: {
+    getPortfolioList() {},
+    addPortfolioButton() {
+      const dto = {
+        name: this.portfolioName,
+        description: this.portfolioDescription,
+      };
+      this.$axios
+        .post(`/api/v1/portfolio`, dto, {
+          headers: {
+            "Content-Type": "application/json;charset=utf-8;",
+          },
+        })
+        .then((res) => {
+          if (res.data.code === 0) {
+            console.log(res.data);
+            this.changeUpdateInter();
+            this.getMyinfoInitData();
+          } else {
+            alert(res.data.message);
+          }
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+        });
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

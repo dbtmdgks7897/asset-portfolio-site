@@ -69,7 +69,10 @@
                 <button
                   v-else
                   class="btn my-blue-button"
-                  @click="dissuspendUserIdx = user.idx; dissuspendButton()"
+                  @click="
+                    dissuspendUserIdx = user.idx;
+                    dissuspendButton();
+                  "
                 >
                   <span>활</span>
                 </button>
@@ -77,12 +80,21 @@
                 <button
                   v-if="user.deletedAt == null"
                   class="btn my-button"
-                  @click="deleteUserIdx = user.idx; deleteButton()"
+                  @click="
+                    deleteUserIdx = user.idx;
+                    deleteButton();
+                  "
                 >
                   <span>탈</span>
                 </button>
-                <button v-else class="btn my-blue-button"
-                @click="restoreUserIdx = user.idx; restoreButton()">
+                <button
+                  v-else
+                  class="btn my-blue-button"
+                  @click="
+                    restoreUserIdx = user.idx;
+                    restoreButton();
+                  "
+                >
                   <span>복</span>
                 </button>
               </td>
@@ -274,29 +286,29 @@ export default {
       }
     },
     deleteButton() {
-      const reason = prompt('해당 유저의 정지 사유를 입력해주세요');
+      const reason = prompt("해당 유저의 정지 사유를 입력해주세요");
       const dto = {
-        reason : reason
-      }
-      if(reason != ""){
-        console.log(reason)
+        reason: reason,
+      };
+      if (reason != "") {
+        console.log(reason);
         this.$axios
-        .put(`/api/v1/admin/user/${this.deleteUserIdx}/deletedAt`, dto, {
-          headers: {
-            'Content-Type' : 'application/json;charset=utf-8;'
-          }
-        })
-        .then((res) => {
-          if (res.data.code === 0) {
-            alert(res.data.message);
-            this.getUserList();
-          } else {
-            alert(res.data);
-          }
-        })
-        .catch((err) => {
-          alert(err.response.data.message);
-        });
+          .put(`/api/v1/admin/user/${this.deleteUserIdx}/deletedAt`, dto, {
+            headers: {
+              "Content-Type": "application/json;charset=utf-8;",
+            },
+          })
+          .then((res) => {
+            if (res.data.code === 0) {
+              alert(res.data.message);
+              this.getUserList();
+            } else {
+              alert(res.data);
+            }
+          })
+          .catch((err) => {
+            alert(err.response.data.message);
+          });
       }
     },
     restoreButton() {

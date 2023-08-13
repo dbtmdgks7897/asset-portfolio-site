@@ -201,8 +201,7 @@ export default {
           }
         })
         .catch((err) => {
-          // alert(err.response.data.message);
-          console.log(err);
+          alert(err.response.data.message);
         });
     },
     getMyinfoInitData() {

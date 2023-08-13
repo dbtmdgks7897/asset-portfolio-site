@@ -37,8 +37,8 @@ public class TransactionEntity {
     private Integer idx;
 
     @ManyToOne
-    @JoinColumn(name = "portfolio_idx", referencedColumnName = "idx", updatable = false, nullable = false)
-    private PortfolioEntity portfolioEntity;
+    @JoinColumn(name = "user_idx", referencedColumnName = "idx", updatable = false, nullable = false)
+    private UserEntity userEntity;
 
     @ManyToOne
     @JoinColumn(name = "asset_idx", referencedColumnName = "idx", updatable = false, nullable = false)
