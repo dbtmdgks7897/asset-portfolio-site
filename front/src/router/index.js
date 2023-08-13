@@ -11,10 +11,12 @@ import PageMyinfo from '@/views/mypage/PageMyinfo'
 import PageMyactive from '@/views/mypage/PageMyactive'
 import PageManageUser from '@/views/admin/PageManageUser'
 import PageManageBoard from '@/views/admin/PageManageBoard'
-import PageAssetMain from '@/views/asset/PageAssetMain'
-import PageStockDomestic from '@/views/asset/stock/PageStockDomestic'
-import PageStockOverseas from '@/views/asset/stock/PageStockOverseas'
-import PageAssetTransaction from '@/views/asset/PageAssetTransaction'
+import PageAssetMain from '@/views/portfolio/asset/PageAssetMain'
+import PageStockDomestic from '@/views/portfolio/asset/stock/PageStockDomestic'
+import PageStockOverseas from '@/views/portfolio/asset/stock/PageStockOverseas'
+import PagePortfolioTransaction from '@/views/portfolio/PagePortfolioTransaction'
+import PageMyPortfolio from '@/views/portfolio/PageMyPortfolio'
+
 
 
 const routes = [
@@ -74,25 +76,30 @@ const routes = [
         component: PageManageBoard
     },
     {
-        path: '/asset',
+        path: '/portfolio',
+        name: 'PageMyPortfolio',
+        component: PageMyPortfolio
+    },
+    {
+        path: '/portfolio/asset',
         name: 'PageAssetMain',
         component: PageAssetMain
     },
     {
-        path: '/asset/stock/domestic',
+        path: '/portfolio/asset/stock/domestic',
         name: 'PageStockDomestic',
         component: PageStockDomestic
     },
     {
-        path: '/asset/stock/overseas',
+        path: '/portfolio/asset/stock/overseas',
         name: 'PageStockOverseas',
         component: PageStockOverseas
     },
     {
-        path: '/asset/transaction',
+        path: '/portfolio/transaction',
         name: 'PageAssetTransaction',
-        component: PageAssetTransaction
-    },
+        component: PagePortfolioTransaction
+    }
 ]
 
 // const authNotRequiredComponents = ['PageMain', 'PageBoardList', 'PageJoin', 'PageLogin'];

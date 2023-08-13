@@ -50,23 +50,25 @@
         <div class="side-item" v-if="login.isLogined">
           <div class="SMN_effect-24" v-if="!isSidebarHide">
             <li class="list-group-item list-group-item-dark category">자산</li>
-            <li class="list-group-item list-group-item-dark"><a><span>내 포트폴리오</span></a></li>
+            <li class="list-group-item list-group-item-dark"
+            @click="this.$router.push('/portfolio')"><a><span>내 포트폴리오</span></a></li>
             <li
               class="list-group-item list-group-item-dark"
-              @click="this.$router.push('/asset')"
+              @click="this.$router.push('/portfolio/asset')"
             >
             <a><span>자산 검색</span></a>
             </li>
             <li class="list-group-item list-group-item-dark"><a><span>분석</span></a></li>
             <li
               class="list-group-item list-group-item-dark"
-              @click="this.$router.push('/asset/transaction')"
+              @click="this.$router.push('/portfolio/transaction')"
             >
             <a><span>거래내역</span></a>
             </li>
           </div>
           <div class="SMN_effect-24" v-else>
-            <li class="list-group-item list-group-item-dark category"><a><span>자산</span></a></li>
+            <li class="list-group-item list-group-item-dark category"
+            @click="this.$router.push('/portfolio')"><a><span>자산</span></a></li>
           </div>
         </div>
         <br />

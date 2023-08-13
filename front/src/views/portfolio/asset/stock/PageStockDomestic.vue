@@ -32,14 +32,19 @@
           <table class="table">
             <thead class="table-dark">
               <tr>
-                <th scope="col" colspan="2">여기 뭐넣어야되노</th>
+                <th scope="col">코드</th>
+                <th scope="col">이름</th>
+                <th scope="col">현재가</th>
+                <th scope="col">전일 대비</th>
+                <th scope="col">전일 대비율</th>
+                <th scope="col"></th>
               </tr>
             </thead>
             <tbody>
               <!-- v-for로 반복 돌려서 데이터 가져와서 링크 넣고 뿌려주기 -->
               <tr>
                 <th scope="row">(user.idx)</th>
-                <td rowspan="2">나중에 생각하자</td>
+                <td>나중에 생각하자</td>
               </tr>
             </tbody>
           </table>
@@ -75,7 +80,12 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+
+body{
+  background-color: black;
+}
 .contents {
+  background-color: #fff;
   &-head {
     div {
       width: 20vw;

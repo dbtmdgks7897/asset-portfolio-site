@@ -44,7 +44,9 @@ export default {
   
   data() {
     //변수생성
-    return {};
+    return {
+      
+    };
   },
   methods: {},
 };

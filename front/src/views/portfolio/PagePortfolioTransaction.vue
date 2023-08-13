@@ -55,10 +55,7 @@ import { toggle } from "@/utils/toggle";
 export default {
   data() {
     return {
-      profile: {
-        name: "anonymous",
-        img: require("../../assets/img/anonymous.png"),
-      },
+      
     };
   },
 };
