@@ -7,7 +7,16 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.ysh.back.model.board.entity.BoardEntity;
+import com.ysh.back.model.board.entity.BoardRecommendEntity;
+import com.ysh.back.model.board.entity.BoardReportEntity;
+import com.ysh.back.model.bookmark.entity.BookmarkEntity;
+import com.ysh.back.model.comment.entity.CommentEntity;
+import com.ysh.back.model.comment.entity.CommentRecommendEntity;
+import com.ysh.back.model.comment.entity.CommentReportEntity;
+import com.ysh.back.model.portfolio.entity.PortfolioEntity;
+import com.ysh.back.model.transaction.entity.TransactionEntity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -96,9 +105,36 @@ public class UserEntity {
     @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
     private List<BoardEntity> boardEntityList;
 
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
+    private List<CommentEntity> commentEntityList;
+
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PortfolioEntity> portfolioEntityList;
+
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
+    private List<BookmarkEntity> bookmarkEntityList;
+
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
+    private List<TransactionEntity> transactionEntityList;
+
     @ManyToMany
     @JoinTable(name = "user_roles",
                joinColumns = @JoinColumn(name = "user_idx"),
                inverseJoinColumns = @JoinColumn(name = "roles_idx"))
     private List<RoleEntity> roleEntityList;
+    
+    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    // private List<BoardReportEntity> boardReports;
+
+    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    // private List<CommentReportEntity> commentReports;
+
+    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    // private List<BoardRecommendEntity> boardRecommends;
+
+    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    // private List<CommentRecommendEntity> commentRecommends;
+
+
+
 }

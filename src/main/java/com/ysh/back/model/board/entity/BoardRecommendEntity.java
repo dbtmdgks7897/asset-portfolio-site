@@ -36,4 +36,6 @@ public class BoardRecommendEntity implements Serializable {
     @Column(name = "created_at")
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    
 }

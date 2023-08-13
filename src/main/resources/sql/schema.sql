@@ -11,6 +11,11 @@ DROP TABLE IF EXISTS `roles_authority`;
 DROP TABLE IF EXISTS `audit_log`;
 DROP TABLE IF EXISTS `comment_report`;
 DROP TABLE IF EXISTS `board_report`;
+DROP TABLE IF EXISTS `portfolio`;
+DROP TABLE IF EXISTS `portfolio_detail`;
+DROP TABLE IF EXISTS `bookmark`;
+DROP TABLE IF EXISTS `transaction`;
+DROP TABLE IF EXISTS `asset`;
 SET foreign_key_checks = 1; 
 
 CREATE TABLE `user` (
@@ -110,6 +115,59 @@ CREATE TABLE `comment_report` (
   PRIMARY KEY (comment_idx, user_idx)
 );
 
+-- 포트폴리오(Portfolio) 테이블
+CREATE TABLE `portfolio` (
+    `idx` INT PRIMARY KEY AUTO_INCREMENT,
+    `user_idx` BIGINT NOT NULL,
+    `name` VARCHAR(100) NOT NULL,
+    `created_at` DATETIME DEFAULT (CURRENT_TIMESTAMP),
+    `updated_at` DATETIME,
+    `deleted_at` DATETIME
+);
+
+-- 포트폴리오 디테일(PortfolioDetail) 테이블
+CREATE TABLE `portfolio_detail` (
+    `idx` BIGINT PRIMARY KEY,
+    `portfolio_idx` INT,
+    `asset_idx` INT,
+    `amount` DECIMAL(18,2),
+    `average_purchase_price` DECIMAL(18,2),
+    `total_purchase_price` DECIMAL(18,2),
+    `dividend_month` VARCHAR(20),
+    `dividend_amount` DECIMAL(18,2),
+    `created_at` DATETIME DEFAULT (CURRENT_TIMESTAMP),
+    `updated_at` DATETIME,
+    `deleted_at` DATETIME
+);
+
+-- 자산(Asset) 테이블
+CREATE TABLE `asset` (
+    `idx` INT PRIMARY KEY,
+    `name` VARCHAR(100) NOT NULL,
+    `type` VARCHAR(50) NOT NULL,
+    `price` DECIMAL(18,2)
+);
+
+-- 거래(Transaction) 테이블
+CREATE TABLE `transaction` (
+    `idx` BIGINT PRIMARY KEY,
+    `user_idx` BIGINT,
+    `asset_idx` INT,
+    `type` VARCHAR(10),
+    `amount` DECIMAL(18,2),
+    `price_avg` DECIMAL(18,2),
+    `profit` DECIMAL(18,2),
+    `transaction_date` DATETIME
+);
+
+-- 북마크(Bookmark) 테이블
+CREATE TABLE `bookmark` (
+    `idx` INT PRIMARY KEY,
+    `user_idx` BIGINT,
+    `asset_idx` INT
+);
+
+
 CREATE TABLE `audit_log` (
     `idx` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `table_name` VARCHAR(100) NOT NULL,
@@ -122,7 +180,6 @@ CREATE TABLE `audit_log` (
     `reason` VARCHAR(255),
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
 );
-
 
 CREATE INDEX `idx_board_user_idx` ON `board` (`user_idx`);
 
@@ -149,3 +206,14 @@ ALTER TABLE `user_roles` ADD CONSTRAINT `fk_user_roles_user` FOREIGN KEY (`user_
 ALTER TABLE `user_roles` ADD CONSTRAINT `fk_user_roles_roles` FOREIGN KEY (`roles_idx`) REFERENCES `roles` (`idx`) ON DELETE CASCADE;
 ALTER TABLE `roles_authority` ADD CONSTRAINT `fk_roles_authority_roles` FOREIGN KEY (`roles_idx`) REFERENCES `roles` (`idx`) ON DELETE CASCADE;
 ALTER TABLE `roles_authority` ADD CONSTRAINT `fk_roles_authority_authority` FOREIGN KEY (`authority_idx`) REFERENCES `authority` (`idx`) ON DELETE CASCADE;
+ALTER TABLE `board_report` ADD CONSTRAINT `fk_board_report_board` FOREIGN KEY (`board_idx`) REFERENCES `board` (`idx`) ON DELETE CASCADE;
+ALTER TABLE `board_report` ADD CONSTRAINT `fk_board_report_user` FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
+ALTER TABLE `comment_report` ADD CONSTRAINT `fk_comment_report_comment` FOREIGN KEY (`comment_idx`) REFERENCES `comment` (`idx`) ON DELETE CASCADE;
+ALTER TABLE `comment_report` ADD CONSTRAINT `fk_comment_report_user` FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
+ALTER TABLE `portfolio` ADD FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
+ALTER TABLE `portfolio_detail` ADD FOREIGN KEY (`portfolio_idx`) REFERENCES `portfolio` (`idx`) ON DELETE CASCADE;
+ALTER TABLE `portfolio_detail` ADD FOREIGN KEY (`asset_idx`) REFERENCES `asset` (`idx`);
+ALTER TABLE `transaction` ADD FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
+ALTER TABLE `transaction` ADD FOREIGN KEY (`asset_idx`) REFERENCES `asset` (`idx`);
+ALTER TABLE `bookmark` ADD FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
+ALTER TABLE `bookmark` ADD FOREIGN KEY (`asset_idx`) REFERENCES `asset` (`idx`);

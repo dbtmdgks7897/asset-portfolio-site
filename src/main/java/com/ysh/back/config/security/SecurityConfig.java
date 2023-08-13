@@ -36,6 +36,10 @@ public class SecurityConfig {
             )
             .hasRole("ADMIN")
             .requestMatchers(
+                new MvcRequestMatcher(null, "/api/*/mypage/**")
+            )
+            .authenticated()
+            .requestMatchers(
                 new MvcRequestMatcher(null, "/css/**"),
                 new MvcRequestMatcher(null, "/js/**"),
                 new MvcRequestMatcher(null, "/img/**")
