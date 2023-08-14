@@ -3,6 +3,11 @@ server:
   error:
     path: /error
 spring:
+  cache:
+    type: caffeine
+    cache-names: accessTokenCache
+    caffeine:
+      spec: maximumSize=100,expireAfterWrite=1440m
   thymeleaf:
     cache: false # 이전 데이터 캐싱되어 수정 안될 수 있음
   datasource:
@@ -43,6 +48,7 @@ spring:
       # location: classpath:/uploads
   resources:
     static-locations: ${user.dir}/src/main/resources/static/img
+
 upload:
   path: ${user.dir}/src/main/resources/static/img
 
@@ -62,3 +68,9 @@ springdoc:
   cache:
     disabled: 'true'
   packages-to-scan: com.ysh.back
+
+external:
+  api:
+    baseurl: "https://openapi.koreainvestment.com:9443"
+    appkey: 
+    appsecretkey: 

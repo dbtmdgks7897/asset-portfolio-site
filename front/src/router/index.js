@@ -13,6 +13,7 @@ import PageManageUser from '@/views/admin/PageManageUser'
 import PageManageBoard from '@/views/admin/PageManageBoard'
 import PageAssetMain from '@/views/portfolio/asset/PageAssetMain'
 import PageStockDomestic from '@/views/portfolio/asset/stock/PageStockDomestic'
+import PageStockDomesticDetail from '@/views/portfolio/asset/stock/PageStockDomesticDetail'
 import PageStockOverseas from '@/views/portfolio/asset/stock/PageStockOverseas'
 import PagePortfolioTransaction from '@/views/portfolio/PagePortfolioTransaction'
 import PageMyPortfolio from '@/views/portfolio/PageMyPortfolio'
@@ -92,12 +93,17 @@ const routes = [
         component: PageAssetMain
     },
     {
-        path: '/portfolio/asset/stock/domestic',
+        path: '/asset/stock/domestic',
         name: 'PageStockDomestic',
         component: PageStockDomestic
     },
     {
-        path: '/portfolio/asset/stock/overseas',
+        path: '/asset/stock/domestic/:stockCode',
+        name: 'PageStockDomesticDetail',
+        component: PageStockDomesticDetail
+    },
+    {
+        path: '/asset/stock/overseas',
         name: 'PageStockOverseas',
         component: PageStockOverseas
     },

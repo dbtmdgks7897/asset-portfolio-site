@@ -19,7 +19,7 @@
           <!-- 인증 정보 있을 시엔 내 정보-->
           <!-- 인증 정보 없을 시엔 로그인 페이지 이동-->
           <a @click="profileClick">
-            <div class="profile flex">
+            <div class="profile flex account">
               <img
                 v-if="login.isLogined && login.img != null"
                 class="flex-item"
@@ -39,6 +39,42 @@
               <span v-else>
                 <i class="bi bi-box-arrow-in-left"></i>
               </span>
+
+              <div class="side-item account-dropdown" v-if="login.isLogined">
+                <!-- 내 계정 카테고리 -->
+                <!-- 로그인 전엔 안보임 -->
+                <div class="SMN_effect-24" v-if="!isSidebarHide">
+                  <li class="list-group-item list-group-item-dark category">
+                    내 계정
+                  </li>
+                  <li
+                    class="list-group-item list-group-item-dark"
+                    @click="this.$router.push('/mypage/info')"
+                  >
+                    <a><span>내 정보</span></a>
+                  </li>
+                  <li
+                    class="list-group-item list-group-item-dark"
+                    @click="this.$router.push('/mypage/active')"
+                  >
+                    <a><span>내 활동</span></a>
+                  </li>
+                  <li
+                    class="list-group-item list-group-item-dark"
+                    @click="logout"
+                  >
+                    <a><span>로그아웃</span></a>
+                  </li>
+                </div>
+                <div class="SMN_effect-24" v-else>
+                  <li
+                    class="list-group-item list-group-item-dark category"
+                    @click="this.$router.push('/mypage/info')"
+                  >
+                    <a><span>내 계정</span></a>
+                  </li>
+                </div>
+              </div>
             </div>
           </a>
         </li>
@@ -50,57 +86,34 @@
         <div class="side-item" v-if="login.isLogined">
           <div class="SMN_effect-24" v-if="!isSidebarHide">
             <li class="list-group-item list-group-item-dark category">자산</li>
-            <li class="list-group-item list-group-item-dark"
-            @click="this.$router.push('/portfolio')"><a><span>내 포트폴리오</span></a></li>
+            <li
+              class="list-group-item list-group-item-dark"
+              @click="this.$router.push('/portfolio')"
+            >
+              <a><span>내 포트폴리오</span></a>
+            </li>
             <li
               class="list-group-item list-group-item-dark"
               @click="this.$router.push('/portfolio/asset')"
             >
-            <a><span>자산 검색</span></a>
+              <a><span>자산 검색</span></a>
             </li>
-            <li class="list-group-item list-group-item-dark"><a><span>분석</span></a></li>
+            <li class="list-group-item list-group-item-dark">
+              <a><span>분석</span></a>
+            </li>
             <li
               class="list-group-item list-group-item-dark"
               @click="this.$router.push('/portfolio/transaction')"
             >
-            <a><span>거래내역</span></a>
-            </li>
-          </div>
-          <div class="SMN_effect-24" v-else>
-            <li class="list-group-item list-group-item-dark category"
-            @click="this.$router.push('/portfolio')"><a><span>자산</span></a></li>
-          </div>
-        </div>
-        <br />
-        <div class="side-item" v-if="login.isLogined">
-          <!-- 내 계정 카테고리 -->
-          <!-- 로그인 전엔 안보임 -->
-          <div class="SMN_effect-24" v-if="!isSidebarHide">
-            <li class="list-group-item list-group-item-dark category">
-              내 계정
-            </li>
-            <li
-              class="list-group-item list-group-item-dark"
-              @click="this.$router.push('/mypage/info')"
-            >
-            <a><span>내 정보</span></a>
-            </li>
-            <li
-              class="list-group-item list-group-item-dark"
-              @click="this.$router.push('/mypage/active')"
-            >
-            <a><span>내 활동</span></a>
-            </li>
-            <li class="list-group-item list-group-item-dark" @click="logout">
-              <a><span>로그아웃</span></a>
+              <a><span>거래내역</span></a>
             </li>
           </div>
           <div class="SMN_effect-24" v-else>
             <li
               class="list-group-item list-group-item-dark category"
-              @click="this.$router.push('/mypage/info')"
+              @click="this.$router.push('/portfolio')"
             >
-            <a><span>내 계정</span></a>
+              <a><span>자산</span></a>
             </li>
           </div>
         </div>
@@ -115,7 +128,7 @@
             class="list-group-item list-group-item-dark"
             @click="this.$router.push('/board')"
           >
-          <a><span>자유 게시판</span></a>
+            <a><span>자유 게시판</span></a>
           </li>
         </div>
         <div class="side-item SMN_effect-24" v-else>
@@ -123,12 +136,19 @@
             class="list-group-item list-group-item-dark category"
             @click="this.$router.push('/board')"
           >
-          <a><span>게시판</span></a>
+            <a><span>게시판</span></a>
           </li>
         </div>
         <br />
         <!--  -->
-        <div class="side-item" v-if="login.isLogined && login.roles != null && login.roles.find(obj => obj.name === 'ROLE_ADMIN') != null">
+        <div
+          class="side-item"
+          v-if="
+            login.isLogined &&
+            login.roles != null &&
+            login.roles.find((obj) => obj.name === 'ROLE_ADMIN') != null
+          "
+        >
           <!-- 관리 페이지 -->
           <!-- 관리자 권한만 볼 수 있음 -->
           <div v-if="!isSidebarHide">
@@ -139,13 +159,13 @@
               class="list-group-item list-group-item-dark"
               @click="this.$router.push('/admin/user')"
             >
-            <a><span>유저 관리</span></a>
+              <a><span>유저 관리</span></a>
             </li>
             <li
               class="list-group-item list-group-item-dark"
               @click="this.$router.push('/admin/board')"
             >
-            <a><span>게시물 관리</span></a>
+              <a><span>게시물 관리</span></a>
             </li>
           </div>
           <div class="SMN_effect-24" v-else>
@@ -153,7 +173,7 @@
               class="list-group-item list-group-item-dark category"
               @click="this.$router.push('/admin/user')"
             >
-            <a><span>관리</span></a>
+              <a><span>관리</span></a>
             </li>
           </div>
         </div>
@@ -265,14 +285,14 @@ ul {
   }
 }
 
-.side-item{
-  li{
+.side-item {
+  li {
     font-size: 1.2vw;
     padding: 0;
   }
 }
 
-  .list-group-item {
+.list-group-item {
   background-color: rgba(255, 255, 255, 0);
   border: 0px;
   color: white;
@@ -438,5 +458,33 @@ ul {
   opacity: 1;
   right: 5px;
   bottom: 5px;
+}
+
+.account {
+  cursor: pointer;
+  position: relative;
+}
+
+.account-dropdown {
+  display: none;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.712);
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1;
+  width: 100%;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  // transition: opacity 5s, max-height 5s ease-in-out;
+  transition: all ease-in-out;
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+}
+
+.account:hover .account-dropdown, .account-dropdown:hover{
+  opacity: 1;
+  display: block;
+  max-height: 200px;
 }
 </style>

@@ -163,7 +163,8 @@ export default {
       localStorage.setItem("portfolioIdx", idx);
       localStorage.setItem("portfolioName", name);
       this.$router.push(`/portfolio/${idx}`);
-    }
+    },
+    
   },
 };
 </script>
