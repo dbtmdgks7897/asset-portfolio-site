@@ -47,11 +47,11 @@ public class TransactionEntity {
     @Column(name = "type")
     private String type;
 
-    @Column(name = "price")
-    private BigDecimal price;
+    @Column(name = "price_avg")
+    private BigDecimal priceAvg;
 
-    @Column(name = "transaction_amount")
-    private BigDecimal transactionAmount;
+    @Column(name = "amount")
+    private BigDecimal amount;
 
     @Column(name = "profit")
     private BigDecimal profit;

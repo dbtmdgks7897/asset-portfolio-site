@@ -35,9 +35,9 @@ public class CurrencyControllerApiV1 {
         return currencyServiceApiV1.purchaseCurrency(reqCurrencyPurchaseDTO, customUserDetails);
     }
 
-    @Operation(summary = "외화 판매", description = "외화 판매 컨트롤러")
-    @PostMapping("/sell")
-    public ResponseEntity<?> sellCurrency() {
+    // @Operation(summary = "외화 판매", description = "외화 판매 컨트롤러")
+    // @PostMapping("/sell")
+    // public ResponseEntity<?> sellCurrency() {
 
-    }
+    // }
 }

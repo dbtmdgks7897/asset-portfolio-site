@@ -19,22 +19,22 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping("/api/v1/asset/stock/domestic")
 public class DomesticStockControllerApiv1 {
-    
+
     @Autowired
     DomesticStockServiceApiV1 domesticStockServiceApiV1;
 
     @GetMapping()
-    public ResponseEntity<?> getStockInfoData(@RequestParam String stockCode) {
-        return domesticStockServiceApiV1.getStockInfoData(stockCode);
+    public ResponseEntity<?> getStockInfoData(@RequestParam String stockCode,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return domesticStockServiceApiV1.getStockInfoData(stockCode, customUserDetails);
     }
 
     @GetMapping("/{stockCode}")
     public ResponseEntity<?> getStockDetailData(
-        @PathVariable String stockCode,
-        @RequestParam("stockType") String stockType,
-        @AuthenticationPrincipal CustomUserDetails customUserDetails
-    ){
-        return domesticStockServiceApiV1.getStockDetailData(stockCode, stockType,customUserDetails);
+            @PathVariable String stockCode,
+            @RequestParam("stockType") String stockType,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return domesticStockServiceApiV1.getStockDetailData(stockCode, stockType, customUserDetails);
     }
 
 }

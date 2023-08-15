@@ -1,6 +1,7 @@
 package com.ysh.back.domain.asset.stock.domestic.service;
 
 import java.net.URI;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +23,8 @@ import com.ysh.back.domain.asset.dto.ReqPostAssetDTO;
 import com.ysh.back.domain.asset.service.AssetServiceApiV1;
 import com.ysh.back.domain.asset.stock.domestic.dto.ReqGetDomesticStockInfoDTO;
 import com.ysh.back.domain.asset.stock.domestic.dto.ResDomesticStockInfoDTO;
+import com.ysh.back.model.user.entity.UserEntity;
+import com.ysh.back.model.user.repository.UserRepository;
 
 @Service
 public class DomesticStockServiceApiV1 {
@@ -42,12 +45,21 @@ public class DomesticStockServiceApiV1 {
     private String datagoServiceKey;
 
     @Autowired
+    UserRepository userRepository;
+
+    @Autowired
     ApiAuthServiceApiV1 apiAuthServiceApiV1;
 
     @Autowired
     AssetServiceApiV1 assetServiceApiV1;
 
-    public ResponseEntity<?> getStockInfoData(String stockCode) {
+    public ResponseEntity<?> getStockInfoData(String stockCode, CustomUserDetails customUserDetails) {
+        Optional<UserEntity> userEntityOptional = userRepository.findByEmail(customUserDetails.getUsername());
+        if(!userEntityOptional.isPresent()){
+            throw new BadRequestException("사용자 정보를 찾을 수 없습니다.");
+        }
+        UserEntity userEntity = userEntityOptional.get();
+
         if (stockCode.length() != 6) {
             throw new BadRequestException("정확한 종목 '코드'를 입력해주세요.");
         }
@@ -88,6 +100,12 @@ public class DomesticStockServiceApiV1 {
     }
 
     public ResponseEntity<?> getStockDetailData(String stockCode, String stockType, CustomUserDetails customUserDetails) {
+        Optional<UserEntity> userEntityOptional = userRepository.findByEmail(customUserDetails.getUsername());
+        if(!userEntityOptional.isPresent()){
+            throw new BadRequestException("사용자 정보를 찾을 수 없습니다.");
+        }
+        UserEntity userEntity = userEntityOptional.get();
+
         System.out.println(stockCode);
         String path = "/getStockPriceInfo?serviceKey=" + datagoServiceKey
                 + "&numOfRows=1&pageNo=1&resultType=json&likeSrtnCd=" + stockCode;

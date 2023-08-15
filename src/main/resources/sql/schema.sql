@@ -128,7 +128,7 @@ CREATE TABLE `portfolio` (
 
 -- 포트폴리오 디테일(PortfolioDetail) 테이블
 CREATE TABLE `portfolio_detail` (
-    `idx` BIGINT PRIMARY KEY,
+    `idx` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `portfolio_idx` INT,
     `asset_idx` VARCHAR(20),
     `amount` DECIMAL(18,2),
@@ -150,7 +150,7 @@ CREATE TABLE `asset` (
 
 -- 거래(Transaction) 테이블
 CREATE TABLE `transaction` (
-    `idx` BIGINT PRIMARY KEY,
+    `idx` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `user_idx` BIGINT,
     `asset_idx` VARCHAR(20),
     `type` VARCHAR(10),
@@ -162,7 +162,7 @@ CREATE TABLE `transaction` (
 
 -- 북마크(Bookmark) 테이블
 CREATE TABLE `bookmark` (
-    `idx` INT PRIMARY KEY,
+    `idx` INT PRIMARY KEY AUTO_INCREMENT,
     `user_idx` BIGINT,
     `asset_idx` VARCHAR(20)
 );

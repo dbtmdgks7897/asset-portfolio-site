@@ -151,7 +151,7 @@
         >
           <!-- 관리 페이지 -->
           <!-- 관리자 권한만 볼 수 있음 -->
-          <div v-if="!isSidebarHide">
+          <div v-if="!isSidebarHide" class="SMN_effect-24">
             <li class="list-group-item list-group-item-dark category">
               관리 페이지
             </li>
@@ -219,6 +219,7 @@ export default {
           login.isLogined = false;
           login.email = null;
           this.$router.push({ name: "PageBoardList" });
+          localStorage.clear();
         });
       }
     },

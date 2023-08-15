@@ -19,12 +19,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "PORTFOLIO_DETAIL")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 @Builder
 public class PortfolioDetailEntity {
     
@@ -51,7 +53,7 @@ public class PortfolioDetailEntity {
     private BigDecimal totalPurchasePrice;
 
     @Column(name = "dividend_month")
-    private BigDecimal dividendMonth;
+    private String dividendMonth;
 
     @Column(name = "dividend_amount")
     private BigDecimal dividendAmount;

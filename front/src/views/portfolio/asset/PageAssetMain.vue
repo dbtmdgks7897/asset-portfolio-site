@@ -50,6 +50,12 @@ export default {
     //변수생성
     return {};
   },
+  mounted() {
+    if(localStorage.getItem("portfolioIdx") == null){
+      alert('먼저 포트폴리오를 생성해주세요.');
+      this.$router.push('/portfolio');
+    }
+  },
   methods: {},
 };
 </script>

@@ -75,7 +75,11 @@
                     data-bs-target="#exampleModal"
                     data-bs-whatever="@mdo"
                     class="btn"
-                    @click="purchaseModal(); selectedPrice = value; selected = key;"
+                    @click="
+                      purchaseModal();
+                      selectedPrice = value;
+                      selected = key;
+                    "
                   >
                     구매
                   </button>
@@ -86,7 +90,11 @@
                     data-bs-target="#exampleModal"
                     data-bs-whatever="@mdo"
                     class="btn"
-                    @click="sellModal(); selectedPrice = value; selected = key;"
+                    @click="
+                      sellModal();
+                      selectedPrice = value;
+                      selected = key;
+                    "
                   >
                     판매
                   </button>
@@ -112,7 +120,11 @@
                     data-bs-target="#exampleModal"
                     data-bs-whatever="@mdo"
                     class="btn"
-                    @click="purchaseModal(); selectedPrice = currencyData; selected = to;"
+                    @click="
+                      purchaseModal();
+                      selectedPrice = currencyData;
+                      selected = to;
+                    "
                   >
                     구매
                   </button>
@@ -123,7 +135,11 @@
                     data-bs-target="#exampleModal"
                     data-bs-whatever="@mdo"
                     class="btn"
-                    @click="sellModal(); selectedPrice = currencyData; selected = to;"
+                    @click="
+                      sellModal();
+                      selectedPrice = currencyData;
+                      selected = to;
+                    "
                   >
                     판매
                   </button>
@@ -192,6 +208,7 @@
             닫기
           </button>
           <button
+            @click="buttonHandler"
             data-bs-toggle="modal"
             type="button"
             class="btn btn-primary"
@@ -254,12 +271,68 @@ export default {
     },
   },
   methods: {
+    buttonHandler() {
+      if (this.modalStatus == "구입") {
+        this.purchaseButton();
+      } else if (this.modalStatus == "판매") {
+        this.sellButton();
+      } else {
+        alert("뭐임?");
+      }
+    },
     purchaseModal() {
       this.modalStatus = "구입";
+    },
+    purchaseButton() {
+      if (
+        confirm(
+          `${this.selected}를 ${(
+            parseFloat(this.krwPrice) * parseFloat(this.selectedPrice)
+          ).toFixed(1)}만큼 구입하시겠습니까?`
+        )
+      ) {
+        const data = {
+          asset: {
+            idx: `${this.selected.toUpperCase()}/KRW`,
+            name: this.selected,
+            type: "외화",
+          },
+          portfolioDetail: {
+            portfolioIdx: localStorage.getItem("portfolioIdx"),
+            amount: this.krwPrice,
+            averagePurchasePrice: this.selectedPrice,
+            totalPurchasePrice: this.krwPrice * this.selectedPrice,
+          },
+          transaction: {
+            type: "구입",
+            amount: this.krwPrice,
+            priceAvg: this.selectedPrice,
+            profit: 0,
+          },
+        };
+
+        this.$axios
+          .post(`/api/v1/asset/currency/purchase`, data, {
+            headers: {
+              "Content-Type": "application/json;charset=utf-8;",
+            },
+          })
+          .then((res) => {
+            if (res.data.code === 0) {
+              this.stockData = res.data.data;
+            } else {
+              alert(res.data.message);
+            }
+          })
+          .catch((err) => {
+            alert(err.response.data.message);
+          });
+      }
     },
     sellModal() {
       this.modalStatus = "판매";
     },
+    sellButton() {},
     getCurreny() {
       this.$axios
         .get(
@@ -268,6 +341,9 @@ export default {
         .then((res) => {
           this.currencyData = res.data.krw;
           console.log(res.data.krw);
+        })
+        .catch((err) => {
+          console.error(err);
         });
     },
   },
