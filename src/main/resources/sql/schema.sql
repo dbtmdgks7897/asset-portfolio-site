@@ -130,7 +130,7 @@ CREATE TABLE `portfolio` (
 CREATE TABLE `portfolio_detail` (
     `idx` BIGINT PRIMARY KEY,
     `portfolio_idx` INT,
-    `asset_idx` INT,
+    `asset_idx` VARCHAR(20),
     `amount` DECIMAL(18,2),
     `average_purchase_price` DECIMAL(18,2),
     `total_purchase_price` DECIMAL(18,2),
@@ -143,7 +143,7 @@ CREATE TABLE `portfolio_detail` (
 
 -- 자산(Asset) 테이블
 CREATE TABLE `asset` (
-    `idx` INT PRIMARY KEY,
+    `idx` VARCHAR(20) PRIMARY KEY,
     `name` VARCHAR(100) NOT NULL,
     `type` VARCHAR(50) NOT NULL
 );
@@ -152,7 +152,7 @@ CREATE TABLE `asset` (
 CREATE TABLE `transaction` (
     `idx` BIGINT PRIMARY KEY,
     `user_idx` BIGINT,
-    `asset_idx` INT,
+    `asset_idx` VARCHAR(20),
     `type` VARCHAR(10),
     `amount` DECIMAL(18,2),
     `price_avg` DECIMAL(18,2),
@@ -164,7 +164,7 @@ CREATE TABLE `transaction` (
 CREATE TABLE `bookmark` (
     `idx` INT PRIMARY KEY,
     `user_idx` BIGINT,
-    `asset_idx` INT
+    `asset_idx` VARCHAR(20)
 );
 
 

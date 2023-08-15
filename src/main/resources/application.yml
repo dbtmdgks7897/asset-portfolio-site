@@ -70,9 +70,13 @@ springdoc:
   packages-to-scan: com.ysh.back
 
 external:
+  datago:
+    baseurl: 
+    servicekey: 
   api:
     baseurl: "https://openapi.koreainvestment.com:9443"
     websocket-url: "ws://ops.koreainvestment.com:21000"
     appkey: 
     appsecretkey: 
+
     

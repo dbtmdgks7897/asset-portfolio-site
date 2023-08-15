@@ -6,7 +6,7 @@
     <div class="contents">
       <div class="contents-head flex">
         <span>국내 주식
-          <a style="font-size: 3vh;" href="https://kr.investing.com/stock-screener/?sp=country::11|sector::a|industry::a|equityType::a%3Ceq_market_cap;1" target="_blank">종목 코드 검색</a>
+          <a style="font-size: 2vw;" href="https://kr.investing.com/stock-screener/?sp=country::11|sector::a|industry::a|equityType::a%3Ceq_market_cap;1" target="_blank">종목 코드 검색</a>
         </span>
         
         <div class="input-group mb-1">
@@ -134,6 +134,9 @@ body {
 .contents {
   background-color: #fff;
   &-head {
+    span{
+        font-size: 3vw;
+      }
     div {
       width: 20vw;
       height: 50%;
@@ -142,6 +145,7 @@ body {
   &-body {
     width: 100%;
     height: 100%;
+    
     .indexes {
       justify-content: space-around;
       height: 100%;

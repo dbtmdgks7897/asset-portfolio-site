@@ -4,8 +4,9 @@
     class=""
   >
     <div class="contents">
-      <div class="contents-head flex">
-        <span>{{stockCode}}</span>
+      <div v-if="stockData" class="contents-head flex">
+        <span>{{ util.truncateText(stockData.assetName,12)}}</span>
+        <span>({{stockData.assetCode}})</span>
       </div>
       <div class="contents-body table-responsive-xxl">
         <!-- 검색했냐? -->
@@ -17,6 +18,7 @@
 
 <script setup>
 import { toggle } from "@/utils/toggle";
+import { util } from "@/utils/utils";
 </script>
 <script>
 
@@ -42,16 +44,13 @@ export default {
       socket: null,
       isUserSearching: true,
       stockCode: this.$route.params.stockCode,
+      stockType: "주식-국내",
       stockData: null,
       approvalKey: null,
-      stompClient: null,
-      stockInfo: {
-        tr_id: "H0STCNT0",
-        tr_key: this.stockCode, // 예를 들어, "005930"은 삼성전자의 종목코드입니다.
-      },
     };
   },
   mounted() {
+    this.assetRegistration();
     this.connectToWebSocket();
   },
 
@@ -60,14 +59,21 @@ export default {
       console.log(id);
       this.isUserSearching = !this.isUserSearching;
     },
-    getDomesticStockDetailData() {
+    bookmarking(){
       this.$axios
-        .get("/api/v1/asset/stock/domestic/" + this.stockCode, {
-          params: {
-            stockCode: this.stockCode,
-          },
-        })
-        .then((res) => {
+      .post(`/`)
+    },
+    assetRegistration(){
+      const dto = {
+        assetCode: this.stockCode,
+        assetType: this.stockType
+      }
+      this.$axios
+      .post(`/api/v1/asset`, dto,{
+        headers : {
+          'Content-Type' : 'application/json;charset=utf-8'
+        }
+      }).then((res) => {
           if (res.data.code === 0) {
             this.stockData = res.data.data;
           } else {
@@ -78,6 +84,24 @@ export default {
           alert(err.response.data.message);
         });
     },
+    // getDomesticStockDetailData() {
+    //   this.$axios
+    //     .get("/api/v1/asset/stock/domestic/" + this.stockCode, {
+    //       params: {
+    //         stockCode: this.stockCode,
+    //       },
+    //     })
+    //     .then((res) => {
+    //       if (res.data.code === 0) {
+    //         this.stockData = res.data.data;
+    //       } else {
+    //         alert(res.data.message);
+    //       }
+    //     })
+    //     .catch((err) => {
+    //       alert(err.response.data.message);
+    //     });
+    // },
     async connectToWebSocket() {
       try {
         const response = await this.$axios.post("/api/v1/apiAuth/approval");
@@ -150,9 +174,13 @@ body {
 .contents {
   background-color: #fff;
   &-head {
+    span{
+        font-size: 3vw;
+      }
     div {
       width: 20vw;
       height: 50%;
+      
     }
   }
   &-body {

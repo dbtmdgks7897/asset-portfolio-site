@@ -32,9 +32,8 @@ import lombok.Setter;
 public class AssetEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idx", nullable = false, unique = true)
-    private Integer idx;
+    private String idx;
 
     @Column(name = "name", nullable = false)
     private String name;
