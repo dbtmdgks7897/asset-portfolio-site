@@ -485,6 +485,6 @@ ul {
 .account:hover .account-dropdown, .account-dropdown:hover{
   opacity: 1;
   display: block;
-  max-height: 200px;
+  max-height: 30vh;
 }
 </style>

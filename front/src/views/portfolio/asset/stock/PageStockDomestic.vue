@@ -43,17 +43,16 @@
                 <th scope="col">현재가</th>
                 <th scope="col">전일 대비</th>
                 <th scope="col">전일 대비율</th>
-                <th scope="col"></th>
               </tr>
             </thead>
             <tbody>
               <!-- v-for로 반복 돌려서 데이터 가져와서 링크 넣고 뿌려주기 -->
-              <tr v-if="stockData" @click="goDomesticStockDetail(stockCode)">
-                <th scope="row">{{ stockCode }}</th>
-                <td>{{ stockData.bstp_kor_isnm }}</td>
-                <td>{{ stockData.stck_prpr }}</td>
-                <td>{{ stockData.prdy_vrss }}</td>
-                <td>{{ stockData.prdy_ctrt }}</td>
+              <tr v-if="stockData && stockCode.length == 6">
+                <th  @click="goDomesticStockDetail(stockCode)" scope="row">{{ stockCode }}</th>
+                <td @click="goDomesticStockDetail(stockCode)">{{ stockData.bstp_kor_isnm }}</td>
+                <td @click="goDomesticStockDetail(stockCode)">{{ stockData.stck_prpr }}</td>
+                <td @click="goDomesticStockDetail(stockCode)" :style="getPriceStyle(stockData.prdy_vrss)">{{ stockData.prdy_vrss }}</td>
+                <td @click="goDomesticStockDetail(stockCode)" :style="getPriceStyle(stockData.prdy_ctrt)">{{ stockData.prdy_ctrt }}</td>
               </tr>
             </tbody>
           </table>
@@ -111,6 +110,20 @@ export default {
         params: { stockCode: stockCode },
       });
     },
+    getPriceStyle(value) {
+      const numValue = parseFloat(value);
+      const style = {};
+
+      if (numValue > 0) {
+        style.color = "red"; // 양수일 경우 초록색 글자
+      } else if (numValue < 0) {
+        style.color = "blue"; // 음수일 경우 빨간색 글자
+      } else {
+        style.color = "black"; // 0일 경우 검정색 글자
+      }
+
+      return style;
+    },
   },
 };
 </script>
@@ -139,5 +152,9 @@ body {
       }
     }
   }
+}
+
+.bookmark{
+  z-index: 1;
 }
 </style>

@@ -145,8 +145,7 @@ CREATE TABLE `portfolio_detail` (
 CREATE TABLE `asset` (
     `idx` INT PRIMARY KEY,
     `name` VARCHAR(100) NOT NULL,
-    `type` VARCHAR(50) NOT NULL,
-    `price` DECIMAL(18,2)
+    `type` VARCHAR(50) NOT NULL
 );
 
 -- 거래(Transaction) 테이블

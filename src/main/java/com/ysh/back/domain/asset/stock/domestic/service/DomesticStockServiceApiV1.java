@@ -11,9 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.ysh.back.common.apiauth.service.ApiAuthServiceApiV1;
 import com.ysh.back.common.dto.ResponseDTO;
 import com.ysh.back.common.exception.BadRequestException;
-import com.ysh.back.domain.asset.stock.apiauth.service.ApiAuthServiceApiV1;
+import com.ysh.back.config.security.auth.CustomUserDetails;
 import com.ysh.back.domain.asset.stock.domestic.dto.ReqGetDomesticStockInfoDTO;
 import com.ysh.back.domain.asset.stock.domestic.dto.ResDomesticStockInfoDTO;
 
@@ -58,22 +59,9 @@ public class DomesticStockServiceApiV1 {
         entity, ResDomesticStockInfoDTO.class);
 
 
-        // try {
-        //     ResponseEntity<ResAccessTokenDTO> response = restTemplate.postForEntity(url, entity,
-        //             ResAccessTokenDTO.class);
-        //     ResAccessTokenDTO responseBody = response.getBody();
-        //     System.out.println("Response Body: " + responseBody);
-        // } catch (HttpServerErrorException.InternalServerError e) {
-        //     String responseBody = e.getResponseBodyAsString();
-        //     System.out.println("Error Response Body: " + responseBody);
-        // }
-        System.out.println(response.getStatusCode());
-        System.out.println(response.getClass());
-        System.out.println(response.getBody());
-        System.out.println(response.getHeaders());
         ResDomesticStockInfoDTO responseBody = response.getBody();
 
-        if(responseBody.getOutput() == null){
+        if(responseBody.getOutput().getBstp_kor_isnm().equals(" ")){
             throw new BadRequestException("해당 종목이 존재하지 않습니다.");
         }
 
@@ -84,5 +72,12 @@ public class DomesticStockServiceApiV1 {
                         .data(responseBody.getOutput())
                         .build(),
                 HttpStatus.OK);
+    }
+
+    public ResponseEntity<?> getStockDetailData(String stockCode, CustomUserDetails customUserDetails){
+
+
+
+        return null;
     }
 }

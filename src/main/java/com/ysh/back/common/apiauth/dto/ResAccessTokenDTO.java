@@ -1,4 +1,4 @@
-package com.ysh.back.domain.asset.stock.apiauth.dto;
+package com.ysh.back.common.apiauth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -72,5 +72,7 @@ springdoc:
 external:
   api:
     baseurl: "https://openapi.koreainvestment.com:9443"
+    websocket-url: "ws://ops.koreainvestment.com:21000"
     appkey: 
     appsecretkey: 
+    

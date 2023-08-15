@@ -11,5 +11,13 @@ module.exports = defineConfig({
         changeOrigin: true,
       }
     }
+  },
+
+  configureWebpack: {
+    resolve: {
+      fallback: {
+        net: false
+      }
+    }
   }
 })
