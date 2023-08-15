@@ -11,6 +11,7 @@ import com.ysh.back.model.portfolio.entity.PortfolioEntity;
 @Repository
 public interface PortfolioRepository extends JpaRepository<PortfolioEntity, Integer>{
     Optional<PortfolioEntity> findByName(String name);   
+    Optional<PortfolioEntity> findByIdx(Integer Idx);   
 
     List<PortfolioEntity> findByUserEntityIdx(Long userIdx);
 }

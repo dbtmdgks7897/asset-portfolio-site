@@ -64,12 +64,12 @@ export default {
       .post(`/`)
     },
     assetRegistration(){
-      const dto = {
-        assetCode: this.stockCode,
-        assetType: this.stockType
-      }
       this.$axios
-      .post(`/api/v1/asset`, dto,{
+      .get(`/api/v1/asset/stock/domestic/${this.stockCode}`, {
+        params :{
+          stockType: this.stockType
+        }
+      },{
         headers : {
           'Content-Type' : 'application/json;charset=utf-8'
         }

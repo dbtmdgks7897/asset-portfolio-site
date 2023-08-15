@@ -15,11 +15,12 @@ import PageAssetMain from '@/views/portfolio/asset/PageAssetMain'
 import PageStockDomestic from '@/views/portfolio/asset/stock/PageStockDomestic'
 import PageStockDomesticDetail from '@/views/portfolio/asset/stock/PageStockDomesticDetail'
 import PageStockOverseas from '@/views/portfolio/asset/stock/PageStockOverseas'
+import PageCurrency from '@/views/portfolio/asset/currency/PageCurrency'
 import PagePortfolioTransaction from '@/views/portfolio/PagePortfolioTransaction'
 import PageMyPortfolio from '@/views/portfolio/PageMyPortfolio'
 import PageMyPortfolioDetail from '@/views/portfolio/PageMyPortfolioDetail'
 
-
+PageCurrency
 
 const routes = [
     {
@@ -88,7 +89,7 @@ const routes = [
         component: PageMyPortfolioDetail
     },
     {
-        path: '/portfolio/asset',
+        path: '/asset',
         name: 'PageAssetMain',
         component: PageAssetMain
     },
@@ -111,6 +112,12 @@ const routes = [
         path: '/portfolio/transaction',
         name: 'PageAssetTransaction',
         component: PagePortfolioTransaction
+    },
+    {
+        path: '/asset/currency',
+        name: 'PageCurrency',
+        component: PageCurrency
+
     },
 ]
 

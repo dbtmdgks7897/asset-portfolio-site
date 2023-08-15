@@ -1,5 +1,7 @@
 package com.ysh.back.domain.asset.stock.domestic.service;
 
+import java.net.URI;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -15,6 +17,9 @@ import com.ysh.back.common.apiauth.service.ApiAuthServiceApiV1;
 import com.ysh.back.common.dto.ResponseDTO;
 import com.ysh.back.common.exception.BadRequestException;
 import com.ysh.back.config.security.auth.CustomUserDetails;
+import com.ysh.back.domain.asset.dto.ApiGetDomesticStockNameDTO;
+import com.ysh.back.domain.asset.dto.ReqPostAssetDTO;
+import com.ysh.back.domain.asset.service.AssetServiceApiV1;
 import com.ysh.back.domain.asset.stock.domestic.dto.ReqGetDomesticStockInfoDTO;
 import com.ysh.back.domain.asset.stock.domestic.dto.ResDomesticStockInfoDTO;
 
@@ -30,15 +35,25 @@ public class DomesticStockServiceApiV1 {
     @Value("${external.api.appsecretkey}")
     private String appSecretKey;
 
+    @Value("${external.datago.baseurl}")
+    private String datagoBaseUrl;
+
+    @Value("${external.datago.servicekey}")
+    private String datagoServiceKey;
+
     @Autowired
     ApiAuthServiceApiV1 apiAuthServiceApiV1;
 
+    @Autowired
+    AssetServiceApiV1 assetServiceApiV1;
+
     public ResponseEntity<?> getStockInfoData(String stockCode) {
-        if(stockCode.length() != 6){
+        if (stockCode.length() != 6) {
             throw new BadRequestException("정확한 종목 '코드'를 입력해주세요.");
         }
 
-        String path = "/uapi/domestic-stock/v1/quotations/inquire-price?fid_cond_mrkt_div_code=J&fid_input_iscd="+stockCode;
+        String path = "/uapi/domestic-stock/v1/quotations/inquire-price?fid_cond_mrkt_div_code=J&fid_input_iscd="
+                + stockCode;
         String url = apiBaseUrl + path;
 
         RestTemplate restTemplate = new RestTemplate();
@@ -52,16 +67,14 @@ public class DomesticStockServiceApiV1 {
         headers.set("tr_id", "FHKST01010100");
         // ... 필요한 헤더 추가 ...
 
-
         HttpEntity<ReqGetDomesticStockInfoDTO> entity = new HttpEntity<>(headers);
 
         ResponseEntity<ResDomesticStockInfoDTO> response = restTemplate.exchange(url, HttpMethod.GET,
-        entity, ResDomesticStockInfoDTO.class);
-
+                entity, ResDomesticStockInfoDTO.class);
 
         ResDomesticStockInfoDTO responseBody = response.getBody();
 
-        if(responseBody.getOutput().getBstp_kor_isnm().equals(" ")){
+        if (responseBody.getOutput().getBstp_kor_isnm().equals(" ")) {
             throw new BadRequestException("해당 종목이 존재하지 않습니다.");
         }
 
@@ -74,10 +87,39 @@ public class DomesticStockServiceApiV1 {
                 HttpStatus.OK);
     }
 
-    public ResponseEntity<?> getStockDetailData(String stockCode, CustomUserDetails customUserDetails){
+    public ResponseEntity<?> getStockDetailData(String stockCode, String stockType, CustomUserDetails customUserDetails) {
+        System.out.println(stockCode);
+        String path = "/getStockPriceInfo?serviceKey=" + datagoServiceKey
+                + "&numOfRows=1&pageNo=1&resultType=json&likeSrtnCd=" + stockCode;
+        String url = datagoBaseUrl + path;
 
+        URI uri = null;
+        try {
+            uri = new URI(url);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
 
+        RestTemplate restTemplate = new RestTemplate();
 
-        return null;
+        ResponseEntity<ApiGetDomesticStockNameDTO> response = restTemplate.getForEntity(uri,
+                ApiGetDomesticStockNameDTO.class);
+
+        ApiGetDomesticStockNameDTO responseBody = response.getBody();
+
+        System.out.println(responseBody.getResponse().getHeader().getResultMsg());
+
+        if (!responseBody.getResponse().getHeader().getResultCode().equals("00")) {
+            throw new BadRequestException("주식 이름 불러오기 오류");
+        }
+
+        ReqPostAssetDTO dto = ReqPostAssetDTO.builder()
+        .assetCode(stockCode)
+        .assetName(responseBody.getResponse().getBody().getItems().getItem().get(0).getItmsNm())
+        .assetType(stockType)
+        .build();
+
+        // TODO : 나중에 웹소켓? 연결하고 데이터 더 줘야되는데 이러면 여기서는 이거만 주면 되나?
+        return assetServiceApiV1.postAssetData(dto, customUserDetails);
     }
 }

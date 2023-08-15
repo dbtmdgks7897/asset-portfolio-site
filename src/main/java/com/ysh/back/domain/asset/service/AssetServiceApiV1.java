@@ -28,12 +28,6 @@ import jakarta.transaction.Transactional;
 @Service
 public class AssetServiceApiV1 {
 
-        @Value("${external.datago.baseurl}")
-        private String apiBaseUrl;
-
-        @Value("${external.datago.servicekey}")
-        private String serviceKey;
-
         @Autowired
         AuditLogRepository auditLogRepository;
         @Autowired
@@ -67,36 +61,11 @@ public class AssetServiceApiV1 {
                                         HttpStatus.OK);
                 }
 
-                String path = "/getStockPriceInfo?serviceKey=" + serviceKey
-                                + "&numOfRows=1&pageNo=1&resultType=json&likeSrtnCd=" + reqPostAssetDTO.getAssetCode();
-                String url = apiBaseUrl + path;
-
-                URI uri = null;
-                try {
-                        uri = new URI(url);
-                } catch (Exception e) {
-                        System.out.println(e);
-                }
-
-                RestTemplate restTemplate = new RestTemplate();
-
-                ResponseEntity<ApiGetDomesticStockNameDTO> response = restTemplate.getForEntity(uri,
-                                ApiGetDomesticStockNameDTO.class);
-
-                System.out.println("여기 " + response.getBody());
-                System.out.println("패스 " + url);
-
-                ApiGetDomesticStockNameDTO responseBody = response.getBody();
-
-                System.out.println(responseBody.getResponse().getHeader().getResultMsg());
-
-                if (!responseBody.getResponse().getHeader().getResultCode().equals("00")) {
-                        throw new BadRequestException("주식 이름 불러오기 오류");
-                }
+                
 
                 AssetEntity assetEntityForSaving = AssetEntity.builder()
                                 .idx(reqPostAssetDTO.getAssetCode())
-                                .name(responseBody.getResponse().getBody().getItems().getItem().get(0).getItmsNm())
+                                .name(reqPostAssetDTO.getAssetName())
                                 .type(reqPostAssetDTO.getAssetType())
                                 .build();
 

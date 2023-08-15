@@ -94,7 +94,7 @@
             </li>
             <li
               class="list-group-item list-group-item-dark"
-              @click="this.$router.push('/portfolio/asset')"
+              @click="this.$router.push('/asset')"
             >
               <a><span>자산 검색</span></a>
             </li>
