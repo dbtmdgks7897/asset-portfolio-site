@@ -1,5 +1,16 @@
 <template>
   <div :class="[toggle.show ? 'sidebar-margin' : 'sidebar-margin-none']">
+    <div class="move-buttons">
+      <button
+        class="btn detail-move-button1"
+        @click="goSelectPortfolioPage"
+      >
+        <span>
+          <i class="bi bi-caret-left-fill"></i>
+          선택창
+        </span>
+      </button>
+    </div>
     <div class="contents">
       <div class="contents-head">
         <span>{{ portfolioName }} 포트폴리오</span>
@@ -159,16 +170,35 @@ export default {
           alert(err.response.data.message);
         });
     },
-    selectPortfolio(idx, name){
+    selectPortfolio(idx, name) {
       localStorage.setItem("portfolioIdx", idx);
       localStorage.setItem("portfolioName", name);
       this.$router.push(`/portfolio/${idx}`);
     },
-    
+    goSelectPortfolioPage(){
+      localStorage.removeItem("portfolioIdx");
+      localStorage.removeItem("portfolioName");
+      this.$router.push(`/portfolio`);
+    }
   },
 };
 </script>
 <style lang="scss" scoped>
+.move-buttons {
+  position: absolute;
+  z-index: 1;
+  span {
+    font-size: 2vw;
+  }
+  button {
+    padding: 0;
+    opacity: 1;
+    transition: 0.5s;
+    &:hover{
+      opacity: 1;
+    }
+  }
+}
 .contents {
   margin: 0;
   width: 100%;
@@ -188,7 +218,7 @@ export default {
     grid-template-columns: repeat(3, 22vw); /* 한 행에 3개의 열을 생성 */
     gap: 5vh; /* 열 사이의 간격 조정 */
     .portfolio {
-    //   width: 100%;
+      //   width: 100%;
       height: 110%;
       min-height: 40vh;
       color: black;
