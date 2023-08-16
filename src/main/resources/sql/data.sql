@@ -335,6 +335,8 @@ insert into comment (idx, user_idx, board_idx, content, recommend_count, created
 insert into comment (idx, user_idx, board_idx, content, recommend_count, created_at, updated_at, deleted_at) values (99, 28, 3, 'interdum mauris non ligula pellentesque ultrices phasellus id sapien in sapien iaculis congue vivamus', 5, '2023-05-28 11:27:20', '2022-11-30 06:44:29', null);
 insert into comment (idx, user_idx, board_idx, content, recommend_count, created_at, updated_at, deleted_at) values (100, 29, 4, 'nam congue risus semper porta volutpat quam pede lobortis', 43, '2023-08-02 04:14:58', '2023-08-03 07:40:06', '2022-09-29 21:30:35');
 
+INSERT INTO `portfolio` (`idx`, `user_idx`, `name`, `description`, `created_at`, `updated_at`, `deleted_at`) VALUES (1, 101, '하이', '헬로', '2023-08-16 11:07:08', NULL, NULL);
+
 -- insert into board_recommend (board_idx, user_idx) values (29, 24);
 -- insert into board_recommend (board_idx, user_idx) values (11, 8);
 -- insert into board_recommend (board_idx, user_idx) values (66, 50);

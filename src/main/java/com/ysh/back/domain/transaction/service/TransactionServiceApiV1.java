@@ -57,7 +57,7 @@ public class TransactionServiceApiV1 {
         TransactionEntity transactionEntity = transactionRepository.save(transactionEntityForSaving);
 
         AuditLogEntity auditLog = AuditLogEntity.builder()
-                .tableName("portfolio")
+                .tableName("transaction")
                 .userIdx(userEntity.getIdx())
                 .rowId(Long.valueOf(transactionEntity.getIdx()))
                 .operation("INSERT")

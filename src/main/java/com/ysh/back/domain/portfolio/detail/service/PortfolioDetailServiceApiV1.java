@@ -187,7 +187,7 @@ public class PortfolioDetailServiceApiV1 {
         } else {
             BigDecimal newTotalPurchase = portfolioDetailEntity.getTotalPurchasePrice().subtract(reqPostPortfolioDetailSellDTO.getTotalSellPrice());
             BigDecimal newAmount = portfolioDetailEntity.getAmount().subtract(reqPostPortfolioDetailSellDTO.getAmount());
-            BigDecimal newAvgPurchase = portfolioDetailEntity.getAveragePurchasePrice().add(newTotalPurchase.divide(newAmount)).divide(new BigDecimal(2));
+            BigDecimal newAvgPurchase = portfolioDetailEntity.getAveragePurchasePrice().add(newTotalPurchase.divide(newAmount)).divide(new BigDecimal("2.0"));
 
             portfolioDetailEntity.setTotalPurchasePrice(newTotalPurchase);
             portfolioDetailEntity.setAmount(newAmount);

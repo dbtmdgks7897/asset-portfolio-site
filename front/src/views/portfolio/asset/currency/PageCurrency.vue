@@ -319,7 +319,7 @@ export default {
           })
           .then((res) => {
             if (res.data.code === 0) {
-              this.stockData = res.data.data;
+                console.log(res.data.message);
             } else {
               alert(res.data.message);
             }
@@ -332,7 +332,47 @@ export default {
     sellModal() {
       this.modalStatus = "판매";
     },
-    sellButton() {},
+    sellButton() {
+        if (
+        confirm(
+          `${this.selected}를 ${(
+            parseFloat(this.krwPrice) * parseFloat(this.selectedPrice)
+          ).toFixed(1)}만큼 판매하시겠습니까?`
+        )
+      ) {
+        const data = {
+          assetIdx: `${this.selected.toUpperCase()}/KRW`,
+          portfolioDetail: {
+            portfolioIdx: localStorage.getItem("portfolioIdx"),
+            amount: this.krwPrice,
+            totalSellPrice: this.krwPrice * this.selectedPrice,
+          },
+          transaction: {
+            type: "판매",
+            amount: this.krwPrice,
+            priceAvg: this.selectedPrice,
+            profit: this.krwPrice * this.selectedPrice,
+          },
+        };
+
+        this.$axios
+          .post(`/api/v1/asset/currency/sell`, data, {
+            headers: {
+              "Content-Type": "application/json;charset=utf-8;",
+            },
+          })
+          .then((res) => {
+            if (res.data.code === 0) {
+                console.log(res.data.message);
+            } else {
+              alert(res.data.message);
+            }
+          })
+          .catch((err) => {
+            alert(err.response.data.message);
+          });
+      }
+    },
     getCurreny() {
       this.$axios
         .get(

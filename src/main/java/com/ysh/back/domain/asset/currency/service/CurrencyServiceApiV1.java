@@ -86,35 +86,37 @@ public class CurrencyServiceApiV1 {
         if(!userEntityOptional.isPresent()){
             throw new BadRequestException("사용자 정보를 찾을 수 없습니다.");
         }
-        UserEntity userEntity = userEntityOptional.get();
 
         Optional<AssetEntity> assetEntityOptional = assetRepository.findByIdx(reqCurrencySellDTO.getAssetIdx());
         if(!assetEntityOptional.isPresent()){
             throw new BadRequestException("자산 정보를 찾을 수 없습니다.");
         }
-        AssetEntity assetEntity = assetEntityOptional.get();
         
         ReqPostPortfolioDetailSellDTO reqPostPortfolioDetailSellDTO = ReqPostPortfolioDetailSellDTO.builder()
         .portfolioIdx(reqCurrencySellDTO.getPortfolioDetail().getPortfolioIdx())
         .assetIdx(reqCurrencySellDTO.getAssetIdx())
         .amount(reqCurrencySellDTO.getPortfolioDetail().getAmount())
-        // .totalSellPrice(reqCurrencySellDTO.getPortfolioDetail().getTotalSellPrice())
+        .totalSellPrice(reqCurrencySellDTO.getPortfolioDetail().getTotalSellPrice())
         .build();
 
         portfolioDetailServiceApiV1.postPortfolioDetailSell(reqPostPortfolioDetailSellDTO, customUserDetails);
 
         ReqPostTransactionDTO reqPostTransactionDTO = ReqPostTransactionDTO.builder()
         .assetIdx(reqCurrencySellDTO.getAssetIdx())
-        // .type(reqCurrencySellDTO)
+        .type(reqCurrencySellDTO.getTransaction().getType())
+        .amount(reqCurrencySellDTO.getTransaction().getAmount())
+        .priceAvg(reqCurrencySellDTO.getTransaction().getPriceAvg())
+        .profit(reqCurrencySellDTO.getTransaction().getAmount().multiply(reqCurrencySellDTO.getTransaction().getPriceAvg()))
         .build();
 
-        return null;
+        transactionServiceApiV1.postTransaction(reqPostTransactionDTO, customUserDetails);
 
-    //         private String assetIdx;
-    // private String type;
-    // private BigDecimal amount;
-    // private BigDecimal priceAvg;
-    // private BigDecimal profit;
+        return new ResponseEntity<>(
+                ResponseDTO.builder()
+                        .code(0)
+                        .message("판매 성공")
+                        .build(),
+                HttpStatus.OK);
 
     }
 }

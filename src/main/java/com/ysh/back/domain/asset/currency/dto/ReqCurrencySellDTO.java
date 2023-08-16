@@ -2,7 +2,6 @@ package com.ysh.back.domain.asset.currency.dto;
 
 import java.math.BigDecimal;
 
-import com.ysh.back.domain.asset.currency.dto.ReqCurrencyPurchaseDTO.PortfolioDetail;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,12 +16,13 @@ public class ReqCurrencySellDTO {
     
     private String assetIdx;
     private PortfolioDetail portfolioDetail;
+    private Transaction transaction;
 
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter
     @Builder
-    private static class PorfolioDetail{
+    public static class PortfolioDetail{
         private Integer portfolioIdx;
         private BigDecimal amount;
         private BigDecimal totalSellPrice;
@@ -32,7 +32,7 @@ public class ReqCurrencySellDTO {
     @AllArgsConstructor
     @Getter
     @Builder
-    private static class Transaction{
+    public static class Transaction{
         private String type;
         private BigDecimal amount;
         private BigDecimal priceAvg;
