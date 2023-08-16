@@ -12,7 +12,8 @@ import org.springframework.stereotype.Service;
 import com.ysh.back.common.dto.ResponseDTO;
 import com.ysh.back.common.exception.BadRequestException;
 import com.ysh.back.config.security.auth.CustomUserDetails;
-import com.ysh.back.domain.portfolio.detail.dto.ReqPostPortfolioDetailDTO;
+import com.ysh.back.domain.portfolio.detail.dto.ReqPostPortfolioDetailPerchaseDTO;
+import com.ysh.back.domain.portfolio.detail.dto.ReqPostPortfolioDetailSellDTO;
 import com.ysh.back.model.asset.entity.AssetEntity;
 import com.ysh.back.model.asset.repository.AssetRepository;
 import com.ysh.back.model.auditLog.entity.AuditLogEntity;
@@ -41,7 +42,8 @@ public class PortfolioDetailServiceApiV1 {
     AuditLogRepository auditLogRepository;
 
     @Transactional
-    public ResponseEntity<?> postPortfolioDetail(ReqPostPortfolioDetailDTO reqPostPortfolioDetailDTO,
+    public ResponseEntity<?> postPortfolioDetailPurchase(
+            ReqPostPortfolioDetailPerchaseDTO reqPostPortfolioDetailPerchaseDTO,
             CustomUserDetails customUserDetails) {
         Optional<UserEntity> userEntityOptional = userRepository.findByEmail(customUserDetails.getUsername());
         if (!userEntityOptional.isPresent()) {
@@ -50,13 +52,14 @@ public class PortfolioDetailServiceApiV1 {
         UserEntity userEntity = userEntityOptional.get();
 
         Optional<PortfolioEntity> portfolioEntityOptional = portfolioRepository
-                .findByIdx(reqPostPortfolioDetailDTO.getPortfolioIdx());
+                .findByIdx(reqPostPortfolioDetailPerchaseDTO.getPortfolioIdx());
         if (!portfolioEntityOptional.isPresent()) {
             throw new BadRequestException("해당 포트폴리오를 찾을 수 없습니다.");
         }
         PortfolioEntity portfolioEntity = portfolioEntityOptional.get();
 
-        Optional<AssetEntity> assetEntityOptional = assetRepository.findByIdx(reqPostPortfolioDetailDTO.getAssetIdx());
+        Optional<AssetEntity> assetEntityOptional = assetRepository
+                .findByIdx(reqPostPortfolioDetailPerchaseDTO.getAssetIdx());
         if (!assetEntityOptional.isPresent()) {
             throw new BadRequestException("해당 자산 정보를 찾을 수 없습니다.");
         }
@@ -65,23 +68,31 @@ public class PortfolioDetailServiceApiV1 {
         String message;
 
         Optional<PortfolioDetailEntity> portfolioDetailEntityOptional = portfolioDetailRepository
-                .findByPortfolioEntityIdxAndAssetEntityIdx(reqPostPortfolioDetailDTO.getPortfolioIdx(),
-                        reqPostPortfolioDetailDTO.getAssetIdx());
+                .findByPortfolioEntityIdxAndAssetEntityIdx(reqPostPortfolioDetailPerchaseDTO.getPortfolioIdx(),
+                        reqPostPortfolioDetailPerchaseDTO.getAssetIdx());
         if (portfolioDetailEntityOptional.isPresent()) {
-            PortfolioDetailEntity portfolioDetailEntityForUpdating = portfolioDetailEntityOptional.get();
-            portfolioDetailEntityForUpdating.setAmount(portfolioDetailEntityForUpdating.getAmount().add(reqPostPortfolioDetailDTO.getAmount()));
-            portfolioDetailEntityForUpdating.setAveragePurchasePrice(portfolioDetailEntityForUpdating.getAveragePurchasePrice().add(reqPostPortfolioDetailDTO.getAveragePurchasePrice()).divide(new BigDecimal("2.0"), 2, RoundingMode.HALF_UP));
-            portfolioDetailEntityForUpdating.setTotalPurchasePrice(portfolioDetailEntityForUpdating.getTotalPurchasePrice().add(reqPostPortfolioDetailDTO.getTotalPurchasePrice()));
-            portfolioDetailEntityForUpdating.setDividendMonth(reqPostPortfolioDetailDTO.getDivedendMonth());
-            portfolioDetailEntityForUpdating.setDividendAmount(reqPostPortfolioDetailDTO.getDivendedAmount());
 
-                    AuditLogEntity auditLog = AuditLogEntity.builder()
+            PortfolioDetailEntity portfolioDetailEntity = portfolioDetailEntityOptional.get();
+            portfolioDetailEntity.setAmount(portfolioDetailEntity.getAmount()
+                    .add(reqPostPortfolioDetailPerchaseDTO.getAmount()));
+            portfolioDetailEntity.setAveragePurchasePrice(
+                    portfolioDetailEntity.getAveragePurchasePrice()
+                            .add(reqPostPortfolioDetailPerchaseDTO.getAveragePurchasePrice())
+                            .divide(new BigDecimal("2.0"), 2, RoundingMode.HALF_UP));
+            portfolioDetailEntity
+                    .setTotalPurchasePrice(portfolioDetailEntity.getTotalPurchasePrice()
+                            .add(reqPostPortfolioDetailPerchaseDTO.getTotalPurchasePrice()));
+            portfolioDetailEntity.setDividendMonth(reqPostPortfolioDetailPerchaseDTO.getDivedendMonth());
+            portfolioDetailEntity
+                    .setDividendAmount(reqPostPortfolioDetailPerchaseDTO.getDivendedAmount());
+
+            AuditLogEntity auditLog = AuditLogEntity.builder()
                     .tableName("portfolio_detail")
                     // 유저 정보 가져올 수 있을 때 바꾸자.
                     .userIdx(userEntity.getIdx())
-                    .rowId(Long.valueOf(portfolioDetailEntityForUpdating.getIdx()))
+                    .rowId(Long.valueOf(portfolioDetailEntity.getIdx()))
                     .operation("UPDATE")
-                    .newValue(portfolioDetailEntityForUpdating.getAssetEntity().getName())
+                    .newValue(portfolioDetailEntity.getAssetEntity().getName())
                     .reason("포트폴리오 세부목록 수정")
                     .build();
 
@@ -91,11 +102,11 @@ public class PortfolioDetailServiceApiV1 {
             PortfolioDetailEntity portfolioDetailEntityForSaving = PortfolioDetailEntity.builder()
                     .portfolioEntity(portfolioEntity)
                     .assetEntity(assetEntity)
-                    .amount(reqPostPortfolioDetailDTO.getAmount())
-                    .averagePurchasePrice(reqPostPortfolioDetailDTO.getAveragePurchasePrice())
-                    .totalPurchasePrice(reqPostPortfolioDetailDTO.getTotalPurchasePrice())
-                    .dividendMonth(reqPostPortfolioDetailDTO.getDivedendMonth())
-                    .dividendAmount(reqPostPortfolioDetailDTO.getDivendedAmount())
+                    .amount(reqPostPortfolioDetailPerchaseDTO.getAmount())
+                    .averagePurchasePrice(reqPostPortfolioDetailPerchaseDTO.getAveragePurchasePrice())
+                    .totalPurchasePrice(reqPostPortfolioDetailPerchaseDTO.getTotalPurchasePrice())
+                    .dividendMonth(reqPostPortfolioDetailPerchaseDTO.getDivedendMonth())
+                    .dividendAmount(reqPostPortfolioDetailPerchaseDTO.getDivendedAmount())
                     .build();
 
             PortfolioDetailEntity portfolioDetailEntity = portfolioDetailRepository
@@ -122,4 +133,86 @@ public class PortfolioDetailServiceApiV1 {
                 HttpStatus.OK);
     }
 
+    @Transactional
+    public ResponseEntity<?> postPortfolioDetailSell(
+            ReqPostPortfolioDetailSellDTO reqPostPortfolioDetailSellDTO,
+            CustomUserDetails customUserDetails) {
+
+        Optional<UserEntity> userEntityOptional = userRepository.findByEmail(customUserDetails.getUsername()); 
+        if(!userEntityOptional.isPresent()){
+            throw new BadRequestException("사용자 정보를 찾을 수 없습니다.");
+        }
+        UserEntity userEntity = userEntityOptional.get();
+
+        Optional<PortfolioEntity> portfolioEntityOptional = portfolioRepository.findByIdx(reqPostPortfolioDetailSellDTO.getPortfolioIdx());
+        if(!portfolioEntityOptional.isPresent()){
+            throw new BadRequestException("해당 포트폴리오 정보를 찾을 수 없습니다.");
+        }
+
+        Optional<PortfolioDetailEntity> portfolioDetailEntityOptional = portfolioDetailRepository
+                .findByPortfolioEntityIdxAndAssetEntityIdx(reqPostPortfolioDetailSellDTO.getPortfolioIdx(),
+                        reqPostPortfolioDetailSellDTO.getAssetIdx());
+        if (!portfolioDetailEntityOptional.isPresent()) {
+            throw new BadRequestException("해당 포트폴리오 상세 정보를 찾을 수 없습니다.");
+        }
+        PortfolioDetailEntity portfolioDetailEntity = portfolioDetailEntityOptional.get();
+
+        int compareResult = portfolioDetailEntity.getAmount().compareTo(reqPostPortfolioDetailSellDTO.getAmount());
+        if (compareResult == -1) {
+            throw new BadRequestException("보유량이 충분하지 않습니다.");
+        } else if (compareResult == 0) {
+
+            AuditLogEntity auditLog = AuditLogEntity.builder()
+                    .tableName("portfolioDetail")
+                    // 유저 정보 가져올 수 있을 때 바꾸자.
+                    .userIdx(userEntity.getIdx())
+                    .rowId(Long.valueOf(portfolioDetailEntity.getIdx()))
+                    .operation("DELETE")
+                    .oldValue(portfolioDetailEntity.getAssetEntity().getName())
+                    .reason(portfolioDetailEntity.getAssetEntity().getName() + "종목"
+                    + reqPostPortfolioDetailSellDTO.getAmount() + "개 매도(전량 매도)")
+                    .build();
+
+            portfolioDetailRepository.delete(portfolioDetailEntity);
+
+            auditLogRepository.save(auditLog);
+
+            return new ResponseEntity<>(
+                    ResponseDTO.builder()
+                            .code(0)
+                            .message("판매 성공!")
+                            .build(),
+                    HttpStatus.OK);
+
+        } else {
+            BigDecimal newTotalPurchase = portfolioDetailEntity.getTotalPurchasePrice().subtract(reqPostPortfolioDetailSellDTO.getTotalSellPrice());
+            BigDecimal newAmount = portfolioDetailEntity.getAmount().subtract(reqPostPortfolioDetailSellDTO.getAmount());
+            BigDecimal newAvgPurchase = portfolioDetailEntity.getAveragePurchasePrice().add(newTotalPurchase.divide(newAmount)).divide(new BigDecimal(2));
+
+            portfolioDetailEntity.setTotalPurchasePrice(newTotalPurchase);
+            portfolioDetailEntity.setAmount(newAmount);
+            portfolioDetailEntity.setAveragePurchasePrice(newAvgPurchase);
+
+             AuditLogEntity auditLog = AuditLogEntity.builder()
+                    .tableName("portfolioDetail")
+                    // 유저 정보 가져올 수 있을 때 바꾸자.
+                    .userIdx(userEntity.getIdx())
+                    .rowId(Long.valueOf(portfolioDetailEntity.getIdx()))
+                    .operation("UPDATE")
+                    .oldValue(portfolioDetailEntity.getAmount().toString())
+                    .newValue(newAmount.toString())
+                    .reason(portfolioDetailEntity.getAssetEntity().getName() + "종목"
+                    + reqPostPortfolioDetailSellDTO.getAmount() + "개 매도")
+                    .build();
+
+            auditLogRepository.save(auditLog);
+
+            return new ResponseEntity<>(
+                    ResponseDTO.builder()
+                            .code(0)
+                            .message("판매 성공!")
+                            .build(),
+                    HttpStatus.OK);
+        }
+    }
 }

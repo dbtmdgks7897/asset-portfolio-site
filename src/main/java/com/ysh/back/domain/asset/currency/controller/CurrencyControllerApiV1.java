@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ysh.back.config.security.auth.CustomUserDetails;
 import com.ysh.back.domain.asset.currency.dto.ReqCurrencyPurchaseDTO;
+import com.ysh.back.domain.asset.currency.dto.ReqCurrencySellDTO;
 import com.ysh.back.domain.asset.currency.service.CurrencyServiceApiV1;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,9 +36,12 @@ public class CurrencyControllerApiV1 {
         return currencyServiceApiV1.purchaseCurrency(reqCurrencyPurchaseDTO, customUserDetails);
     }
 
-    // @Operation(summary = "외화 판매", description = "외화 판매 컨트롤러")
-    // @PostMapping("/sell")
-    // public ResponseEntity<?> sellCurrency() {
-
-    // }
+    @Operation(summary = "외화 판매", description = "외화 판매 컨트롤러")
+    @PostMapping("/sell")
+    public ResponseEntity<?> sellCurrency(
+        @Valid @RequestBody ReqCurrencySellDTO reqCurrencySellDTO,
+        @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
+        return currencyServiceApiV1.sellCurrency(reqCurrencySellDTO, customUserDetails);
+    }
 }

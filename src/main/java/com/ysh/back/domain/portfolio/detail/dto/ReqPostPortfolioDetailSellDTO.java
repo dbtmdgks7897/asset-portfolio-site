@@ -11,12 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @Builder
-public class ReqPostPortfolioDetailDTO {
+public class ReqPostPortfolioDetailSellDTO {
     private Integer portfolioIdx;
     private String assetIdx;
     private BigDecimal amount;
-    private BigDecimal averagePurchasePrice;
-    private BigDecimal totalPurchasePrice;
-    private String divedendMonth;
-    private BigDecimal divendedAmount;
+    private BigDecimal totalSellPrice;
 }
