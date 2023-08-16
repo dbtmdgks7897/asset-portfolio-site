@@ -2,6 +2,7 @@ package com.ysh.back.domain.portfolio.detail.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,20 +72,22 @@ public class PortfolioDetailServiceApiV1 {
                 .findByPortfolioEntityIdxAndAssetEntityIdx(reqPostPortfolioDetailPerchaseDTO.getPortfolioIdx(),
                         reqPostPortfolioDetailPerchaseDTO.getAssetIdx());
         if (portfolioDetailEntityOptional.isPresent()) {
-
             PortfolioDetailEntity portfolioDetailEntity = portfolioDetailEntityOptional.get();
-            portfolioDetailEntity.setAmount(portfolioDetailEntity.getAmount()
-                    .add(reqPostPortfolioDetailPerchaseDTO.getAmount()));
-            portfolioDetailEntity.setAveragePurchasePrice(
-                    portfolioDetailEntity.getAveragePurchasePrice()
-                            .add(reqPostPortfolioDetailPerchaseDTO.getAveragePurchasePrice())
-                            .divide(new BigDecimal("2.0"), 2, RoundingMode.HALF_UP));
+            BigDecimal newTotalPurchase = portfolioDetailEntity.getTotalPurchasePrice()
+                    .add(reqPostPortfolioDetailPerchaseDTO.getTotalPurchasePrice());
+            BigDecimal newAmount = portfolioDetailEntity.getAmount()
+                    .add(reqPostPortfolioDetailPerchaseDTO.getAmount());
+            BigDecimal newAvgPurchase = newTotalPurchase.divide(newAmount, 2, RoundingMode.HALF_UP);
+
+            portfolioDetailEntity.setAmount(newAmount);
+            portfolioDetailEntity.setAveragePurchasePrice(newAvgPurchase);
             portfolioDetailEntity
-                    .setTotalPurchasePrice(portfolioDetailEntity.getTotalPurchasePrice()
-                            .add(reqPostPortfolioDetailPerchaseDTO.getTotalPurchasePrice()));
+                    .setTotalPurchasePrice(newTotalPurchase);
             portfolioDetailEntity.setDividendMonth(reqPostPortfolioDetailPerchaseDTO.getDivedendMonth());
             portfolioDetailEntity
                     .setDividendAmount(reqPostPortfolioDetailPerchaseDTO.getDivendedAmount());
+            LocalDateTime current = LocalDateTime.now();
+            portfolioDetailEntity.setUpdatedAt(current);
 
             AuditLogEntity auditLog = AuditLogEntity.builder()
                     .tableName("portfolio_detail")
@@ -138,14 +141,15 @@ public class PortfolioDetailServiceApiV1 {
             ReqPostPortfolioDetailSellDTO reqPostPortfolioDetailSellDTO,
             CustomUserDetails customUserDetails) {
 
-        Optional<UserEntity> userEntityOptional = userRepository.findByEmail(customUserDetails.getUsername()); 
-        if(!userEntityOptional.isPresent()){
+        Optional<UserEntity> userEntityOptional = userRepository.findByEmail(customUserDetails.getUsername());
+        if (!userEntityOptional.isPresent()) {
             throw new BadRequestException("사용자 정보를 찾을 수 없습니다.");
         }
         UserEntity userEntity = userEntityOptional.get();
 
-        Optional<PortfolioEntity> portfolioEntityOptional = portfolioRepository.findByIdx(reqPostPortfolioDetailSellDTO.getPortfolioIdx());
-        if(!portfolioEntityOptional.isPresent()){
+        Optional<PortfolioEntity> portfolioEntityOptional = portfolioRepository
+                .findByIdx(reqPostPortfolioDetailSellDTO.getPortfolioIdx());
+        if (!portfolioEntityOptional.isPresent()) {
             throw new BadRequestException("해당 포트폴리오 정보를 찾을 수 없습니다.");
         }
 
@@ -170,7 +174,7 @@ public class PortfolioDetailServiceApiV1 {
                     .operation("DELETE")
                     .oldValue(portfolioDetailEntity.getAssetEntity().getName())
                     .reason(portfolioDetailEntity.getAssetEntity().getName() + "종목"
-                    + reqPostPortfolioDetailSellDTO.getAmount() + "개 매도(전량 매도)")
+                            + reqPostPortfolioDetailSellDTO.getAmount() + "개 매도(전량 매도)")
                     .build();
 
             portfolioDetailRepository.delete(portfolioDetailEntity);
@@ -185,15 +189,19 @@ public class PortfolioDetailServiceApiV1 {
                     HttpStatus.OK);
 
         } else {
-            BigDecimal newTotalPurchase = portfolioDetailEntity.getTotalPurchasePrice().subtract(reqPostPortfolioDetailSellDTO.getTotalSellPrice());
-            BigDecimal newAmount = portfolioDetailEntity.getAmount().subtract(reqPostPortfolioDetailSellDTO.getAmount());
-            BigDecimal newAvgPurchase = portfolioDetailEntity.getAveragePurchasePrice().add(newTotalPurchase.divide(newAmount)).divide(new BigDecimal("2.0"));
+            BigDecimal newTotalPurchase = portfolioDetailEntity.getTotalPurchasePrice()
+                    .subtract(reqPostPortfolioDetailSellDTO.getTotalSellPrice());
+            BigDecimal newAmount = portfolioDetailEntity.getAmount()
+                    .subtract(reqPostPortfolioDetailSellDTO.getAmount());
+            BigDecimal newAvgPurchase = newTotalPurchase.divide(newAmount, 2, RoundingMode.HALF_UP);
 
             portfolioDetailEntity.setTotalPurchasePrice(newTotalPurchase);
             portfolioDetailEntity.setAmount(newAmount);
             portfolioDetailEntity.setAveragePurchasePrice(newAvgPurchase);
+            LocalDateTime current = LocalDateTime.now();
+            portfolioDetailEntity.setUpdatedAt(current);
 
-             AuditLogEntity auditLog = AuditLogEntity.builder()
+            AuditLogEntity auditLog = AuditLogEntity.builder()
                     .tableName("portfolioDetail")
                     // 유저 정보 가져올 수 있을 때 바꾸자.
                     .userIdx(userEntity.getIdx())
@@ -202,7 +210,7 @@ public class PortfolioDetailServiceApiV1 {
                     .oldValue(portfolioDetailEntity.getAmount().toString())
                     .newValue(newAmount.toString())
                     .reason(portfolioDetailEntity.getAssetEntity().getName() + "종목"
-                    + reqPostPortfolioDetailSellDTO.getAmount() + "개 매도")
+                            + reqPostPortfolioDetailSellDTO.getAmount() + "개 매도")
                     .build();
 
             auditLogRepository.save(auditLog);

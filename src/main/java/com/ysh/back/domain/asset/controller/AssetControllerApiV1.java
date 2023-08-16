@@ -10,11 +10,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ysh.back.config.security.auth.CustomUserDetails;
+import com.ysh.back.domain.asset.dto.ReqAssetPurchaseDTO;
+import com.ysh.back.domain.asset.dto.ReqAssetSellDTO;
 import com.ysh.back.domain.asset.dto.ReqPostAssetDTO;
 import com.ysh.back.domain.asset.service.AssetServiceApiV1;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @Tag(name = "Asset(서버 내 전체, 내 자산 아님)", description = "")
 @RestController
@@ -31,5 +34,23 @@ public class AssetControllerApiV1 {
         @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
         return assetServiceApiV1.postAssetData(reqPostAssetDTO, customUserDetails);
+    }
+
+    @Operation(summary = "자산 구매", description = "자산 구매 컨트롤러")
+    @PostMapping("/purchase")
+    public ResponseEntity<?> purchaseAsset(
+        @Valid @RequestBody ReqAssetPurchaseDTO reqAssetPurchaseDTO,
+        @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
+        return assetServiceApiV1.purchaseAsset(reqAssetPurchaseDTO, customUserDetails);
+    }
+
+    @Operation(summary = "자산 판매", description = "자산 판매 컨트롤러")
+    @PostMapping("/sell")
+    public ResponseEntity<?> sellAsset(
+        @Valid @RequestBody ReqAssetSellDTO reqAssetSellDTO,
+        @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
+        return assetServiceApiV1.sellAsset(reqAssetSellDTO, customUserDetails);
     }
 }

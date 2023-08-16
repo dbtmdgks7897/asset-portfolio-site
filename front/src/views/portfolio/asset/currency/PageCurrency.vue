@@ -171,7 +171,7 @@
             aria-label="Close"
           ></button>
         </div>
-        <div class="modal-body">
+        <div v-if="modalStatus === `구입`" class="modal-body">
           <form>
             <div class="mb-3">
               <label for="recipient-name" class="col-form-label"
@@ -189,13 +189,39 @@
                 >도착 통화({{ selected }}) :</label
               >
               <textarea
-                :value="
-                  (parseFloat(krwPrice) * parseFloat(selectedPrice)).toFixed(1)
-                "
+                v-model="result"
                 class="form-control"
                 id="message-text"
                 disabled
-              ></textarea>
+              >
+              </textarea>
+            </div>
+          </form>
+        </div>
+        <div v-if="modalStatus === `판매`" class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label"
+                >시작 통화 (krw):</label
+              >
+              <input
+                v-model="result"
+                type="number"
+                class="form-control"
+                id="recipient-name"
+                disabled
+              />
+            </div>
+            <div class="mb-3">
+              <label for="message-text" class="col-form-label"
+                >도착 통화({{ selected }}) :</label
+              >
+              <textarea
+                v-model="toPrice"
+                class="form-control"
+                id="message-text"
+              >
+              </textarea>
             </div>
           </form>
         </div>
@@ -231,6 +257,8 @@ export default {
     return {
       from: "krw",
       fromPrice: 1000,
+      toPrice: 0,
+      result: null,
       to: null,
       currencyData: null,
       selected: null,
@@ -266,8 +294,16 @@ export default {
     },
     fromPrice: function (val) {
       this.fromPrice = val;
-
-      console.log(this.currencyData);
+    },
+    krwPrice: function (val) {
+      this.result = (parseFloat(val) * parseFloat(this.selectedPrice)).toFixed(
+        1
+      );
+    },
+    toPrice: function (val) {
+      this.result = (
+        parseFloat(val) / parseFloat(this.selectedPrice)
+      ).toFixed(1);
     },
   },
   methods: {
@@ -299,27 +335,27 @@ export default {
           },
           portfolioDetail: {
             portfolioIdx: localStorage.getItem("portfolioIdx"),
-            amount: this.krwPrice,
-            averagePurchasePrice: this.selectedPrice,
-            totalPurchasePrice: this.krwPrice * this.selectedPrice,
+            amount: this.result,
+            averagePurchasePrice: this.krwPrice / this.result,
+            totalPurchasePrice: this.krwPrice,
           },
           transaction: {
             type: "구입",
-            amount: this.krwPrice,
+            amount: parseFloat(this.toPrice),
             priceAvg: this.selectedPrice,
-            profit: 0,
+            profit: this.result * -1,
           },
         };
 
         this.$axios
-          .post(`/api/v1/asset/currency/purchase`, data, {
+          .post(`/api/v1/asset/purchase`, data, {
             headers: {
               "Content-Type": "application/json;charset=utf-8;",
             },
           })
           .then((res) => {
             if (res.data.code === 0) {
-                console.log(res.data.message);
+              alert(res.data.message);
             } else {
               alert(res.data.message);
             }
@@ -333,10 +369,10 @@ export default {
       this.modalStatus = "판매";
     },
     sellButton() {
-        if (
+      if (
         confirm(
           `${this.selected}를 ${(
-            parseFloat(this.krwPrice) * parseFloat(this.selectedPrice)
+            parseFloat(this.toPrice)
           ).toFixed(1)}만큼 판매하시겠습니까?`
         )
       ) {
@@ -344,26 +380,26 @@ export default {
           assetIdx: `${this.selected.toUpperCase()}/KRW`,
           portfolioDetail: {
             portfolioIdx: localStorage.getItem("portfolioIdx"),
-            amount: this.krwPrice,
-            totalSellPrice: this.krwPrice * this.selectedPrice,
+            amount: this.toPrice,
+            totalSellPrice: this.result,
           },
           transaction: {
             type: "판매",
-            amount: this.krwPrice,
+            amount: this.toPrice,
             priceAvg: this.selectedPrice,
-            profit: this.krwPrice * this.selectedPrice,
+            profit: this.result,
           },
         };
 
         this.$axios
-          .post(`/api/v1/asset/currency/sell`, data, {
+          .post(`/api/v1/asset/sell`, data, {
             headers: {
               "Content-Type": "application/json;charset=utf-8;",
             },
           })
           .then((res) => {
             if (res.data.code === 0) {
-                console.log(res.data.message);
+              alert(res.data.message);
             } else {
               alert(res.data.message);
             }

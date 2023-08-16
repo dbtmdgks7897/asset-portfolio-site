@@ -1,4 +1,4 @@
-package com.ysh.back.domain.asset.currency.dto;
+package com.ysh.back.domain.asset.dto;
 
 import java.math.BigDecimal;
 
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @Builder
-public class ReqCurrencySellDTO {
+public class ReqAssetSellDTO {
     
     private String assetIdx;
     private PortfolioDetail portfolioDetail;

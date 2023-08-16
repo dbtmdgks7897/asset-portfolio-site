@@ -5,10 +5,16 @@
   >
     <div class="contents">
       <div class="contents-head flex">
-        <span>국내 주식
-          <a style="font-size: 2vw;" href="https://kr.investing.com/stock-screener/?sp=country::11|sector::a|industry::a|equityType::a%3Ceq_market_cap;1" target="_blank">종목 코드 검색</a>
+        <span
+          >국내 주식
+          <a
+            style="font-size: 2vw"
+            href="https://kr.investing.com/stock-screener/?sp=country::11|sector::a|industry::a|equityType::a%3Ceq_market_cap;1"
+            target="_blank"
+            >종목 코드 검색</a
+          >
         </span>
-        
+
         <div class="input-group mb-1">
           <input
             type="text"
@@ -48,11 +54,27 @@
             <tbody>
               <!-- v-for로 반복 돌려서 데이터 가져와서 링크 넣고 뿌려주기 -->
               <tr v-if="stockData && stockCode.length == 6">
-                <th  @click="goDomesticStockDetail(stockCode)" scope="row">{{ stockCode }}</th>
-                <td @click="goDomesticStockDetail(stockCode)">{{ stockData.bstp_kor_isnm }}</td>
-                <td @click="goDomesticStockDetail(stockCode)">{{ stockData.stck_prpr }}</td>
-                <td @click="goDomesticStockDetail(stockCode)" :style="getPriceStyle(stockData.prdy_vrss)">{{ stockData.prdy_vrss }}</td>
-                <td @click="goDomesticStockDetail(stockCode)" :style="getPriceStyle(stockData.prdy_ctrt)">{{ stockData.prdy_ctrt }}</td>
+                <th @click="goDomesticStockDetail(stockCode)" scope="row">
+                  {{ stockCode }}
+                </th>
+                <td @click="goDomesticStockDetail(stockCode)">
+                  {{ stockData.bstp_kor_isnm }}
+                </td>
+                <td @click="goDomesticStockDetail(stockCode)">
+                  {{ stockData.stck_prpr }}
+                </td>
+                <td
+                  @click="goDomesticStockDetail(stockCode)"
+                  :style="getPriceStyle(stockData.prdy_vrss)"
+                >
+                  {{ stockData.prdy_vrss }}
+                </td>
+                <td
+                  @click="goDomesticStockDetail(stockCode)"
+                  :style="getPriceStyle(stockData.prdy_ctrt)"
+                >
+                  {{ stockData.prdy_ctrt }}
+                </td>
               </tr>
             </tbody>
           </table>
@@ -105,9 +127,11 @@ export default {
         });
     },
     goDomesticStockDetail(stockCode) {
+      console.log(this.stockData.stck_prpr);
       this.$router.push({
         name: "PageStockDomesticDetail",
         params: { stockCode: stockCode },
+        query: { stockPrice: this.stockData.stck_prpr },
       });
     },
     getPriceStyle(value) {
@@ -134,9 +158,9 @@ body {
 .contents {
   background-color: #fff;
   &-head {
-    span{
-        font-size: 3vw;
-      }
+    span {
+      font-size: 3vw;
+    }
     div {
       width: 20vw;
       height: 50%;
@@ -145,7 +169,7 @@ body {
   &-body {
     width: 100%;
     height: 100%;
-    
+
     .indexes {
       justify-content: space-around;
       height: 100%;
@@ -158,7 +182,7 @@ body {
   }
 }
 
-.bookmark{
+.bookmark {
   z-index: 1;
 }
 </style>

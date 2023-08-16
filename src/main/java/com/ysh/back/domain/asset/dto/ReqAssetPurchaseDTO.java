@@ -1,4 +1,4 @@
-package com.ysh.back.domain.asset.currency.dto;
+package com.ysh.back.domain.asset.dto;
 
 import java.math.BigDecimal;
 
@@ -14,7 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class ReqCurrencyPurchaseDTO {
+public class ReqAssetPurchaseDTO {
     
     @NotNull(message = "입력된 자산 정보가 잘못되었습니다.")
     private Asset asset;

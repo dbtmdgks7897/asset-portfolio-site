@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 public class ReqPostBookmarkDTO {
-    private String stockIdx;
+    private String assetIdx;
 }
