@@ -7,14 +7,14 @@
       <div v-if="stockHead" class="contents-head flex">
         <span
           >{{ util.truncateText(stockHead.assetName, 12) }}
-          <a href=""
+          <a
             ><i
               v-show="isBookmark"
               @click="bookmarking"
               class="bi bi-star-fill"
             ></i>
           </a>
-          <a href=""
+          <a
             ><i v-show="!isBookmark" @click="bookmarking" class="bi bi-star"></i
           ></a>
         </span>

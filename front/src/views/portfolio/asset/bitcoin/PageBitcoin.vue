@@ -5,7 +5,7 @@
   >
     <div class="contents">
       <div class="contents-head flex">
-        <span>비트코인 </span>
+        <span>암호화폐 </span>
         <div class="input-group mb-1">
           <input
             type="text"
@@ -41,7 +41,11 @@
             </thead>
             <tbody>
               <!-- v-for로 반복 돌려서 데이터 가져와서 링크 넣고 뿌려주기 -->
-              <tr v-for="bitcoin in bitcoinData" :key="bitcoin">
+              <tr @click="this.$router.push({
+                  name: 'PageBitcoinDetail',
+                  params: { bitcoinCode: bitcoin.market },
+                  query: { bitcoinName: bitcoin.korean_name },
+                })" v-for="bitcoin in bitcoinData" :key="bitcoin">
                 <th v-if="bitcoin.market.startsWith('KRW')" scope="row">
                   {{ bitcoin.market }}
                 </th>

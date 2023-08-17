@@ -4,39 +4,42 @@
     class=""
   >
     <div class="contents">
-      <div v-if="stockHead" class="contents-head flex">
+      <div class="contents-head flex">
         <span
-          >{{ util.truncateText(stockHead.assetName, 12) }}
-          <i
-            v-show="isBookmark"
-            @click="bookmarking"
-            class="bi bi-star-fill"
-          ></i>
-          <i v-show="!isBookmark" @click="bookmarking" class="bi bi-star"></i>
+          >{{ bitcoinName }}
+          <a
+            ><i
+              v-show="isBookmark"
+              @click="bookmarking"
+              class="bi bi-star-fill"
+            ></i>
+          </a>
+          <a
+            ><i v-show="!isBookmark" @click="bookmarking" class="bi bi-star"></i
+          ></a>
         </span>
-        <span>({{ stockHead.assetCode }})</span>
+        <span>({{ bitcoinCode }})</span>
       </div>
       <div class="contents-body table-responsive-xxl">
-        <div v-if="stockData.price">
+        <div v-if="bitcoinData">
           <div class="flex pricebox">
-            <p class="price">{{ stockData.price }}</p>
-            <p class="compare" :style="getPriceStyle(stockData.compareYester)">
-              <span>{{ stockData.compareYester }}</span
-              >({{ stockData.compareYesterRate }}%)
+            <p class="price">{{ bitcoinData.trade_price }}원</p>
+            <p class="compare" :style="getPriceStyle(bitcoinData.signed_change_price)">
+              <span>{{ bitcoinData.signed_change_price }}</span
+              >({{ bitcoinData.signed_change_rate }}%)
             </p>
           </div>
-          <div class="pricebox">
+          <div class="pricebox downside">
             <p style="color: red">
-              <span>금일 최고가</span> | {{ stockData.highPrice }}
+              <span>금일 최고가</span> | {{ bitcoinData.high_price
+ }}
             </p>
             <p style="color: blue">
-              <span>금일 최저가</span> | {{ stockData.rowPrice }}
+              <span>금일 최저가</span> | {{ bitcoinData.low_price }}
             </p>
           </div>
-        </div>
-        <div v-else>
-          <div class="flex pricebox">
-            <p class="price">{{ tempStockPrice }}</p>
+          <div>
+
           </div>
         </div>
         <div class="buttons">
@@ -144,7 +147,7 @@
 
 <script setup>
 import { toggle } from "@/utils/toggle";
-import { util } from "@/utils/utils";
+// import { util } from "@/utils/utils";
 </script>
 <script>
 // /*** Start	unicode replace step ********************************************************/
@@ -164,55 +167,45 @@ export default {
   data() {
     //변수생성
     return {
-      /** @type {WebSocket} */
-      socket: null,
-      stockCode: this.$route.params.stockCode,
-      tempStockPrice: this.$route.query.stockPrice,
-      assetType: "주식-국내",
-      stockHead: null,
-      stockData: {
-        price: null,
-        compareYester: null,
-        compareYesterRate: null,
-        highPrice: null,
-        rowPrice: null,
-      },
-      modalStatus: null,
-      approvalKey: null,
-      amount: 1,
-      result: null,
-      isBookmark: null,
-      finalPrice: null,
+        bitcoinCode: this.$route.params.bitcoinCode,
+        bitcoinName: this.$route.query.bitcoinName,
+        bitcoinData: null,
+        isBookmark: null,
     };
   },
   mounted() {
-    this.assetRegistration();
-    this.connectToWebSocket();
+    this.getBitcoinDetailData();
     this.isBookmarked();
   },
   watch: {
-    amount: function (val) {
-    //   var temp = null;
-    //   if (this.stockData.price == null) {
-    //     temp = this.tempStockPrice;
-    //   } else {
-    //     temp = this.stockData.price;
-    //   }
-      this.result = this.finalPrice * val;
-    },
-  },
-  async beforeUnmount() {
-    if (this.socket) {
-      // 뷰가 제거되기 전에 웹소켓을 닫습니다.
-      this.socket.close();
-    }
+
   },
   methods: {
+    getBitcoinDetailData(){
+        this.$axios
+        .get(`/api/v1/asset/bitcoin/${this.bitcoinCode}`,{
+            params: {
+                bitcoinName: this.bitcoinName
+            }
+        })
+        .then((res) => {
+          if (res.data.code === 0) {
+            this.bitcoinData = res.data.data[0];
+            console.log(this.bitcoinData)
+          } else {
+            alert(res.data.message);
+          }
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+        });
+        
+    },
     isBookmarked() {
       this.$axios
         .get(`/api/v1/bookmark`, {
           params: {
-            assetCode: this.stockCode,
+            assetCode: this.bitcoinCode,
           },
         })
         .then((res) => {
@@ -228,7 +221,7 @@ export default {
     },
     bookmarking() {
       const dto = {
-        assetIdx: this.stockCode,
+        assetIdx: this.bitcoinCode,
       };
       this.$axios
         .post(`/api/v1/bookmark`, dto, {
@@ -273,84 +266,6 @@ export default {
         .catch((err) => {
           alert(err.response.data.message);
         });
-    },
-    // getDomesticStockDetailData() {
-    //   this.$axios
-    //     .get("/api/v1/asset/stock/domestic/" + this.stockCode, {
-    //       params: {
-    //         stockCode: this.stockCode,
-    //       },
-    //     })
-    //     .then((res) => {
-    //       if (res.data.code === 0) {
-    //         this.stockData = res.data.data;
-    //       } else {
-    //         alert(res.data.message);
-    //       }
-    //     })
-    //     .catch((err) => {
-    //       alert(err.response.data.message);
-    //     });
-    // },
-    async connectToWebSocket() {
-      try {
-        const response = await this.$axios.post("/api/v1/apiAuth/approval");
-        this.approvalKey = response.data;
-
-        if (this.approvalKey) {
-          this.socket = new WebSocket(
-            `ws://ops.koreainvestment.com:21000/tryitout/H0STCNT0?approval_key=${this.approvalKey}`
-          );
-
-          this.socket.onopen = () => {
-            console.log("Connected to WebSocket");
-            this.sendStockInfo();
-          };
-
-          this.socket.onmessage = async (event) => {
-            const data = event.data.split("|");
-            const signal = data[0];
-            if (signal === "0" || signal === "1") {
-              const tempStockData = data[3].split("^");
-              this.stockData.price = tempStockData[2];
-              this.stockData.compareYester = tempStockData[4];
-              this.stockData.compareYesterRate = tempStockData[5];
-              this.stockData.highPrice = tempStockData[8];
-              this.stockData.rowPrice = tempStockData[9];
-
-              console.log(tempStockData);
-            }
-          };
-
-          this.socket.onerror = (error) => {
-            console.error("WebSocket Error", error);
-          };
-
-          this.socket.onclose = (event) => {
-            console.log("WebSocket closed", event);
-          };
-        }
-      } catch (error) {
-        console.error("Error fetching approval key:", error);
-      }
-    },
-    sendStockInfo() {
-      const message = {
-        header: {
-          approval_key: this.approvalKey,
-          custtype: "P",
-          tr_type: "1",
-          "content-type": "utf-8",
-        },
-        body: {
-          input: {
-            tr_id: "H0STCNT0",
-            tr_key: this.stockCode, // 이 부분은 원하는 종목 코드로 변경해야 합니다.
-          },
-        },
-      };
-
-      this.socket.send(JSON.stringify(message));
     },
     getPriceStyle(value) {
       const numValue = parseFloat(value);
@@ -484,8 +399,16 @@ body {
   &-head {
     span {
       font-size: 3vw;
-      i {
-        color: yellow;
+      a {
+        i {
+          color: black; /* 기본 색상 */
+          transition: color 0.3s;
+        }
+        &:hover {
+          i {
+            color: yellow; /* 마우스 호버 시 색상 변경 */
+          }
+        }
       }
     }
     div {
@@ -505,6 +428,12 @@ body {
         font-size: 2vw;
         margin-left: 20px;
       }
+    }
+
+    .downside {
+      display: flex;
+      flex-direction: column;
+      align-items: baseline;
     }
     .buttons {
       button {

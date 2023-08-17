@@ -17,6 +17,7 @@ import PageStockDomesticDetail from '@/views/portfolio/asset/stock/PageStockDome
 import PageStockOverseas from '@/views/portfolio/asset/stock/PageStockOverseas'
 import PageCurrency from '@/views/portfolio/asset/currency/PageCurrency'
 import PageBitcoin from '@/views/portfolio/asset/bitcoin/PageBitcoin'
+import PageBitcoinDetail from '@/views/portfolio/asset/bitcoin/PageBitcoinDetail'
 import PagePortfolioTransaction from '@/views/portfolio/PagePortfolioTransaction'
 import PageMyPortfolio from '@/views/portfolio/PageMyPortfolio'
 import PageMyPortfolioDetail from '@/views/portfolio/PageMyPortfolioDetail'
@@ -118,13 +119,16 @@ const routes = [
         path: '/asset/currency',
         name: 'PageCurrency',
         component: PageCurrency
-
     },
     {
         path: '/asset/bitcoin',
         name: 'PageBitcoin',
         component: PageBitcoin
-
+    },
+    {
+        path: '/asset/bitcoin/:bitcoinCode',
+        name: 'PageBitcoinDetail',
+        component: PageBitcoinDetail
     },
 ]
 
