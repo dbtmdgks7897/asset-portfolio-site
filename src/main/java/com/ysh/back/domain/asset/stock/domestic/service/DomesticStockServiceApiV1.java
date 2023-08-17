@@ -53,7 +53,7 @@ public class DomesticStockServiceApiV1 {
     @Autowired
     AssetServiceApiV1 assetServiceApiV1;
 
-    public ResponseEntity<?> getStockInfoData(String stockCode, CustomUserDetails customUserDetails) {
+    public ResponseEntity<?> getDomesticStockInfoData(String stockCode, CustomUserDetails customUserDetails) {
         Optional<UserEntity> userEntityOptional = userRepository.findByEmail(customUserDetails.getUsername());
         if(!userEntityOptional.isPresent()){
             throw new BadRequestException("사용자 정보를 찾을 수 없습니다.");
@@ -99,7 +99,7 @@ public class DomesticStockServiceApiV1 {
                 HttpStatus.OK);
     }
 
-    public ResponseEntity<?> getStockDetailData(String stockCode, String stockType, CustomUserDetails customUserDetails) {
+    public ResponseEntity<?> getDomesticStockDetailData(String stockCode, String stockType, CustomUserDetails customUserDetails) {
         Optional<UserEntity> userEntityOptional = userRepository.findByEmail(customUserDetails.getUsername());
         if(!userEntityOptional.isPresent()){
             throw new BadRequestException("사용자 정보를 찾을 수 없습니다.");

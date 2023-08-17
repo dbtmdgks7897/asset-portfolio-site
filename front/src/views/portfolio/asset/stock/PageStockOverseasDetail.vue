@@ -4,9 +4,9 @@
     class=""
   >
     <div class="contents">
-      <div v-if="stockHead" class="contents-head flex">
+      <div class="contents-head flex">
         <span
-          >{{ util.truncateText(stockHead.assetName, 12) }}
+          >{{ stockCode }}
           <a
             ><i
               v-show="isBookmark"
@@ -18,15 +18,14 @@
             ><i v-show="!isBookmark" @click="bookmarking" class="bi bi-star"></i
           ></a>
         </span>
-        <span>({{ stockHead.assetCode }})</span>
       </div>
       <div class="contents-body table-responsive-xxl">
-        <div v-if="stockData.price">
+        <div>
           <div class="flex pricebox">
             <p class="price">{{ stockData.price }}</p>
             <p class="compare" :style="getPriceStyle(stockData.compareYester)">
               <span>{{ stockData.compareYester }}</span
-              >({{ stockData.compareYesterRate }}%)
+              >
             </p>
           </div>
           <div class="pricebox downside">
@@ -38,109 +37,6 @@
             </p>
           </div>
         </div>
-        <div v-else>
-          <div class="flex pricebox">
-            <p class="price">{{ tempStockPrice }}</p>
-          </div>
-        </div>
-        <div class="buttons">
-          <button
-            @click="purchaseModal"
-            data-bs-toggle="modal"
-            data-bs-target="#exampleModal"
-            data-bs-whatever="@mdo"
-            class="btn my-button"
-          >
-            <span>구매</span>
-          </button>
-          <button
-            @click="sellModal"
-            data-bs-toggle="modal"
-            data-bs-target="#exampleModal"
-            data-bs-whatever="@mdo"
-            class="btn my-button"
-          >
-            <span>판매</span>
-          </button>
-        </div>
-      </div>
-    </div>
-    <div
-      class="modal fade"
-      id="exampleModal"
-      tabindex="-1"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">
-              {{ modalStatus }}
-            </h1>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="mb-3">
-                <label for="recipient-name" class="col-form-label"
-                  >액수 조정</label
-                >
-                <input
-                  v-model="finalPrice"
-                  type="number"
-                  class="form-control"
-                  id="recipient-name"
-                />
-              </div>
-              <div class="mb-3">
-                <label for="recipient-name" class="col-form-label"
-                  >{{ modalStatus }} 갯수 :
-                </label>
-                <input
-                  v-model="amount"
-                  type="number"
-                  class="form-control"
-                  id="recipient-name"
-                />
-              </div>
-              <div class="mb-3">
-                <label for="message-text" class="col-form-label"
-                  >총 금액 :</label
-                >
-                <textarea
-                  :value="result"
-                  class="form-control"
-                  id="message-text"
-                  disabled
-                >
-                </textarea>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              닫기
-            </button>
-            <button
-              @click="buttonHandler"
-              data-bs-toggle="modal"
-              type="button"
-              class="btn btn-primary"
-            >
-              {{ modalStatus }}
-            </button>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -148,7 +44,7 @@
 
 <script setup>
 import { toggle } from "@/utils/toggle";
-import { util } from "@/utils/utils";
+// import { util } from "@/utils/utils";
 </script>
 <script>
 // /*** Start	unicode replace step ********************************************************/
@@ -171,15 +67,13 @@ export default {
       /** @type {WebSocket} */
       socket: null,
       stockCode: this.$route.params.stockCode,
-      tempStockPrice: this.$route.query.stockPrice,
-      assetType: "주식_국내",
-      stockHead: null,
+      assetType: "주식_해외",
       stockData: {
         price: null,
-        compareYester: null,
-        compareYesterRate: null,
         highPrice: null,
         rowPrice: null,
+        compareYester: null,
+        compareYesterRate: null,
       },
       modalStatus: null,
       approvalKey: null,
@@ -187,25 +81,58 @@ export default {
       result: null,
       isBookmark: null,
       finalPrice: null,
+      apikey: null,
     };
   },
   mounted() {
-    this.assetRegistration();
-    this.connectToWebSocket();
     this.isBookmarked();
+    this.getOverseasStockDetailData();
   },
   watch: {
     amount: function (val) {
       this.result = this.finalPrice * val;
     },
   },
-  async beforeUnmount() {
-    if (this.socket) {
-      // 뷰가 제거되기 전에 웹소켓을 닫습니다.
-      this.socket.close();
-    }
-  },
   methods: {
+    getOverseasStockDetailData() {
+      this.$axios
+        .get("/api/v1/asset/stock/overseas/apikey")
+        .then((res) => {
+          this.apikey = res.data;
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+        });
+
+      const apiUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${this.stockCode}&apikey=${this.apikey}`;
+      this.$axios
+        .get(apiUrl)
+        .then((res) => {
+          // API 응답 데이터를 responseData에 저장
+          const data = res.data;
+          const symbol = data["Meta Data"]["2. Symbol"];
+
+          // 'Time Series (Daily)'에서 마지막 데이터 추출
+          const timeSeries = data["Time Series (Daily)"];
+          const lastDate = Object.keys(timeSeries)[0]; // 가장 최근 날짜를 추출
+          const preDate = Object.keys(timeSeries)[1]; // 가장 최근 날짜를 추출
+          const lastData = timeSeries[lastDate]; // 최근 날짜의 데이터를 추출
+          const preData = timeSeries[preDate]; // 최근 날짜의 데이터를 추출
+
+          this.stockCode = symbol;
+          this.stockData = {
+            highPrice: lastData["2. high"],
+            rowPrice: lastData["3. low"],
+            price: lastData["4. close"],
+            compareYester: (parseFloat(lastData["4. close"]) - parseFloat(preData["4. close"])).toFixed(2),
+            compareYesterRate: Math.abs(this.compareYester) / parseFloat(preData["4. close"]),
+          };
+
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
+    },
     isBookmarked() {
       this.$axios
         .get(`/api/v1/bookmark`, {
@@ -219,10 +146,6 @@ export default {
         .catch((err) => {
           alert(err.response.data.message);
         });
-    },
-    userSearch(id) {
-      console.log(id);
-      this.isUserSearching = !this.isUserSearching;
     },
     bookmarking() {
       const dto = {
@@ -245,110 +168,6 @@ export default {
         .catch((err) => {
           alert(err.response.data.message);
         });
-    },
-    assetRegistration() {
-      this.$axios
-        .get(
-          `/api/v1/asset/stock/domestic/${this.stockCode}`,
-          {
-            params: {
-              stockType: "주식_국내",
-            },
-          },
-          {
-            headers: {
-              "Content-Type": "application/json;charset=utf-8",
-            },
-          }
-        )
-        .then((res) => {
-          if (res.data.code === 0) {
-            this.stockHead = res.data.data;
-          } else {
-            alert(res.data.message);
-          }
-        })
-        .catch((err) => {
-          alert(err.response.data.message);
-        });
-    },
-    // getDomesticStockDetailData() {
-    //   this.$axios
-    //     .get("/api/v1/asset/stock/domestic/" + this.stockCode, {
-    //       params: {
-    //         stockCode: this.stockCode,
-    //       },
-    //     })
-    //     .then((res) => {
-    //       if (res.data.code === 0) {
-    //         this.stockData = res.data.data;
-    //       } else {
-    //         alert(res.data.message);
-    //       }
-    //     })
-    //     .catch((err) => {
-    //       alert(err.response.data.message);
-    //     });
-    // },
-    async connectToWebSocket() {
-      try {
-        const response = await this.$axios.post("/api/v1/apiAuth/approval");
-        this.approvalKey = response.data;
-
-        if (this.approvalKey) {
-          this.socket = new WebSocket(
-            `ws://ops.koreainvestment.com:21000/tryitout/H0STCNT0?approval_key=${this.approvalKey}`
-          );
-
-          this.socket.onopen = () => {
-            console.log("Connected to WebSocket");
-            this.sendStockInfo();
-          };
-
-          this.socket.onmessage = async (event) => {
-            const data = event.data.split("|");
-            const signal = data[0];
-            if (signal === "0" || signal === "1") {
-              const tempStockData = data[3].split("^");
-              this.stockData.price = tempStockData[2];
-              this.stockData.compareYester = tempStockData[4];
-              this.stockData.compareYesterRate = tempStockData[5];
-              this.stockData.highPrice = tempStockData[8];
-              this.stockData.rowPrice = tempStockData[9];
-
-              console.log(tempStockData);
-            }
-          };
-
-          this.socket.onerror = (error) => {
-            console.error("WebSocket Error", error);
-          };
-
-          this.socket.onclose = (event) => {
-            console.log("WebSocket closed", event);
-          };
-        }
-      } catch (error) {
-        console.error("Error fetching approval key:", error);
-      }
-    },
-    sendStockInfo() {
-      const message = {
-        header: {
-          approval_key: this.approvalKey,
-          custtype: "P",
-          tr_type: "1",
-          "content-type": "utf-8",
-        },
-        body: {
-          input: {
-            tr_id: "H0STCNT0",
-            tr_key: this.stockCode, // 이 부분은 원하는 종목 코드로 변경해야 합니다.
-          },
-        },
-      };
-
-      this.socket.send(JSON.stringify(message));
     },
     getPriceStyle(value) {
       const numValue = parseFloat(value);

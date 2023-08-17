@@ -13,7 +13,7 @@ import com.ysh.back.domain.asset.service.AssetTypeServiceApiV1;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Tag(name = "자산 타입 컨트롤러", description = "")
+@Tag(name = "자산 타입", description = "")
 @RestController
 @RequestMapping("/api/v1/asset/type")
 public class AssetTypeControllerApiV1 {

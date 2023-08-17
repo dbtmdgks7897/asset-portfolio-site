@@ -146,7 +146,9 @@ CREATE TABLE `portfolio_detail` (
 CREATE TABLE `asset` (
     `idx` VARCHAR(20) PRIMARY KEY,
     `name` VARCHAR(100) NOT NULL,
-    `type_idx` INT NOT NULL
+    `type_idx` INT NOT NULL,
+    `price` DECIMAL(18,2),
+    `updated_at` DATETIME
 );
 
 CREATE TABLE `asset_type` (

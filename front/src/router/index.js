@@ -15,6 +15,7 @@ import PageAssetMain from '@/views/portfolio/asset/PageAssetMain'
 import PageStockDomestic from '@/views/portfolio/asset/stock/PageStockDomestic'
 import PageStockDomesticDetail from '@/views/portfolio/asset/stock/PageStockDomesticDetail'
 import PageStockOverseas from '@/views/portfolio/asset/stock/PageStockOverseas'
+import PageStockOverseasDetail from '@/views/portfolio/asset/stock/PageStockOverseasDetail'
 import PageCurrency from '@/views/portfolio/asset/currency/PageCurrency'
 import PageBitcoin from '@/views/portfolio/asset/bitcoin/PageBitcoin'
 import PageBitcoinDetail from '@/views/portfolio/asset/bitcoin/PageBitcoinDetail'
@@ -112,6 +113,11 @@ const routes = [
         component: PageStockOverseas
     },
     {
+        path: '/asset/stock/overseas/:stockCode',
+        name: 'PageStockOverseasDetail',
+        component: PageStockOverseasDetail
+    },
+    {
         path: '/portfolio/transaction',
         name: 'PageAssetTransaction',
         component: PagePortfolioTransaction
@@ -136,6 +142,8 @@ const routes = [
         name: 'PageAssetCustom',
         component: PageAssetCustom
     },
+
+    
 ]
 
 // const authNotRequiredComponents = ['PageMain', 'PageBoardList', 'PageJoin', 'PageLogin'];

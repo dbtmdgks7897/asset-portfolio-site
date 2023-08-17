@@ -1,5 +1,7 @@
 package com.ysh.back.model.asset.entity;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.ysh.back.model.bookmark.entity.BookmarkEntity;
@@ -44,6 +46,12 @@ public class AssetEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "type_idx", nullable = false)
     private AssetTypeEntity assetTypeEntity;
+    
+    @Column(name = "price")
+    private BigDecimal price;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "assetEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PortfolioDetailEntity> portfolioDetailEntityList;

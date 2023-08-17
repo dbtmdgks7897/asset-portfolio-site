@@ -39,8 +39,7 @@
         </div>
       </div>
       <div class="contents-body table-responsive-xxl">
-        <!-- 검색했냐? -->
-        <div v-if="isUserSearching">
+        <div>
           <table class="table">
             <thead class="table-dark">
               <tr>
@@ -52,7 +51,6 @@
               </tr>
             </thead>
             <tbody>
-              <!-- v-for로 반복 돌려서 데이터 가져와서 링크 넣고 뿌려주기 -->
               <tr v-if="stockData && stockCode.length == 6">
                 <th @click="goDomesticStockDetail(stockCode)" scope="row">
                   {{ stockCode }}
