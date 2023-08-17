@@ -1,5 +1,6 @@
 package com.ysh.back.domain.asset.bitcoin.service;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +71,7 @@ public class BitcoinServiceApiV1 {
         ReqPostAssetDTO reqPostAssetDTO = ReqPostAssetDTO.builder()
                 .assetCode(bitcoinCode)
                 .assetName(bitcoinName)
-                .assetType("가상 자산")
+                .assetType("암호화폐")
                 .build();
         assetServiceApiV1.postAssetData(reqPostAssetDTO, customUserDetails);
 
@@ -80,5 +81,19 @@ public class BitcoinServiceApiV1 {
                         .data(response.getBody())
                         .build(),
                 HttpStatus.OK);
+    }
+
+    public BigDecimal updatePrice(String bitcoinCode){
+        String url = "https://api.upbit.com/v1/ticker?markets=" + bitcoinCode;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("accept", "application/json");
+
+        ResponseEntity<ResGetBitcoinDetailDTO[]> response = restTemplate.getForEntity(url, ResGetBitcoinDetailDTO[].class);
+        ResGetBitcoinDetailDTO responseBody = response.getBody()[0];
+
+        BigDecimal price = responseBody.getTrade_price();
+
+        return price;
     }
 }

@@ -1,5 +1,6 @@
 package com.ysh.back.domain.asset.stock.domestic.service;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.Optional;
 
@@ -123,9 +124,6 @@ public class DomesticStockServiceApiV1 {
                 ApiGetDomesticStockNameDTO.class);
 
         ApiGetDomesticStockNameDTO responseBody = response.getBody();
-
-        System.out.println(responseBody.getResponse().getHeader().getResultMsg());
-
         if (!responseBody.getResponse().getHeader().getResultCode().equals("00")) {
             throw new BadRequestException("주식 이름 불러오기 오류");
         }
@@ -138,5 +136,32 @@ public class DomesticStockServiceApiV1 {
 
         // TODO : 나중에 웹소켓? 연결하고 데이터 더 줘야되는데 이러면 여기서는 이거만 주면 되나?
         return assetServiceApiV1.postAssetData(dto, customUserDetails);
+    }
+
+    public BigDecimal updatePrice(String stockCode) {
+        String path = "/uapi/domestic-stock/v1/quotations/inquire-price?fid_cond_mrkt_div_code=J&fid_input_iscd="
+                + stockCode;
+        String url = apiBaseUrl + path;
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        // 헤더 설정
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + apiAuthServiceApiV1.getAccessToken());
+        headers.set("appkey", appKey);
+        headers.set("appsecret", appSecretKey);
+        headers.set("tr_id", "FHKST01010100");
+
+        HttpEntity<ReqGetDomesticStockInfoDTO> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<ResDomesticStockInfoDTO> response = restTemplate.exchange(url, HttpMethod.GET,
+                entity, ResDomesticStockInfoDTO.class);
+
+        ResDomesticStockInfoDTO responseBody = response.getBody();
+
+        BigDecimal price = new BigDecimal(responseBody.getOutput().getStck_prpr());
+
+        return price;
     }
 }

@@ -129,8 +129,6 @@ INSERT INTO `roles_authority` (`roles_idx`,`authority_idx`) VALUES
 
 
 
-
-
 -- 바꿔
 insert into board (idx, name, content, user_idx, view_count, recommend_count, is_hided, created_at, updated_at, deleted_at) values (1, 'eu massa donec dapibus', 'lectus pellentesque at nulla suspendisse potenti cras in purus eu magna vulputate luctus cum sociis natoque penatibus et magnis dis parturient montes nascetur ridiculus mus vivamus vestibulum sagittis sapien', 16, 14905, 127, null, '2006-11-26 00:29:05', null, '2014-11-22 21:55:03');
 insert into board (idx, name, content, user_idx, view_count, recommend_count, is_hided, created_at, updated_at, deleted_at) values (2, 'nulla dapibus dolor vel est donec odio justo', 'imperdiet nullam orci pede venenatis non sodales sed tincidunt eu felis fusce posuere felis sed lacus morbi sem mauris laoreet ut rhoncus aliquet pulvinar', 57, 14016, 24, null, '2015-04-15 22:14:54', null, null);
@@ -344,6 +342,11 @@ INSERT INTO asset_type (name) VALUES ('원자재_금');
 INSERT INTO asset_type (name) VALUES ('원자재_은');
 INSERT INTO asset_type (name) VALUES ('외화');
 INSERT INTO asset_type (name) VALUES ('기타');
+
+INSERT INTO `asset` (`idx`, `name`, `type_idx`, `price`, `updated_at`) VALUES ('005930', '삼성전자', 1, NULL, NULL);
+INSERT INTO `asset` (`idx`, `name`, `type_idx`, `price`, `updated_at`) VALUES ('JPY/KRW', 'jpy', 6, NULL, NULL);
+
+
 
 
 

@@ -1,6 +1,8 @@
 package com.ysh.back.domain.asset.service;
 
+import java.math.BigDecimal;
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +22,7 @@ import com.ysh.back.domain.asset.dto.ReqAssetSellDTO;
 import com.ysh.back.domain.asset.dto.ReqPostAssetDTO;
 import com.ysh.back.domain.asset.dto.ResAssetDTO;
 import com.ysh.back.domain.asset.dto.ResGetAssetListDTO;
+import com.ysh.back.domain.asset.stock.domestic.service.DomesticStockServiceApiV1;
 import com.ysh.back.domain.portfolio.detail.dto.ReqPostPortfolioDetailPerchaseDTO;
 import com.ysh.back.domain.portfolio.detail.dto.ReqPostPortfolioDetailSellDTO;
 import com.ysh.back.domain.portfolio.detail.service.PortfolioDetailServiceApiV1;
@@ -35,6 +38,7 @@ import com.ysh.back.model.user.entity.UserEntity;
 import com.ysh.back.model.user.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Service
 public class AssetServiceApiV1 {
@@ -51,6 +55,7 @@ public class AssetServiceApiV1 {
     TransactionServiceApiV1 transactionServiceApiV1;
     @Autowired
     PortfolioDetailServiceApiV1 portfolioDetailServiceApiV1;
+    
 
     @Transactional
     public ResponseEntity<?> postAssetData(ReqPostAssetDTO reqPostAssetDTO, CustomUserDetails customUserDetails) {
@@ -210,7 +215,7 @@ public class AssetServiceApiV1 {
         }
 
         List<AssetEntity> assetEntityList = assetRepository.findAll();
-        
+
         ResGetAssetListDTO dto = ResGetAssetListDTO.of(assetEntityList);
 
         return new ResponseEntity<>(
@@ -221,4 +226,5 @@ public class AssetServiceApiV1 {
                         .build(),
                 HttpStatus.OK);
     }
+
 }

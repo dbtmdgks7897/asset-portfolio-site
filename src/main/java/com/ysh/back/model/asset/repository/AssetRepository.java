@@ -11,4 +11,5 @@ import com.ysh.back.model.asset.entity.AssetEntity;
 @Repository
 public interface AssetRepository extends JpaRepository<AssetEntity, Integer>{
     Optional<AssetEntity> findByIdx(String idx);
+    AssetEntity findByAssetTypeEntity_Name(String assetTypeName);
 }
