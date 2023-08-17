@@ -21,6 +21,7 @@ import PageBitcoinDetail from '@/views/portfolio/asset/bitcoin/PageBitcoinDetail
 import PagePortfolioTransaction from '@/views/portfolio/PagePortfolioTransaction'
 import PageMyPortfolio from '@/views/portfolio/PageMyPortfolio'
 import PageMyPortfolioDetail from '@/views/portfolio/PageMyPortfolioDetail'
+import PageAssetCustom from '@/views/portfolio/asset/custom/PageAssetCustom'
 
 PageCurrency
 
@@ -129,6 +130,11 @@ const routes = [
         path: '/asset/bitcoin/:bitcoinCode',
         name: 'PageBitcoinDetail',
         component: PageBitcoinDetail
+    },
+    {
+        path: '/asset/custom',
+        name: 'PageAssetCustom',
+        component: PageAssetCustom
     },
 ]
 

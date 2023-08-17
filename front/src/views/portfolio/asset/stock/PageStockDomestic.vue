@@ -8,7 +8,7 @@
         <span
           >국내 주식
           <a
-            style="font-size: 2vw"
+            style="font-size: 1.5vw"
             href="https://kr.investing.com/stock-screener/?sp=country::11|sector::a|industry::a|equityType::a%3Ceq_market_cap;1"
             target="_blank"
             >종목 코드 검색</a
@@ -23,7 +23,7 @@
             placeholder="종목 코드로만 검색 가능"
             aria-label="검색어"
             aria-describedby="button-addon2"
-            @keydown.enter="getDomesticStockSearchData"
+            @keydown.enter="getDomesticStockSearchData();"
           />
           <!-- 버튼 클릭 시 위의 인풋의 데이터를 -->
           <!-- 쿼리스트링 변수 search에 넣어서 -->
@@ -32,7 +32,7 @@
             class="btn btn-outline-secondary"
             type="button"
             id="button-addon2"
-            @click="getDomesticStockSearchData"
+            @click="getDomesticStockSearchData();"
           >
             <i class="bi bi-search"></i>
           </button>
@@ -80,10 +80,6 @@
           </table>
         </div>
         <!-- 안했으면 이거나 봐라 -->
-        <div v-else class="indexes flex">
-          <div class="kospi">KOSPI 줘봐라</div>
-          <div class="kosdaq">KOSDAQ 줘보봐라</div>
-        </div>
       </div>
     </div>
   </div>
@@ -98,7 +94,7 @@ export default {
   data() {
     //변수생성
     return {
-      isUserSearching: true,
+      isUserSearching: false,
       stockCode: null,
       stockData: null,
     };
@@ -169,16 +165,6 @@ body {
   &-body {
     width: 100%;
     height: 100%;
-
-    .indexes {
-      justify-content: space-around;
-      height: 100%;
-      div {
-        background-color: pink;
-        width: 45%;
-        height: 20%;
-      }
-    }
   }
 }
 

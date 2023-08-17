@@ -171,6 +171,11 @@ export default {
         bitcoinName: this.$route.query.bitcoinName,
         bitcoinData: null,
         isBookmark: null,
+        modalStatus: null,
+        finalPrice: null,
+        amount: null,
+        result: null,
+        assetType: "암호화폐"
     };
   },
   mounted() {
@@ -178,7 +183,9 @@ export default {
     this.isBookmarked();
   },
   watch: {
-
+    amount: function (val) {
+      this.result = this.finalPrice * val;
+    },
   },
   methods: {
     getBitcoinDetailData(){
@@ -241,32 +248,6 @@ export default {
           alert(err.response.data.message);
         });
     },
-    assetRegistration() {
-      this.$axios
-        .get(
-          `/api/v1/asset/stock/domestic/${this.stockCode}`,
-          {
-            params: {
-              stockType: this.assetType,
-            },
-          },
-          {
-            headers: {
-              "Content-Type": "application/json;charset=utf-8",
-            },
-          }
-        )
-        .then((res) => {
-          if (res.data.code === 0) {
-            this.stockHead = res.data.data;
-          } else {
-            alert(res.data.message);
-          }
-        })
-        .catch((err) => {
-          alert(err.response.data.message);
-        });
-    },
     getPriceStyle(value) {
       const numValue = parseFloat(value);
       const style = {};
@@ -291,21 +272,18 @@ export default {
     },
     purchaseModal() {
       this.modalStatus = "구입";
-      this.finalPrice =
-        this.stockData.price == null
-          ? this.tempStockPrice
-          : this.stockData.price;
+      this.finalPrice = this.bitcoinData.trade_price;
     },
     purchaseButton() {
       if (
         confirm(
-          `${this.stockHead.assetName}을(를) ${this.amount}만큼 구입하시겠습니까?`
+          `${this.bitcoinName}을(를) ${this.amount}만큼 구입하시겠습니까?`
         )
       ) {
         const data = {
           asset: {
-            idx: this.stockCode,
-            name: this.stockHead.assetName,
+            idx: this.bitcoinCode,
+            name: this.bitcoinName,
             type: this.assetType,
           },
           portfolioDetail: {
@@ -342,19 +320,16 @@ export default {
     },
     sellModal() {
       this.modalStatus = "판매";
-      this.finalPrice =
-        this.stockData.price == null
-          ? this.tempStockPrice
-          : this.stockData.price;
+      this.finalPrice = this.bitcoinData.trade_price;
     },
     sellButton() {
       if (
         confirm(
-          `${this.stockHead.assetName}을(를) ${this.amount}만큼 판매하시겠습니까?`
+          `${this.bitcoinName}을(를) ${this.amount}만큼 판매하시겠습니까?`
         )
       ) {
         const data = {
-          assetIdx: this.stockCode,
+          assetIdx: this.bitcoinCode,
           portfolioDetail: {
             portfolioIdx: localStorage.getItem("portfolioIdx"),
             amount: this.amount,

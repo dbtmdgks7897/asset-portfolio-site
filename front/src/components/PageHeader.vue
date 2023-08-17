@@ -4,15 +4,15 @@
     <div v-if="show" class="sidebar"></div>
   </Transition> -->
   <div>
-    <button
-      class="btn btn-outline-dark btn-toggle"
-      @click="toggle.show = !toggle.show"
-      :class="{ toggleshow: !toggle.show }"
-    >
-      <span v-if="toggle.show"><i class="bi bi-arrow-left"></i></span>
-      <span v-else><i class="bi bi-arrow-right"></i></span>
-    </button>
     <div class="sidebar" :class="{ toggleshow: toggle.show }">
+      <button
+        class="btn btn-outline-dark btn-toggle"
+        @click="toggle.show = !toggle.show"
+        :class="{ toggleshow: !toggle.show }"
+      >
+        <span v-if="toggle.show"><i class="bi bi-arrow-left"></i></span>
+        <span v-else><i class="bi bi-arrow-right"></i></span>
+      </button>
       <ul class="list-group list-group-flush">
         <li class="list-group-item list-group-item-dark no-margin border-2px">
           <!-- Vuex나 create 등으로 현재 상태 받아오기 -->
@@ -314,6 +314,14 @@ ul {
     left: -$sidebar-width;
     transition: 1s;
     border: 2px solid black;
+    &:hover {
+      button {
+        opacity: 1;
+        span {
+          color: black;
+        }
+      }
+    }
   }
 
   .btn-toggle {
@@ -325,10 +333,8 @@ ul {
     z-index: 1;
     transition: 1s;
     border-radius: 100%;
-    opacity: 0.1;
-    &:hover {
-      opacity: 1;
-    }
+    background-color: white;
+    opacity: 0;
   }
 }
 
@@ -351,11 +357,15 @@ ul {
     left: -$sidebar-width;
     transition: 1s;
     border: 2px solid black;
+    background-color: white;
   }
 }
 
 .toggleshow {
   left: 0;
+  top: 0;
+  height: 100vh;
+  border-radius: none;
   transition: 1s;
 }
 
@@ -483,7 +493,8 @@ ul {
   overflow: hidden;
 }
 
-.account:hover .account-dropdown, .account-dropdown:hover{
+.account:hover .account-dropdown,
+.account-dropdown:hover {
   opacity: 1;
   display: block;
   max-height: 30vh;

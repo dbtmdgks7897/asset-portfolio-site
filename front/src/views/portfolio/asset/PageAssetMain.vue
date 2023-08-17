@@ -29,12 +29,13 @@
         >
           <h1>외화</h1>
         </div>
-        <div class="box materials"
+        <div class="box bitcoins"
         @click="this.$router.push('/asset/bitcoin')">
           <h1>비트코인</h1>
         </div>
-        <div class="box bitcoins">
-          <h1>커스텀</h1>
+        <div class="box customs"
+        @click="this.$router.push('/asset/custom')">
+          <h1>기타 자산</h1>
         </div>
       </div>
     </div>
@@ -79,7 +80,7 @@ export default {
       height: 100%;
     }
     .currencies,
-    .materials,
+    .customs,
     .bitcoins {
       height: 100%;
       display: flex;

@@ -79,11 +79,6 @@
             </tbody>
           </table>
         </div>
-        <!-- 안했으면 이거나 봐라 -->
-        <div v-else class="indexes flex">
-          <div class="kospi">KOSPI 줘봐라</div>
-          <div class="kosdaq">KOSDAQ 줘보봐라</div>
-        </div>
       </div>
     </div>
   </div>
@@ -98,7 +93,7 @@ export default {
   data() {
     //변수생성
     return {
-      isUserSearching: true,
+      isUserSearching: false,
       stockCode: null,
       stockData: null,
     };

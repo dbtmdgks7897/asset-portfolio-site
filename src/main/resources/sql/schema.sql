@@ -16,6 +16,7 @@ DROP TABLE IF EXISTS `portfolio_detail`;
 DROP TABLE IF EXISTS `bookmark`;
 DROP TABLE IF EXISTS `transaction`;
 DROP TABLE IF EXISTS `asset`;
+DROP TABLE IF EXISTS `asset_type`;
 SET foreign_key_checks = 1; 
 
 CREATE TABLE `user` (
@@ -59,7 +60,7 @@ CREATE TABLE `roles_authority` (
     PRIMARY KEY (`roles_idx`, `authority_idx`)
 );
 
-CREATE TABLE board (
+CREATE TABLE `board` (
     `idx` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `name` VARCHAR(100) NOT NULL,
     `content` VARCHAR(1000) NOT NULL,
@@ -131,7 +132,7 @@ CREATE TABLE `portfolio_detail` (
     `idx` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `portfolio_idx` INT,
     `asset_idx` VARCHAR(20),
-    `amount` DECIMAL(18,2),
+    `amount` DECIMAL(18,5),
     `average_purchase_price` DECIMAL(18,2),
     `total_purchase_price` DECIMAL(18,2),
     `dividend_month` VARCHAR(20),
@@ -145,8 +146,14 @@ CREATE TABLE `portfolio_detail` (
 CREATE TABLE `asset` (
     `idx` VARCHAR(20) PRIMARY KEY,
     `name` VARCHAR(100) NOT NULL,
-    `type` VARCHAR(50) NOT NULL
+    `type_idx` INT NOT NULL
 );
+
+CREATE TABLE `asset_type` (
+    `idx` INT AUTO_INCREMENT PRIMARY KEY,
+    `name` VARCHAR(255) NOT NULL
+);
+
 
 -- 거래(Transaction) 테이블
 CREATE TABLE `transaction` (
@@ -155,7 +162,7 @@ CREATE TABLE `transaction` (
     `portfolio_idx` INT,
     `asset_idx` VARCHAR(20),
     `type` VARCHAR(10),
-    `amount` DECIMAL(18,2),
+    `amount` DECIMAL(18,5),
     `price_avg` DECIMAL(18,2),
     `profit` DECIMAL(18,2),
     `transaction_date` DATETIME
@@ -219,3 +226,4 @@ ALTER TABLE `transaction` ADD FOREIGN KEY (`asset_idx`) REFERENCES `asset` (`idx
 ALTER TABLE `transaction` ADD FOREIGN KEY (`portfolio_idx`) REFERENCES `portfolio` (`idx`);
 ALTER TABLE `bookmark` ADD FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
 ALTER TABLE `bookmark` ADD FOREIGN KEY (`asset_idx`) REFERENCES `asset` (`idx`);
+ALTER TABLE `asset` ADD FOREIGN KEY (`type_idx`) REFERENCES `asset_type` (`idx`);

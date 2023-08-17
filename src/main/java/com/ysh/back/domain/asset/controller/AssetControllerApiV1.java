@@ -4,6 +4,7 @@ import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,5 +53,13 @@ public class AssetControllerApiV1 {
         @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
         return assetServiceApiV1.sellAsset(reqAssetSellDTO, customUserDetails);
+    }
+
+    @Operation(summary = "자산 목록 조회", description = "서버에 있는 자산 정보 조회")
+    @GetMapping()
+    public ResponseEntity<?> getAssetListData(
+        @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
+        return assetServiceApiV1.getAssetListData(customUserDetails);
     }
 }

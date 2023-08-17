@@ -1,6 +1,7 @@
 package com.ysh.back.domain.asset.service;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +19,16 @@ import com.ysh.back.domain.asset.dto.ReqAssetPurchaseDTO;
 import com.ysh.back.domain.asset.dto.ReqAssetSellDTO;
 import com.ysh.back.domain.asset.dto.ReqPostAssetDTO;
 import com.ysh.back.domain.asset.dto.ResAssetDTO;
+import com.ysh.back.domain.asset.dto.ResGetAssetListDTO;
 import com.ysh.back.domain.portfolio.detail.dto.ReqPostPortfolioDetailPerchaseDTO;
 import com.ysh.back.domain.portfolio.detail.dto.ReqPostPortfolioDetailSellDTO;
 import com.ysh.back.domain.portfolio.detail.service.PortfolioDetailServiceApiV1;
 import com.ysh.back.domain.transaction.dto.ReqPostTransactionDTO;
 import com.ysh.back.domain.transaction.service.TransactionServiceApiV1;
 import com.ysh.back.model.asset.entity.AssetEntity;
+import com.ysh.back.model.asset.entity.AssetTypeEntity;
 import com.ysh.back.model.asset.repository.AssetRepository;
+import com.ysh.back.model.asset.repository.AssetTypeRepository;
 import com.ysh.back.model.auditLog.entity.AuditLogEntity;
 import com.ysh.back.model.auditLog.repository.AuditLogRepository;
 import com.ysh.back.model.user.entity.UserEntity;
@@ -42,6 +46,8 @@ public class AssetServiceApiV1 {
     @Autowired
     UserRepository userRepository;
     @Autowired
+    AssetTypeRepository assetTypeRepository;
+    @Autowired
     TransactionServiceApiV1 transactionServiceApiV1;
     @Autowired
     PortfolioDetailServiceApiV1 portfolioDetailServiceApiV1;
@@ -55,12 +61,18 @@ public class AssetServiceApiV1 {
         }
         UserEntity userEntity = userEntityOptional.get();
 
+        Optional<AssetTypeEntity> assetTypeEntityOptional = assetTypeRepository.findByName(reqPostAssetDTO.getAssetType());
+        if(!assetTypeEntityOptional.isPresent()){
+            throw new BadRequestException("자산 타입이 잘못되었습니다.");
+        }
+        AssetTypeEntity assetTypeEntity = assetTypeEntityOptional.get();
+
         Optional<AssetEntity> assetEntityOptional = assetRepository.findByIdx(reqPostAssetDTO.getAssetCode());
         if (assetEntityOptional.isPresent()) {
             ResAssetDTO dto = ResAssetDTO.builder()
                     .assetCode(assetEntityOptional.get().getIdx())
                     .assetName(assetEntityOptional.get().getName())
-                    .assetType(assetEntityOptional.get().getType())
+                    .assetType(assetEntityOptional.get().getAssetTypeEntity().getName())
                     .build();
 
             return new ResponseEntity<>(
@@ -75,7 +87,7 @@ public class AssetServiceApiV1 {
         AssetEntity assetEntityForSaving = AssetEntity.builder()
                 .idx(reqPostAssetDTO.getAssetCode())
                 .name(reqPostAssetDTO.getAssetName())
-                .type(reqPostAssetDTO.getAssetType())
+                .assetTypeEntity(assetTypeEntity)
                 .build();
 
         AssetEntity assetEntity = assetRepository.save(assetEntityForSaving);
@@ -83,7 +95,7 @@ public class AssetServiceApiV1 {
         ResAssetDTO dto = ResAssetDTO.builder()
                 .assetCode(assetEntity.getIdx())
                 .assetName(assetEntity.getName())
-                .assetType(assetEntity.getType())
+                .assetType(assetEntity.getAssetTypeEntity().getName())
                 .build();
 
         AuditLogEntity auditLog = AuditLogEntity.builder()
@@ -189,5 +201,24 @@ public class AssetServiceApiV1 {
                         .build(),
                 HttpStatus.OK);
 
+    }
+
+    public ResponseEntity<?> getAssetListData(CustomUserDetails customUserDetails){
+        Optional<UserEntity> userEntityOptional = userRepository.findByEmail(customUserDetails.getUsername());
+        if(!userEntityOptional.isPresent()){
+            throw new BadRequestException("사용자 정보를 찾을 수 없습니다.");
+        }
+
+        List<AssetEntity> assetEntityList = assetRepository.findAll();
+        
+        ResGetAssetListDTO dto = ResGetAssetListDTO.of(assetEntityList);
+
+        return new ResponseEntity<>(
+                ResponseDTO.builder()
+                        .code(0)
+                        .message("자산 목록 조회 성공")
+                        .data(dto)
+                        .build(),
+                HttpStatus.OK);
     }
 }

@@ -172,7 +172,7 @@ export default {
       socket: null,
       stockCode: this.$route.params.stockCode,
       tempStockPrice: this.$route.query.stockPrice,
-      assetType: "주식-국내",
+      assetType: "주식_국내",
       stockHead: null,
       stockData: {
         price: null,
@@ -196,12 +196,6 @@ export default {
   },
   watch: {
     amount: function (val) {
-      //   var temp = null;
-      //   if (this.stockData.price == null) {
-      //     temp = this.tempStockPrice;
-      //   } else {
-      //     temp = this.stockData.price;
-      //   }
       this.result = this.finalPrice * val;
     },
   },
