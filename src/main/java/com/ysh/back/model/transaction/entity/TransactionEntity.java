@@ -41,6 +41,10 @@ public class TransactionEntity {
     private UserEntity userEntity;
 
     @ManyToOne
+    @JoinColumn(name = "portfolio_idx", referencedColumnName = "idx", updatable = false, nullable = false)
+    private PortfolioEntity portfolioEntity;
+
+    @ManyToOne
     @JoinColumn(name = "asset_idx", referencedColumnName = "idx", updatable = false, nullable = false)
     private AssetEntity assetEntity;
     

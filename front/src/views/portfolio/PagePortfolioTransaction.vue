@@ -13,32 +13,23 @@
               <th scope="col">거래 일시</th>
               <th scope="col">이름</th>
               <th scope="col">수량</th>
-              <th scope="col">평균 구매액</th>
-              <th scope="col">평균 판매액</th>
+              <th scope="col">평균 거래액</th>
               <th scope="col">수익금</th>
             </tr>
           </thead>
           <tbody>
             <!-- v-for로 반복 돌려서 데이터 가져와서 링크 넣고 뿌려주기 -->
-            <tr
-              @click="
-                this.$router.push({
-                  name: 'PageBoardDetail',
-                  params: { id: 2 },
-                })
-              "
-            >
-              <th scope="row">(transaction.idx)</th>
-              <td>(transaction.type)</td>
-              <td>(transaction.date)</td>
-              <td>(transaction.asset.name)</td>
-              <td>(transaction.amount)</td>
-              <td>(transaction.price_avg)</td>              
+            <tr v-for="transaction in transactionList" :key="transaction">
+              <th scope="row">{{ transaction.idx }}</th>
+              <td>{{ transaction.type }}</td>
+              <td>{{ transaction.transactionDate }}</td>
+              <td>{{ transaction.assetName }}</td>
+              <td>{{ transaction.amount }}</td>
+              <td>{{ transaction.priceAvg }}</td>              
+              <td>{{ transaction.profit }}</td>              
               <!-- 타입이 판매일 때만 -->
-              <td>거래 할 때 당시 가격</td>
               <!-- C:\Users\user\Desktop\ysh\pj\메모\계산\거래 내역_수익금  -->
               <!-- 저거 보셈 -->
-              <td>수익금</td>
               <td></td>
             </tr>
           </tbody>
@@ -55,15 +46,44 @@ import { toggle } from "@/utils/toggle";
 export default {
   data() {
     return {
-      
+      transactionList: null,
     };
   },
+  mounted() {
+    if(localStorage.getItem("portfolioIdx") == null){
+      alert('먼저 포트폴리오를 선택해주세요.');
+      this.$router.push('/portfolio');
+    }
+    this.getAllTransaction();
+  },
+  methods :{
+    getAllTransaction() {
+        this.$axios
+        .get(`/api/v1/transaction`, {
+            params : {
+                portfolioIdx: localStorage.getItem("portfolioIdx")
+            }
+        }).then((res) => {
+          if (res.data.code === 0) {
+            console.log(res.data)
+            this.transactionList = res.data.data.transactionList;
+          } else {
+            alert(res.data.message);
+          }
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+        });
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>
 .contents {
   margin: 0;
   width: 100%;
+  height: 100%;
+  min-height: 100vh;
   &-head {
     display: flex;
     height: 10%;

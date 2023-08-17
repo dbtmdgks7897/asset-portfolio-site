@@ -1,4 +1,4 @@
-package com.ysh.back.domain.asset.stock.domestic.bookmark.dto;
+package com.ysh.back.domain.asset.bookmark.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

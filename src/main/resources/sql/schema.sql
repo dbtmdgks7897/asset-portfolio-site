@@ -152,6 +152,7 @@ CREATE TABLE `asset` (
 CREATE TABLE `transaction` (
     `idx` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `user_idx` BIGINT,
+    `portfolio_idx` INT,
     `asset_idx` VARCHAR(20),
     `type` VARCHAR(10),
     `amount` DECIMAL(18,2),
@@ -215,5 +216,6 @@ ALTER TABLE `portfolio_detail` ADD FOREIGN KEY (`portfolio_idx`) REFERENCES `por
 ALTER TABLE `portfolio_detail` ADD FOREIGN KEY (`asset_idx`) REFERENCES `asset` (`idx`);
 ALTER TABLE `transaction` ADD FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
 ALTER TABLE `transaction` ADD FOREIGN KEY (`asset_idx`) REFERENCES `asset` (`idx`);
+ALTER TABLE `transaction` ADD FOREIGN KEY (`portfolio_idx`) REFERENCES `portfolio` (`idx`);
 ALTER TABLE `bookmark` ADD FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
 ALTER TABLE `bookmark` ADD FOREIGN KEY (`asset_idx`) REFERENCES `asset` (`idx`);

@@ -134,6 +134,7 @@ public class AssetServiceApiV1 {
 
         ReqPostTransactionDTO tempReqPostTransactionDTO = ReqPostTransactionDTO.builder()
         .assetIdx(reqAssetPurchaseDTO.getAsset().getIdx())
+        .portfolioIdx(reqAssetPurchaseDTO.getPortfolioDetail().getPortfolioIdx())
         .type(reqAssetPurchaseDTO.getTransaction().getType())
         .amount(reqAssetPurchaseDTO.getTransaction().getAmount())
         .priceAvg(reqAssetPurchaseDTO.getTransaction().getPriceAvg())
@@ -172,6 +173,7 @@ public class AssetServiceApiV1 {
 
         ReqPostTransactionDTO reqPostTransactionDTO = ReqPostTransactionDTO.builder()
         .assetIdx(reqAssetSellDTO.getAssetIdx())
+        .portfolioIdx(reqAssetSellDTO.getPortfolioDetail().getPortfolioIdx())
         .type(reqAssetSellDTO.getTransaction().getType())
         .amount(reqAssetSellDTO.getTransaction().getAmount())
         .priceAvg(reqAssetSellDTO.getTransaction().getPriceAvg())

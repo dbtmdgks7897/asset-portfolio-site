@@ -1,4 +1,4 @@
-package com.ysh.back.domain.asset.stock.domestic.bookmark.service;
+package com.ysh.back.domain.asset.bookmark.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.ysh.back.common.dto.ResponseDTO;
 import com.ysh.back.common.exception.BadRequestException;
 import com.ysh.back.config.security.auth.CustomUserDetails;
-import com.ysh.back.domain.asset.stock.domestic.bookmark.dto.ReqPostBookmarkDTO;
+import com.ysh.back.domain.asset.bookmark.dto.ReqPostBookmarkDTO;
 import com.ysh.back.model.asset.entity.AssetEntity;
 import com.ysh.back.model.asset.repository.AssetRepository;
 import com.ysh.back.model.auditLog.entity.AuditLogEntity;

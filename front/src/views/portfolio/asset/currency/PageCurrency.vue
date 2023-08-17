@@ -175,6 +175,17 @@
           <form>
             <div class="mb-3">
               <label for="recipient-name" class="col-form-label"
+                >구매가 조정</label
+              >
+              <input
+                v-model="selectedPrice"
+                type="number"
+                class="form-control"
+                id="recipient-name"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label"
                 >시작 통화 (krw):</label
               >
               <input
@@ -200,6 +211,17 @@
         </div>
         <div v-if="modalStatus === `판매`" class="modal-body">
           <form>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label"
+                >판매가 조정</label
+              >
+              <input
+                v-model="selectedPrice"
+                type="number"
+                class="form-control"
+                id="recipient-name"
+              />
+            </div>
             <div class="mb-3">
               <label for="recipient-name" class="col-form-label"
                 >시작 통화 (krw):</label
@@ -301,9 +323,9 @@ export default {
       );
     },
     toPrice: function (val) {
-      this.result = (
-        parseFloat(val) / parseFloat(this.selectedPrice)
-      ).toFixed(1);
+      this.result = (parseFloat(val) / parseFloat(this.selectedPrice)).toFixed(
+        1
+      );
     },
   },
   methods: {
@@ -341,9 +363,9 @@ export default {
           },
           transaction: {
             type: "구입",
-            amount: parseFloat(this.toPrice),
-            priceAvg: this.selectedPrice,
-            profit: this.result * -1,
+            amount: parseFloat(this.result),
+            priceAvg: 1 / this.selectedPrice,
+            profit: this.krwPrice * -1,
           },
         };
 
@@ -371,9 +393,9 @@ export default {
     sellButton() {
       if (
         confirm(
-          `${this.selected}를 ${(
-            parseFloat(this.toPrice)
-          ).toFixed(1)}만큼 판매하시겠습니까?`
+          `${this.selected}를 ${parseFloat(this.toPrice).toFixed(
+            1
+          )}만큼 판매하시겠습니까?`
         )
       ) {
         const data = {
@@ -386,8 +408,8 @@ export default {
           transaction: {
             type: "판매",
             amount: this.toPrice,
-            priceAvg: this.selectedPrice,
-            profit: this.result,
+            priceAvg: 1 / this.selectedPrice,
+            profit: this.krwPrice,
           },
         };
 

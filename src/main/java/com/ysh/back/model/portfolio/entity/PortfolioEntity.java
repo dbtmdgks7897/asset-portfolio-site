@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.ysh.back.model.transaction.entity.TransactionEntity;
 import com.ysh.back.model.user.entity.UserEntity;
 
 import jakarta.persistence.CascadeType;
@@ -61,4 +62,7 @@ public class PortfolioEntity {
 
     @OneToMany(mappedBy = "portfolioEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PortfolioDetailEntity> portfolioDetailEntityList;
+    
+    @OneToMany(mappedBy = "portfolioEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TransactionEntity> transactionEntityList;
 }

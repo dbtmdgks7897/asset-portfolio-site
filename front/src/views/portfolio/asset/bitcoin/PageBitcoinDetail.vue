@@ -7,16 +7,12 @@
       <div v-if="stockHead" class="contents-head flex">
         <span
           >{{ util.truncateText(stockHead.assetName, 12) }}
-          <a href=""
-            ><i
-              v-show="isBookmark"
-              @click="bookmarking"
-              class="bi bi-star-fill"
-            ></i>
-          </a>
-          <a href=""
-            ><i v-show="!isBookmark" @click="bookmarking" class="bi bi-star"></i
-          ></a>
+          <i
+            v-show="isBookmark"
+            @click="bookmarking"
+            class="bi bi-star-fill"
+          ></i>
+          <i v-show="!isBookmark" @click="bookmarking" class="bi bi-star"></i>
         </span>
         <span>({{ stockHead.assetCode }})</span>
       </div>
@@ -29,7 +25,7 @@
               >({{ stockData.compareYesterRate }}%)
             </p>
           </div>
-          <div class="pricebox downside">
+          <div class="pricebox">
             <p style="color: red">
               <span>금일 최고가</span> | {{ stockData.highPrice }}
             </p>
@@ -196,12 +192,12 @@ export default {
   },
   watch: {
     amount: function (val) {
-      //   var temp = null;
-      //   if (this.stockData.price == null) {
-      //     temp = this.tempStockPrice;
-      //   } else {
-      //     temp = this.stockData.price;
-      //   }
+    //   var temp = null;
+    //   if (this.stockData.price == null) {
+    //     temp = this.tempStockPrice;
+    //   } else {
+    //     temp = this.stockData.price;
+    //   }
       this.result = this.finalPrice * val;
     },
   },
@@ -488,16 +484,8 @@ body {
   &-head {
     span {
       font-size: 3vw;
-      a {
-        i {
-          color: black; /* 기본 색상 */
-          transition: color 0.3s;
-        }
-        &:hover {
-          i {
-            color: yellow; /* 마우스 호버 시 색상 변경 */
-          }
-        }
+      i {
+        color: yellow;
       }
     }
     div {
@@ -517,11 +505,6 @@ body {
         font-size: 2vw;
         margin-left: 20px;
       }
-    }
-    .downside {
-      display: flex;
-      flex-direction: column;
-      align-items: baseline;
     }
     .buttons {
       button {

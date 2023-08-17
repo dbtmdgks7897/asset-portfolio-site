@@ -27,7 +27,7 @@ public class AssetControllerApiV1 {
     @Autowired
     AssetServiceApiV1 assetServiceApiV1;
 
-    @Operation(summary = "Asset 등록", description = "서버에 자산 정보 등록")
+    @Operation(summary = "자산 등록", description = "서버에 자산 정보 등록")
     @PostMapping()
     public ResponseEntity<?> postAssetData(
         @RequestBody ReqPostAssetDTO reqPostAssetDTO,

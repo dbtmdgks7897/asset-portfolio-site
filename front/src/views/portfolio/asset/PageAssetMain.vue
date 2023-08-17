@@ -29,11 +29,12 @@
         >
           <h1>외화</h1>
         </div>
-        <div class="box materials">
-          <h1>원자재</h1>
+        <div class="box materials"
+        @click="this.$router.push('/asset/bitcoin')">
+          <h1>비트코인</h1>
         </div>
         <div class="box bitcoins">
-          <h1>비트코인</h1>
+          <h1>커스텀</h1>
         </div>
       </div>
     </div>
@@ -52,7 +53,7 @@ export default {
   },
   mounted() {
     if(localStorage.getItem("portfolioIdx") == null){
-      alert('먼저 포트폴리오를 생성해주세요.');
+      alert('먼저 포트폴리오를 선택해주세요.');
       this.$router.push('/portfolio');
     }
   },
@@ -86,7 +87,7 @@ export default {
       justify-content: center;
       transition: all 0.3s; // 전환 효과 추가
       &:hover {
-        background-color: #e19fff; // 회색 배경
+        background-color: gray; // 회색 배경
         box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5); // 안쪽 그림자
       }
     }
@@ -99,7 +100,7 @@ export default {
 
         transition: all 0.3s; // 전환 효과 추가
         &:hover {
-          background-color: #e19fff; // 회색 배경
+          background-color: gray; // 회색 배경
           box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5); // 안쪽 그림자
         }
       }

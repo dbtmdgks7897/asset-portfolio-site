@@ -1,4 +1,4 @@
-package com.ysh.back.domain.asset.stock.domestic.bookmark.controller;
+package com.ysh.back.domain.asset.bookmark.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ysh.back.config.security.auth.CustomUserDetails;
-import com.ysh.back.domain.asset.stock.domestic.bookmark.dto.ReqPostBookmarkDTO;
-import com.ysh.back.domain.asset.stock.domestic.bookmark.service.BookmarkServiceApiV1;
+import com.ysh.back.domain.asset.bookmark.dto.ReqPostBookmarkDTO;
+import com.ysh.back.domain.asset.bookmark.service.BookmarkServiceApiV1;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

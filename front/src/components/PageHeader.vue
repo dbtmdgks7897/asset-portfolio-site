@@ -308,7 +308,7 @@ ul {
   .sidebar {
     width: $sidebar-width;
     height: 100vh;
-    background-color: blueviolet;
+    background-color: rgb(41, 41, 41);
     top: 0;
     position: fixed;
     left: -$sidebar-width;
@@ -345,7 +345,7 @@ ul {
   .sidebar {
     width: $sidebar-width;
     height: 100vh;
-    background-color: blueviolet;
+    background-color: rgb(196, 196, 196);
     top: 0;
     position: fixed;
     left: -$sidebar-width;

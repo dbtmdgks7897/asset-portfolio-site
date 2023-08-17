@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 public class ReqPostTransactionDTO {
+    private Integer portfolioIdx;
     private String assetIdx;
     private String type;
     private BigDecimal amount;
