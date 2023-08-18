@@ -101,7 +101,7 @@
 import { toggle } from "@/utils/toggle";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "vue-chartjs";
-import { data, tempData, options } from "@/utils/chartConfig";
+import { tempData, options } from "@/utils/chartConfig";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 </script>
@@ -109,8 +109,6 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 export default {
   data() {
     return {
-      data,
-      dtodata: null,
       options,
       portfolioList: null,
       portfolioName: null,
@@ -197,8 +195,8 @@ export default {
       height: 110%;
       min-height: 40vh;
       color: black;
-      background-color: gray;
-      border: 1px solid black;
+      background-color: rgb(202, 202, 202);
+    //   border: 1px solid black;
       box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
       position: relative;
       transition: transform 0.3s, box-shadow 0.3s;

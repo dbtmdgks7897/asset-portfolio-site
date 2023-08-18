@@ -3,6 +3,10 @@ package com.ysh.back.domain.portfolio.detail.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +19,7 @@ import com.ysh.back.common.exception.BadRequestException;
 import com.ysh.back.config.security.auth.CustomUserDetails;
 import com.ysh.back.domain.portfolio.detail.dto.ReqPostPortfolioDetailPerchaseDTO;
 import com.ysh.back.domain.portfolio.detail.dto.ReqPostPortfolioDetailSellDTO;
+import com.ysh.back.domain.portfolio.dto.chart.ChartDataDTO;
 import com.ysh.back.model.asset.entity.AssetEntity;
 import com.ysh.back.model.asset.repository.AssetRepository;
 import com.ysh.back.model.auditLog.entity.AuditLogEntity;
@@ -41,6 +46,60 @@ public class PortfolioDetailServiceApiV1 {
     PortfolioDetailRepository portfolioDetailRepository;
     @Autowired
     AuditLogRepository auditLogRepository;
+
+    @Transactional
+    public ResponseEntity<?> getDetailChart(Integer portfolioIdx, CustomUserDetails customUserDetails){
+        Optional<UserEntity> userEntityOptional = userRepository.findByEmail(customUserDetails.getUsername());
+        if (!userEntityOptional.isPresent()) {
+            throw new BadRequestException("사용자 정보를 찾을 수 없습니다.");
+        }
+
+        Optional<PortfolioEntity> portfolioEntityOptional = portfolioRepository.findByIdx(portfolioIdx);
+        if (!portfolioEntityOptional.isPresent()) {
+            throw new BadRequestException("포트폴리오 정보를 찾을 수 없습니다.");
+        }
+        PortfolioEntity portfolioEntity = portfolioEntityOptional.get();
+        List<PortfolioDetailEntity> portfolioDetailEntityList = portfolioEntity.getPortfolioDetailEntityList();
+
+        List<String> stockLabelList = new ArrayList<String>();
+        List<BigDecimal> stockPriceList = new ArrayList<BigDecimal>();
+        List<String> currencyLabelList = new ArrayList<String>();
+        List<BigDecimal> currencyPriceList = new ArrayList<BigDecimal>();
+        List<String> bitcoinLabelList = new ArrayList<String>();
+        List<BigDecimal> bitcoinPriceList = new ArrayList<BigDecimal>();
+        for(PortfolioDetailEntity portfolioDetailEntity : portfolioDetailEntityList){
+            String typeName = portfolioDetailEntity.getAssetEntity().getAssetTypeEntity().getName();
+            if(typeName.startsWith("주식")){
+                stockLabelList.add(portfolioDetailEntity.getAssetEntity().getName());
+                stockPriceList.add(portfolioDetailEntity.getTotalPurchasePrice());
+            }else if(typeName.equals("외화")){
+                currencyLabelList.add(portfolioDetailEntity.getAssetEntity().getName());
+                currencyPriceList.add(portfolioDetailEntity.getTotalPurchasePrice());
+            }else if(typeName.equals("암호화폐")){
+                bitcoinLabelList.add(portfolioDetailEntity.getAssetEntity().getName());
+                bitcoinPriceList.add(portfolioDetailEntity.getTotalPurchasePrice());
+            }
+        }
+
+        ChartDataDTO stockChartDataDTO = ChartDataDTO.of(stockLabelList, stockPriceList);
+        ChartDataDTO currencyChartDataDTO = ChartDataDTO.of(currencyLabelList, currencyPriceList);
+        ChartDataDTO bitcoinChartDataDTO = ChartDataDTO.of(bitcoinLabelList, bitcoinPriceList);
+        
+        HashMap<String, ChartDataDTO> result = new HashMap<String, ChartDataDTO>();
+        result.put("주식", stockChartDataDTO);
+        result.put("외화", currencyChartDataDTO);
+        result.put("암호화폐", bitcoinChartDataDTO);
+
+
+        return new ResponseEntity<>(
+                ResponseDTO.builder()
+                        .code(0)
+                        .message("포트폴리오 디테일 가져오기 성공")
+                        .data(result)
+                        .build(),
+                HttpStatus.OK);
+    }
+
 
     @Transactional
     public ResponseEntity<?> postPortfolioDetailPurchase(

@@ -72,13 +72,13 @@ springdoc:
 external:
   datago:
     baseurl: "https://apis.data.go.kr/1160100/service/GetStockSecuritiesInfoService"
-    servicekey: oNsjHUWZ3%2Bu6qmi74lo1gTBhUR7Xiks0cxIsalwCQtC1jYadCkx9962B64VP%2BclQwNEKQJw8%2BmjHWEq5AgmN6A%3D%3D
+    servicekey: 
   api:
     baseurl: "https://openapi.koreainvestment.com:9443"
     websocket-url: "ws://ops.koreainvestment.com:21000"
-    appkey: "PSEVG7EuTyPThS4ABhH4eOZnk3MZ8Lxuspr5"
-    appsecretkey: "n5FFhWzNdc9naHCUBbkhJ/J1gsJD74LIN4ffhCEtfO3ECIZqJ0jq85zjTXWA/VdeYky7aCrY906zksP79nv4kxjJfV4M7FXxqRf3DIAfvr7hMivmeX7pWNKQoiKA8kHCiKh/pfqhEWchqbRlvcqHXCR4VVukc0R1Va2FhBqUkaCMoSxQloE="
+    appkey: 
+    appsecretkey: 
   alphavantage:
-    apikey: 5OX0B61QOQGNK0B9
+    apikey: 
 
     
