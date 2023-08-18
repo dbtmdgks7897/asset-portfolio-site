@@ -7,12 +7,8 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.ysh.back.model.board.entity.BoardEntity;
-import com.ysh.back.model.board.entity.BoardRecommendEntity;
-import com.ysh.back.model.board.entity.BoardReportEntity;
 import com.ysh.back.model.bookmark.entity.BookmarkEntity;
 import com.ysh.back.model.comment.entity.CommentEntity;
-import com.ysh.back.model.comment.entity.CommentRecommendEntity;
-import com.ysh.back.model.comment.entity.CommentReportEntity;
 import com.ysh.back.model.portfolio.entity.PortfolioEntity;
 import com.ysh.back.model.transaction.entity.TransactionEntity;
 

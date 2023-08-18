@@ -1,28 +1,21 @@
 package com.ysh.back.domain.asset.service;
 
-import java.math.BigDecimal;
-import java.net.URI;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import com.ysh.back.common.dto.ResponseDTO;
 import com.ysh.back.common.exception.BadRequestException;
 import com.ysh.back.config.security.auth.CustomUserDetails;
-import com.ysh.back.domain.asset.dto.ApiGetDomesticStockNameDTO;
 import com.ysh.back.domain.asset.dto.ReqAssetPurchaseDTO;
 import com.ysh.back.domain.asset.dto.ReqAssetSellDTO;
 import com.ysh.back.domain.asset.dto.ReqPostAssetDTO;
 import com.ysh.back.domain.asset.dto.ResAssetDTO;
 import com.ysh.back.domain.asset.dto.ResGetAssetListDTO;
-import com.ysh.back.domain.asset.stock.domestic.service.DomesticStockServiceApiV1;
 import com.ysh.back.domain.portfolio.detail.dto.ReqPostPortfolioDetailPerchaseDTO;
 import com.ysh.back.domain.portfolio.detail.dto.ReqPostPortfolioDetailSellDTO;
 import com.ysh.back.domain.portfolio.detail.service.PortfolioDetailServiceApiV1;
@@ -38,7 +31,6 @@ import com.ysh.back.model.user.entity.UserEntity;
 import com.ysh.back.model.user.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 
 @Service
 public class AssetServiceApiV1 {

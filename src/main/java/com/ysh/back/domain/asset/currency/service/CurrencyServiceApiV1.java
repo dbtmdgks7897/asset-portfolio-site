@@ -3,15 +3,10 @@ package com.ysh.back.domain.asset.currency.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import com.ysh.back.domain.asset.bitcoin.dto.ResGetBitcoinDetailDTO;
 
 @Service
 public class CurrencyServiceApiV1 {

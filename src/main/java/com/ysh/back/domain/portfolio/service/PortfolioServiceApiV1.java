@@ -1,5 +1,7 @@
 package com.ysh.back.domain.portfolio.service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,9 +16,12 @@ import com.ysh.back.common.exception.ConflictException;
 import com.ysh.back.config.security.auth.CustomUserDetails;
 import com.ysh.back.domain.portfolio.dto.ReqPortfolioInsertDTO;
 import com.ysh.back.domain.portfolio.dto.ResPortfolioListDTO;
+import com.ysh.back.domain.portfolio.dto.chart.ChartDataDTO;
 import com.ysh.back.model.auditLog.entity.AuditLogEntity;
 import com.ysh.back.model.auditLog.repository.AuditLogRepository;
+import com.ysh.back.model.portfolio.entity.PortfolioDetailEntity;
 import com.ysh.back.model.portfolio.entity.PortfolioEntity;
+import com.ysh.back.model.portfolio.repository.PortfolioDetailRepository;
 import com.ysh.back.model.portfolio.repository.PortfolioRepository;
 import com.ysh.back.model.user.entity.UserEntity;
 import com.ysh.back.model.user.repository.UserRepository;
@@ -32,6 +37,8 @@ public class PortfolioServiceApiV1 {
     PortfolioRepository portfolioRepository;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    PortfolioDetailRepository portfolioDetailRepository;
 
     @Transactional
     public ResponseEntity<?> getPortfolioListData(CustomUserDetails customUserDetails) {
@@ -42,12 +49,44 @@ public class PortfolioServiceApiV1 {
         }
         UserEntity userEntity = userEntityOptional.get();
 
-        List<PortfolioEntity> portfolioEntitiyList = portfolioRepository.findByUserEntityIdx(userEntity.getIdx());
-        if(portfolioEntitiyList.isEmpty()){
+        List<PortfolioEntity> portfolioEntityList = portfolioRepository.findByUserEntityIdx(userEntity.getIdx());
+        if (portfolioEntityList.isEmpty()) {
             return null;
         }
 
-        ResPortfolioListDTO dto = ResPortfolioListDTO.of(portfolioEntitiyList);
+        ResPortfolioListDTO dto = ResPortfolioListDTO.of(portfolioEntityList);
+
+        int count = 0;
+        for (PortfolioEntity portfolioEntity : portfolioEntityList) {
+            Integer portfolioIdx = portfolioEntity.getIdx();
+            List<String> assetTypes = new ArrayList<>();
+            List<BigDecimal> assetSums = new ArrayList<>();
+
+            List<PortfolioDetailEntity> portfolioDetailList = portfolioDetailRepository
+                    .findByPortfolioEntityIdx(portfolioIdx);
+
+            // 포트폴리오의 각 자산을 순회하면서 자산 타입과 금액을 리스트에 추가하고 더해갑니다.
+            for (PortfolioDetailEntity portfolioDetailEntity : portfolioDetailList) {
+                String assetType = portfolioDetailEntity.getAssetEntity().getAssetTypeEntity().getName();
+                BigDecimal assetAmount = portfolioDetailEntity.getTotalPurchasePrice();
+
+                int index = assetTypes.indexOf(assetType);
+
+                if (index != -1) {
+                    // 이미 해당 자산 타입이 리스트에 존재하는 경우 합을 업데이트합니다.
+                    BigDecimal currentAmount = assetSums.get(index);
+                    assetSums.set(index, currentAmount.add(assetAmount));
+                } else {
+                    // 해당 자산 타입이 리스트에 없는 경우 추가합니다.
+                    assetTypes.add(assetType);
+                    assetSums.add(assetAmount);
+                }
+            }
+            ChartDataDTO chartData = ChartDataDTO.of(assetTypes, assetSums);
+
+            dto.getPortfolioList().get(count++).setChartDataDTO(chartData);
+            // 현재 포트폴리오에 해당하는 assetTypes와 assetSums를 이용하여 필요한 작업을 수행합니다.
+        }
 
         return new ResponseEntity<>(
                 ResponseDTO.builder()
@@ -56,9 +95,8 @@ public class PortfolioServiceApiV1 {
                         .data(dto)
                         .build(),
                 HttpStatus.OK);
-        
-    }
 
+    }
 
     @Transactional
     public ResponseEntity<?> insertPortfolioData(ReqPortfolioInsertDTO reqPortfolioInsertDTO,

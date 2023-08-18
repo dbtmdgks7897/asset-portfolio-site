@@ -1,7 +1,6 @@
 package com.ysh.back.model.bookmark.entity;
 
 import com.ysh.back.model.asset.entity.AssetEntity;
-import com.ysh.back.model.portfolio.entity.PortfolioEntity;
 import com.ysh.back.model.user.entity.UserEntity;
 
 import jakarta.persistence.Column;

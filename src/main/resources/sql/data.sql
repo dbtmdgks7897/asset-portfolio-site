@@ -346,6 +346,7 @@ INSERT INTO asset_type (name) VALUES ('기타');
 INSERT INTO `asset` (`idx`, `name`, `type_idx`, `price`, `updated_at`) VALUES ('005930', '삼성전자', 1, NULL, NULL);
 INSERT INTO `asset` (`idx`, `name`, `type_idx`, `price`, `updated_at`) VALUES ('JPY/KRW', 'jpy', 6, NULL, NULL);
 
+INSERT INTO `portfolio_detail` (`idx`, `portfolio_idx`, `asset_idx`, `amount`, `average_purchase_price`, `total_purchase_price`, `dividend_month`, `dividend_amount`, `created_at`, `updated_at`, `deleted_at`) VALUES (1, 1, 'JPY/KRW', 5442850.00000, 9.19, 50000000.00, NULL, NULL, '2023-08-18 10:40:33', NULL, NULL);
 
 
 

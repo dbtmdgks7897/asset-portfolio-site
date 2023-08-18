@@ -290,7 +290,7 @@ public class BoardServiceApiV1 {
         if (boardEntityOptional.isEmpty()) {
             throw new BadRequestException("게시물?이 없습니다?");
         }
-
+        
         BoardEntity boardEntity = boardEntityOptional.get();
 
         ResBoardUpdateInitDTO resBoardUpdateInitDTO = ResBoardUpdateInitDTO.builder()

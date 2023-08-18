@@ -9,7 +9,6 @@ import org.hibernate.annotations.DynamicUpdate;
 import com.ysh.back.model.comment.entity.CommentEntity;
 import com.ysh.back.model.user.entity.UserEntity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

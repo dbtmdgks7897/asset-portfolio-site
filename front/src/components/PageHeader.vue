@@ -365,7 +365,7 @@ ul {
   left: 0;
   top: 0;
   height: 100vh;
-  border-radius: none;
+  border-radius: 0;
   transition: 1s;
 }
 

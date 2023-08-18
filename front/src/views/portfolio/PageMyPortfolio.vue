@@ -17,7 +17,8 @@
           </div>
           <div class="portfolio-body">
             <span>
-              <Pie :data="data" :options="options" />
+              <Pie v-if="portfolio.chartDataDTO" :data="portfolio.chartDataDTO" :options="options" />
+              <Pie v-else :data="tempData" :options="options" />
             </span>
           </div>
         </div>
@@ -100,7 +101,7 @@
 import { toggle } from "@/utils/toggle";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "vue-chartjs";
-import { data, options } from "@/utils/chartConfig";
+import { data, tempData, options } from "@/utils/chartConfig";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 </script>
@@ -109,6 +110,7 @@ export default {
   data() {
     return {
       data,
+      dtodata: null,
       options,
       portfolioList: null,
       portfolioName: null,
@@ -160,14 +162,14 @@ export default {
           alert(err.response.data.message);
         });
     },
-    selectPortfolio(idx, name){
+    selectPortfolio(idx, name) {
       localStorage.setItem("portfolioIdx", idx);
       localStorage.setItem("portfolioName", name);
       this.$router.push({
-                  name: 'PageMyPortfolioDetail',
-                  params: { idx: idx },
-                })
-    }
+        name: "PageMyPortfolioDetail",
+        params: { idx: idx },
+      });
+    },
   },
 };
 </script>
@@ -191,7 +193,7 @@ export default {
     grid-template-columns: repeat(3, 22vw); /* 한 행에 3개의 열을 생성 */
     gap: 5vh; /* 열 사이의 간격 조정 */
     .portfolio {
-    //   width: 100%;
+      //   width: 100%;
       height: 110%;
       min-height: 40vh;
       color: black;

@@ -59,7 +59,6 @@ public class DomesticStockServiceApiV1 {
         if(!userEntityOptional.isPresent()){
             throw new BadRequestException("사용자 정보를 찾을 수 없습니다.");
         }
-        UserEntity userEntity = userEntityOptional.get();
 
         if (stockCode.length() != 6) {
             throw new BadRequestException("정확한 종목 '코드'를 입력해주세요.");
@@ -134,7 +133,6 @@ public class DomesticStockServiceApiV1 {
         .assetType(stockType)
         .build();
 
-        // TODO : 나중에 웹소켓? 연결하고 데이터 더 줘야되는데 이러면 여기서는 이거만 주면 되나?
         return assetServiceApiV1.postAssetData(dto, customUserDetails);
     }
 
