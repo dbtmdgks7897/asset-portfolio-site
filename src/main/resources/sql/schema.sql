@@ -1,25 +1,25 @@
-SET foreign_key_checks = 0; 
-DROP TABLE IF EXISTS `user`;
-DROP TABLE IF EXISTS `board`;
-DROP TABLE IF EXISTS `comment`;
-DROP TABLE IF EXISTS `comment_recommend`;
-DROP TABLE IF EXISTS `board_recommend`;
-DROP TABLE IF EXISTS `roles`;
-DROP TABLE IF EXISTS `authority`;
-DROP TABLE IF EXISTS `user_roles`;
-DROP TABLE IF EXISTS `roles_authority`;
-DROP TABLE IF EXISTS `audit_log`;
-DROP TABLE IF EXISTS `comment_report`;
-DROP TABLE IF EXISTS `board_report`;
-DROP TABLE IF EXISTS `portfolio`;
-DROP TABLE IF EXISTS `portfolio_detail`;
-DROP TABLE IF EXISTS `bookmark`;
-DROP TABLE IF EXISTS `transaction`;
-DROP TABLE IF EXISTS `asset`;
-DROP TABLE IF EXISTS `asset_type`;
-SET foreign_key_checks = 1; 
+SET foreign_key_checks = 0;
+DROP TABLE IF EXISTS `USER`;
+DROP TABLE IF EXISTS `BOARD`;
+DROP TABLE IF EXISTS `COMMENT`;
+DROP TABLE IF EXISTS `COMMENT_RECOMMEND`;
+DROP TABLE IF EXISTS `BOARD_RECOMMEND`;
+DROP TABLE IF EXISTS `ROLES`;
+DROP TABLE IF EXISTS `AUTHORITY`;
+DROP TABLE IF EXISTS `USER_ROLES`;
+DROP TABLE IF EXISTS `ROLES_AUTHORITY`;
+DROP TABLE IF EXISTS `AUDIT_LOG`;
+DROP TABLE IF EXISTS `COMMENT_REPORT`;
+DROP TABLE IF EXISTS `BOARD_REPORT`;
+DROP TABLE IF EXISTS `PORTFOLIO`;
+DROP TABLE IF EXISTS `PORTFOLIO_DETAIL`;
+DROP TABLE IF EXISTS `BOOKMARK`;
+DROP TABLE IF EXISTS `TRANSACTION`;
+DROP TABLE IF EXISTS `ASSET`;
+DROP TABLE IF EXISTS `ASSET_TYPE`;
+SET foreign_key_checks = 1;
 
-CREATE TABLE `user` (
+CREATE TABLE `USER` (
   `idx` BIGINT PRIMARY KEY AUTO_INCREMENT,
   `email` VARCHAR(255) UNIQUE NOT NULL,
   `password` VARCHAR(255) NOT NULL,
@@ -38,29 +38,29 @@ CREATE TABLE `user` (
   `deleted_reason` VARCHAR(255)
 );
 
-CREATE TABLE `roles` (
+CREATE TABLE `ROLES` (
     `idx` INT PRIMARY KEY AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE `authority` (
+CREATE TABLE `AUTHORITY` (
     `idx` INT PRIMARY KEY AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE `user_roles` (
+CREATE TABLE `USER_ROLES` (
     `user_idx` BIGINT NOT NULL,
     `roles_idx` INT NOT NULL,
     PRIMARY KEY (`user_idx`, `roles_idx`)
 );
 
-CREATE TABLE `roles_authority` (
+CREATE TABLE `ROLES_AUTHORITY` (
     `roles_idx` INT NOT NULL,
     `authority_idx` INT NOT NULL,
     PRIMARY KEY (`roles_idx`, `authority_idx`)
 );
 
-CREATE TABLE `board` (
+CREATE TABLE `BOARD` (
     `idx` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `name` VARCHAR(100) NOT NULL,
     `content` VARCHAR(1000) NOT NULL,
@@ -73,7 +73,7 @@ CREATE TABLE `board` (
     `deleted_at` DATETIME
 );
 
-CREATE TABLE `board_recommend` (
+CREATE TABLE `BOARD_RECOMMEND` (
   `board_idx` BIGINT NOT NULL,
   `user_idx` BIGINT NOT NULL,
   `created_at` DATETIME DEFAULT (CURRENT_TIMESTAMP),
@@ -81,7 +81,7 @@ CREATE TABLE `board_recommend` (
 );
 
 -- board_report 테이블 생성
-CREATE TABLE `board_report` (
+CREATE TABLE `BOARD_REPORT` (
   `board_idx` BIGINT NOT NULL,
   `user_idx` BIGINT NOT NULL,
   `reason` VARCHAR(255),
@@ -89,7 +89,7 @@ CREATE TABLE `board_report` (
   PRIMARY KEY (board_idx, user_idx)
 );
 
-CREATE TABLE `comment` (
+CREATE TABLE `COMMENT` (
   `idx` BIGINT PRIMARY KEY AUTO_INCREMENT,
   `user_idx` BIGINT,
   `board_idx` BIGINT,
@@ -100,7 +100,7 @@ CREATE TABLE `comment` (
   `deleted_at` DATETIME
 );
 
-CREATE TABLE `comment_recommend` (
+CREATE TABLE `COMMENT_RECOMMEND` (
   `comment_idx` BIGINT NOT NULL,
   `user_idx` BIGINT NOT NULL,
   `created_at` DATETIME DEFAULT (CURRENT_TIMESTAMP),
@@ -108,7 +108,7 @@ CREATE TABLE `comment_recommend` (
 );
 
 -- comment_report 테이블 생성
-CREATE TABLE `comment_report` (
+CREATE TABLE `COMMENT_REPORT` (
   `comment_idx` BIGINT NOT NULL,
   `user_idx` BIGINT NOT NULL,
   `reason` VARCHAR(255),
@@ -117,7 +117,7 @@ CREATE TABLE `comment_report` (
 );
 
 -- 포트폴리오(Portfolio) 테이블
-CREATE TABLE `portfolio` (
+CREATE TABLE `PORTFOLIO` (
     `idx` INT PRIMARY KEY AUTO_INCREMENT,
     `user_idx` BIGINT NOT NULL,
     `name` VARCHAR(100) NOT NULL,
@@ -128,7 +128,7 @@ CREATE TABLE `portfolio` (
 );
 
 -- 포트폴리오 디테일(PortfolioDetail) 테이블
-CREATE TABLE `portfolio_detail` (
+CREATE TABLE `PORTFOLIO_DETAIL` (
     `idx` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `portfolio_idx` INT,
     `asset_idx` VARCHAR(20),
@@ -143,7 +143,7 @@ CREATE TABLE `portfolio_detail` (
 );
 
 -- 자산(Asset) 테이블
-CREATE TABLE `asset` (
+CREATE TABLE `ASSET` (
     `idx` VARCHAR(20) PRIMARY KEY,
     `name` VARCHAR(100) NOT NULL,
     `type_idx` INT NOT NULL,
@@ -151,14 +151,14 @@ CREATE TABLE `asset` (
     `updated_at` DATETIME
 );
 
-CREATE TABLE `asset_type` (
+CREATE TABLE `ASSET_TYPE` (
     `idx` INT AUTO_INCREMENT PRIMARY KEY,
     `name` VARCHAR(255) NOT NULL
 );
 
 
 -- 거래(Transaction) 테이블
-CREATE TABLE `transaction` (
+CREATE TABLE `TRANSACTION` (
     `idx` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `user_idx` BIGINT,
     `portfolio_idx` INT,
@@ -171,14 +171,14 @@ CREATE TABLE `transaction` (
 );
 
 -- 북마크(Bookmark) 테이블
-CREATE TABLE `bookmark` (
+CREATE TABLE `BOOKMARK` (
     `idx` INT PRIMARY KEY AUTO_INCREMENT,
     `user_idx` BIGINT,
     `asset_idx` VARCHAR(20)
 );
 
 
-CREATE TABLE `audit_log` (
+CREATE TABLE `AUDIT_LOG` (
     `idx` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `table_name` VARCHAR(100) NOT NULL,
     `user_idx` VARCHAR(100) NOT NULL,
@@ -191,41 +191,78 @@ CREATE TABLE `audit_log` (
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX `idx_board_user_idx` ON `board` (`user_idx`);
+CREATE INDEX `IDX_BOARD_USER_IDX` ON `BOARD` (`user_idx`);
+CREATE INDEX `IDX_BOARD_RECOMMEND_BOARD_IDX` ON `BOARD_RECOMMEND` (`board_idx`);
+CREATE INDEX `IDX_BOARD_RECOMMEND_USER_IDX` ON `BOARD_RECOMMEND` (`user_idx`);
+CREATE INDEX `IDX_COMMENT_USER_IDX` ON `COMMENT` (`user_idx`);
+CREATE INDEX `IDX_COMMENT_BOARD_IDX` ON `COMMENT` (`board_idx`);
+CREATE INDEX `IDX_COMMENT_RECOMMEND_COMMENT_IDX` ON `COMMENT_RECOMMEND` (`comment_idx`);
+CREATE INDEX `IDX_COMMENT_RECOMMEND_USER_IDX` ON `COMMENT_RECOMMEND` (`user_idx`);
+CREATE INDEX `IDX_TRANSACTION_USER_IDX` ON `TRANSACTION` (`user_idx`);
+CREATE INDEX `IDX_TRANSACTION_PORTFOLIO_IDX` ON `TRANSACTION` (`portfolio_idx`);
+CREATE INDEX `IDX_TRANSACTION_ASSET_IDX` ON `TRANSACTION` (`ASSET_IDX`);
+CREATE INDEX `IDX_BOOKMARK_USER_IDX` ON `BOOKMARK` (`user_idx`);
+CREATE INDEX `IDX_BOOKMARK_ASSET_IDX` ON `BOOKMARK` (`asset_idx`);
 
-CREATE INDEX `idx_board_recommend_board_idx` ON `board_recommend` (`board_idx`);
+-- ALTER TABLE `board` ADD CONSTRAINT `fk_board_user` FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
+-- ALTER TABLE `board_recommend` ADD CONSTRAINT `fk_board_recommend_board` FOREIGN KEY (`board_idx`) REFERENCES `board` (`idx`) ON DELETE CASCADE;
+-- ALTER TABLE `board_recommend` ADD CONSTRAINT `fk_board_recommend_user` FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
+-- ALTER TABLE `comment` ADD CONSTRAINT `fk_comment_user` FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
+-- ALTER TABLE `comment` ADD CONSTRAINT `fk_comment_board` FOREIGN KEY (`board_idx`) REFERENCES `board` (`idx`) ON DELETE CASCADE;
+-- ALTER TABLE `comment_recommend` ADD CONSTRAINT `fk_comment_recommend_comment` FOREIGN KEY (`comment_idx`) REFERENCES `comment` (`idx`) ON DELETE CASCADE;
+-- ALTER TABLE `comment_recommend` ADD CONSTRAINT `fk_comment_recommend_user` FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
+-- ALTER TABLE `user_roles` ADD CONSTRAINT `fk_user_roles_user` FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
+-- ALTER TABLE `user_roles` ADD CONSTRAINT `fk_user_roles_roles` FOREIGN KEY (`roles_idx`) REFERENCES `roles` (`idx`) ON DELETE CASCADE;
+-- ALTER TABLE `roles_authority` ADD CONSTRAINT `fk_roles_authority_roles` FOREIGN KEY (`roles_idx`) REFERENCES `roles` (`idx`) ON DELETE CASCADE;
+-- ALTER TABLE `roles_authority` ADD CONSTRAINT `fk_roles_authority_authority` FOREIGN KEY (`authority_idx`) REFERENCES `authority` (`idx`) ON DELETE CASCADE;
+-- ALTER TABLE `board_report` ADD CONSTRAINT `fk_board_report_board` FOREIGN KEY (`board_idx`) REFERENCES `board` (`idx`) ON DELETE CASCADE;
+-- ALTER TABLE `board_report` ADD CONSTRAINT `fk_board_report_user` FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
+-- ALTER TABLE `comment_report` ADD CONSTRAINT `fk_comment_report_comment` FOREIGN KEY (`comment_idx`) REFERENCES `comment` (`idx`) ON DELETE CASCADE;
+-- ALTER TABLE `comment_report` ADD CONSTRAINT `fk_comment_report_user` FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
+-- ALTER TABLE `portfolio` ADD FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
+-- ALTER TABLE `portfolio_detail` ADD FOREIGN KEY (`portfolio_idx`) REFERENCES `portfolio` (`idx`) ON DELETE CASCADE;
+-- ALTER TABLE `portfolio_detail` ADD FOREIGN KEY (`asset_idx`) REFERENCES `asset` (`idx`);
+-- ALTER TABLE `transaction` ADD FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
+-- ALTER TABLE `transaction` ADD FOREIGN KEY (`asset_idx`) REFERENCES `asset` (`idx`);
+-- ALTER TABLE `transaction` ADD FOREIGN KEY (`portfolio_idx`) REFERENCES `portfolio` (`idx`);
+-- ALTER TABLE `bookmark` ADD FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
+-- ALTER TABLE `bookmark` ADD FOREIGN KEY (`asset_idx`) REFERENCES `asset` (`idx`);
+-- ALTER TABLE `asset` ADD FOREIGN KEY (`type_idx`) REFERENCES `asset_type` (`idx`);
 
-CREATE INDEX `idx_board_recommend_user_idx` ON `board_recommend` (`user_idx`);
+ALTER TABLE `BOARD` ADD CONSTRAINT `FK_BOARD_USER` FOREIGN KEY (`USER_IDX`) REFERENCES `USER` (`IDX`) ON DELETE CASCADE;
 
-CREATE INDEX `idx_comment_user_idx` ON `comment` (`user_idx`);
+-- BOARD_RECOMMEND 테이블
+ALTER TABLE `BOARD_RECOMMEND` ADD CONSTRAINT `FK_BOARD_RECOMMEND_BOARD` FOREIGN KEY (`BOARD_IDX`) REFERENCES `BOARD` (`IDX`) ON DELETE CASCADE;
+ALTER TABLE `BOARD_RECOMMEND` ADD CONSTRAINT `FK_BOARD_RECOMMEND_USER` FOREIGN KEY (`USER_IDX`) REFERENCES `USER` (`IDX`) ON DELETE CASCADE;
 
-CREATE INDEX `idx_comment_board_idx` ON `comment` (`board_idx`);
+-- BOARD_REPORT 테이블
+ALTER TABLE `BOARD_REPORT` ADD CONSTRAINT `FK_BOARD_REPORT_BOARD` FOREIGN KEY (`BOARD_IDX`) REFERENCES `BOARD` (`IDX`) ON DELETE CASCADE;
+ALTER TABLE `BOARD_REPORT` ADD CONSTRAINT `FK_BOARD_REPORT_USER` FOREIGN KEY (`USER_IDX`) REFERENCES `USER` (`IDX`) ON DELETE CASCADE;
 
-CREATE INDEX `idx_comment_recommend_comment_idx` ON `comment_recommend` (`comment_idx`);
+-- COMMENT 테이블
+ALTER TABLE `COMMENT` ADD CONSTRAINT `FK_COMMENT_USER` FOREIGN KEY (`USER_IDX`) REFERENCES `USER` (`IDX`) ON DELETE CASCADE;
+ALTER TABLE `COMMENT` ADD CONSTRAINT `FK_COMMENT_BOARD` FOREIGN KEY (`BOARD_IDX`) REFERENCES `BOARD` (`IDX`) ON DELETE CASCADE;
 
-CREATE INDEX `idx_comment_recommend_user_idx` ON `comment_recommend` (`user_idx`);
+-- COMMENT_RECOMMEND 테이블
+ALTER TABLE `COMMENT_RECOMMEND` ADD CONSTRAINT `FK_COMMENT_RECOMMEND_COMMENT` FOREIGN KEY (`COMMENT_IDX`) REFERENCES `COMMENT` (`IDX`) ON DELETE CASCADE;
+ALTER TABLE `COMMENT_RECOMMEND` ADD CONSTRAINT `FK_COMMENT_RECOMMEND_USER` FOREIGN KEY (`USER_IDX`) REFERENCES `USER` (`IDX`) ON DELETE CASCADE;
 
-ALTER TABLE `board` ADD CONSTRAINT `fk_board_user` FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
-ALTER TABLE `board_recommend` ADD CONSTRAINT `fk_board_recommend_board` FOREIGN KEY (`board_idx`) REFERENCES `board` (`idx`) ON DELETE CASCADE;
-ALTER TABLE `board_recommend` ADD CONSTRAINT `fk_board_recommend_user` FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
-ALTER TABLE `comment` ADD CONSTRAINT `fk_comment_user` FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
-ALTER TABLE `comment` ADD CONSTRAINT `fk_comment_board` FOREIGN KEY (`board_idx`) REFERENCES `board` (`idx`) ON DELETE CASCADE;
-ALTER TABLE `comment_recommend` ADD CONSTRAINT `fk_comment_recommend_comment` FOREIGN KEY (`comment_idx`) REFERENCES `comment` (`idx`) ON DELETE CASCADE;
-ALTER TABLE `comment_recommend` ADD CONSTRAINT `fk_comment_recommend_user` FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
-ALTER TABLE `user_roles` ADD CONSTRAINT `fk_user_roles_user` FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
-ALTER TABLE `user_roles` ADD CONSTRAINT `fk_user_roles_roles` FOREIGN KEY (`roles_idx`) REFERENCES `roles` (`idx`) ON DELETE CASCADE;
-ALTER TABLE `roles_authority` ADD CONSTRAINT `fk_roles_authority_roles` FOREIGN KEY (`roles_idx`) REFERENCES `roles` (`idx`) ON DELETE CASCADE;
-ALTER TABLE `roles_authority` ADD CONSTRAINT `fk_roles_authority_authority` FOREIGN KEY (`authority_idx`) REFERENCES `authority` (`idx`) ON DELETE CASCADE;
-ALTER TABLE `board_report` ADD CONSTRAINT `fk_board_report_board` FOREIGN KEY (`board_idx`) REFERENCES `board` (`idx`) ON DELETE CASCADE;
-ALTER TABLE `board_report` ADD CONSTRAINT `fk_board_report_user` FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
-ALTER TABLE `comment_report` ADD CONSTRAINT `fk_comment_report_comment` FOREIGN KEY (`comment_idx`) REFERENCES `comment` (`idx`) ON DELETE CASCADE;
-ALTER TABLE `comment_report` ADD CONSTRAINT `fk_comment_report_user` FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
-ALTER TABLE `portfolio` ADD FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
-ALTER TABLE `portfolio_detail` ADD FOREIGN KEY (`portfolio_idx`) REFERENCES `portfolio` (`idx`) ON DELETE CASCADE;
-ALTER TABLE `portfolio_detail` ADD FOREIGN KEY (`asset_idx`) REFERENCES `asset` (`idx`);
-ALTER TABLE `transaction` ADD FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
-ALTER TABLE `transaction` ADD FOREIGN KEY (`asset_idx`) REFERENCES `asset` (`idx`);
-ALTER TABLE `transaction` ADD FOREIGN KEY (`portfolio_idx`) REFERENCES `portfolio` (`idx`);
-ALTER TABLE `bookmark` ADD FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
-ALTER TABLE `bookmark` ADD FOREIGN KEY (`asset_idx`) REFERENCES `asset` (`idx`);
-ALTER TABLE `asset` ADD FOREIGN KEY (`type_idx`) REFERENCES `asset_type` (`idx`);
+-- COMMENT_REPORT 테이블
+ALTER TABLE `COMMENT_REPORT` ADD CONSTRAINT `FK_COMMENT_REPORT_COMMENT` FOREIGN KEY (`COMMENT_IDX`) REFERENCES `COMMENT` (`IDX`) ON DELETE CASCADE;
+ALTER TABLE `COMMENT_REPORT` ADD CONSTRAINT `FK_COMMENT_REPORT_USER` FOREIGN KEY (`USER_IDX`) REFERENCES `USER` (`IDX`) ON DELETE CASCADE;
+
+-- PORTFOLIO 테이블
+ALTER TABLE `PORTFOLIO` ADD CONSTRAINT `FK_PORTFOLIO_USER` FOREIGN KEY (`USER_IDX`) REFERENCES `USER` (`IDX`) ON DELETE CASCADE;
+
+-- PORTFOLIO_DETAIL 테이블
+ALTER TABLE `PORTFOLIO_DETAIL` ADD CONSTRAINT `FK_PORTFOLIO_DETAIL_PORTFOLIO` FOREIGN KEY (`PORTFOLIO_IDX`) REFERENCES `PORTFOLIO` (`IDX`) ON DELETE CASCADE;
+ALTER TABLE `PORTFOLIO_DETAIL` ADD CONSTRAINT `FK_PORTFOLIO_DETAIL_ASSET` FOREIGN KEY (`ASSET_IDX`) REFERENCES `ASSET` (`IDX`);
+
+-- TRANSACTION 테이블
+ALTER TABLE `TRANSACTION` ADD CONSTRAINT `FK_TRANSACTION_USER` FOREIGN KEY (`USER_IDX`) REFERENCES `USER` (`IDX`) ON DELETE CASCADE;
+ALTER TABLE `TRANSACTION` ADD CONSTRAINT `FK_TRANSACTION_PORTFOLIO` FOREIGN KEY (`PORTFOLIO_IDX`) REFERENCES `PORTFOLIO` (`IDX`) ON DELETE CASCADE;
+ALTER TABLE `TRANSACTION` ADD CONSTRAINT `FK_TRANSACTION_ASSET` FOREIGN KEY (`ASSET_IDX`) REFERENCES `ASSET` (`IDX`);
+
+-- BOOKMARK 테이블
+ALTER TABLE `BOOKMARK` ADD CONSTRAINT `FK_BOOKMARK_USER` FOREIGN KEY (`USER_IDX`) REFERENCES `USER` (`IDX`) ON DELETE CASCADE;
+ALTER TABLE `BOOKMARK` ADD CONSTRAINT `FK_BOOKMARK_ASSET` FOREIGN KEY (`ASSET_IDX`) REFERENCES `ASSET` (`IDX`);

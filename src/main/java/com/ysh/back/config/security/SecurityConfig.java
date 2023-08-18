@@ -42,11 +42,10 @@ public class SecurityConfig {
             .requestMatchers(
                 new MvcRequestMatcher(null, "/css/**"),
                 new MvcRequestMatcher(null, "/js/**"),
-                new MvcRequestMatcher(null, "/img/**")
-            )
-            .permitAll()
-            .requestMatchers(
-                new MvcRequestMatcher(null, "/static/**")
+                new MvcRequestMatcher(null, "/img/**"),
+                new MvcRequestMatcher(null, "/static/**"),
+                new MvcRequestMatcher(null, "/join/**"),
+                new MvcRequestMatcher(null, "/login/**")
             )
             .permitAll()
             .anyRequest()
@@ -79,7 +78,7 @@ public class SecurityConfig {
         httpSecurity.formLogin(
             config -> config
             // 실제 로그인 컨트롤러 메소드 경로
-            .loginPage("/auth/login")
+            // .loginPage("/login")
             // 가상의 주소를 넣는다
             .loginProcessingUrl("/api/v1/auth/login")
             .usernameParameter("email")

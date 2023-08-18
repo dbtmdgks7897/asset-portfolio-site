@@ -22,7 +22,7 @@ spring:
   sql:
     init: # 서버가 켜질 때 들어갈 데이터
       encoding: UTF-8
-      schema-locations: classpath:sql/schema.sql
+      # schema-locations: classpath:sql/schema.sql
       dataLocations: classpath:sql/data.sql
       mode: always
   jpa: 
@@ -30,7 +30,7 @@ spring:
     open-in-view: false # 트랜잭션 범위 밖에서 영속성 컨텍스트를 유지할지 여부
     database-platform: org.hibernate.dialect.MariaDBDialect # 어느 형식의 DB를 쓸 지 결정
     hibernate: # 
-      ddl-auto: none # create-drop, update, validate, none / # 
+      ddl-auto: create-drop # create-drop, update, validate, none / # 
       naming: # 이름 전략
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
         implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl

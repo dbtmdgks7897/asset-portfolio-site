@@ -34,7 +34,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "USER")
+@Table(name = "`USER`")
 @Getter
 @Setter
 @Builder
@@ -66,11 +66,11 @@ public class UserEntity {
     private String phone;
 
     @Lob
-    @Column(name = "profile_img")
+    @Column(name = "profile_img", length = 10000000)
     private String profileImg;
 
     @Column(name = "img_type")
-    @ColumnDefault("png")
+    @ColumnDefault("'png'")
     private String imgType;
 
     @Column(name = "gender")

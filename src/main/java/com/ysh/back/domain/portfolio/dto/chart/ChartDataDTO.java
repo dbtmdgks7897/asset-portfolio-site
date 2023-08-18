@@ -42,14 +42,12 @@ public class ChartDataDTO {
         }
 
         private static List<String> getRandomColors(int count) {
+            String[] myColors = { "#FFCFDF", "#FEFDCA", "#E0F9B5", "#A5DEE5", "#FAF3F0", "#D4E2D4", "#FFCACC", "#DBC4F0" };
             List<String> colors = new ArrayList<>();
             Random random = new Random();
 
             for (int i = 0; i < count; i++) {
-                int r = random.nextInt(256);
-                int g = random.nextInt(256);
-                int b = random.nextInt(256);
-                String color = String.format("#%02X%02X%02X", r, g, b);
+                String color = myColors[random.nextInt(myColors.length)];
                 colors.add(color);
             }
 

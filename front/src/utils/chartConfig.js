@@ -21,13 +21,7 @@ export const tempData = {
   datasets: [
     {
       backgroundColor: [
-        "#41B883",
-        "#E46651",
-        "#00D8FF",
-        "#123433",
-        "#AA44DD",
-        "#DD1333",
-        "black",
+        "white",
       ],
       data: [100],
     },
