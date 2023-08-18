@@ -1,10 +1,7 @@
 <template>
   <div :class="[toggle.show ? 'sidebar-margin' : 'sidebar-margin-none']">
     <div class="move-buttons">
-      <button
-        class="btn detail-move-button1"
-        @click="goSelectPortfolioPage"
-      >
+      <button class="btn detail-move-button1" @click="goSelectPortfolioPage">
         <span>
           <i class="bi bi-caret-left-fill"></i>
           선택창
@@ -15,23 +12,53 @@
       <div class="contents-head">
         <span>{{ portfolioName }} 포트폴리오</span>
       </div>
-      <div v-if="data" class="contents-body grid">
+      <div v-if="chartData" class="contents-body grid table-responsive-xxl">
         <!-- idx 가져와서 링크 받아야함 -->
-        <div v-for="key in titleList" :key="key"
-          class="portfolio"
-        >
+        <div v-for="key in titleList" :key="key" class="portfolio">
           <div class="portfolio-head">
             <span>{{ key }}</span>
           </div>
           <div class="portfolio-body">
             <span>
-                <Pie v-if="data[key].labels.length != 0" :data="data[key]" :options="options" />
+              <Pie
+                v-if="chartData[key].labels.length != 0"
+                :data="chartData[key]"
+                :options="options"
+              />
               <Pie v-else :data="tempData" :options="options" />
             </span>
           </div>
         </div>
       </div>
+      <div class="listLabel">
+        <p class="detailListTitle">보유 자산 리스트</p>
+        <button class="btn my-button manageBtn">관리</button>
+      </div>
+      <table class="table">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">코드</th>
+            <th scope="col">이름</th>
+            <th scope="col">현재가</th>
+            <th scope="col">평균 구매액</th>
+            <th scope="col">수량</th>
+            <th scope="col">수익</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- v-for로 반복 돌려서 데이터 가져와서 링크 넣고 뿌려주기 -->
+          <tr style="font-weight: bold;" v-for="detail in listData" :key="detail">
+            <th scope="row">{{ detail.code }}</th>
+            <td>{{ detail.name }}</td>
+            <td>{{ detail.curPrice }} 원</td>
+            <td>{{ detail.purchasePrice }} 원</td>
+            <td>{{ detail.amount }} 개</td>
+            <td>{{ detail.profit }} 원</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
+    <div class="contents-body"></div>
   </div>
 </template>
 
@@ -49,7 +76,8 @@ export default {
     return {
       portfolioIdx: localStorage.getItem("portfolioIdx"),
       portfolioName: localStorage.getItem("portfolioName"),
-      data: null,
+      chartData: null,
+      listData: null,
       titleList: ["주식", "외화", "암호화폐"],
       tempData,
       options,
@@ -57,17 +85,18 @@ export default {
   },
   mounted() {
     // login.getUserProfile();
-    this.getPortfolioDetail();
+    this.getPortfolioDetailChart();
+    this.getPortfolioDetailList();
   },
   components: { Pie },
   methods: {
-    getPortfolioDetail(){
-        this.$axios
-        .get(`/api/v1/portfolio/detail/${this.portfolioIdx}`)
+    getPortfolioDetailChart() {
+      this.$axios
+        .get(`/api/v1/portfolio/detail/${this.portfolioIdx}/chart`)
         .then((res) => {
           if (res.data.code === 0) {
             console.log(res.data.data);
-            this.data = res.data.data;
+            this.chartData = res.data.data;
           } else {
             if (res.data.data != null) {
               alert(res.data.data);
@@ -78,6 +107,24 @@ export default {
           alert(err.response.data.message);
         });
     },
+    getPortfolioDetailList() {
+      this.$axios
+        .get(`/api/v1/portfolio/detail/${this.portfolioIdx}/list`)
+        .then((res) => {
+          if (res.data.code === 0) {
+            console.log(res.data.data);
+            this.listData = res.data.data.detailList;
+          } else {
+            if (res.data.data != null) {
+              alert(res.data.data);
+            }
+          }
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+        });
+    },
+    
   },
 };
 </script>
@@ -92,7 +139,7 @@ export default {
     padding: 0;
     opacity: 0.4;
     transition: 0.5s;
-    &:hover{
+    &:hover {
       opacity: 1;
     }
   }
@@ -121,7 +168,6 @@ export default {
       min-height: 40vh;
       color: black;
       background-color: gray;
-      border: 1px solid black;
       box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
       position: relative;
       &-head {
@@ -134,6 +180,14 @@ export default {
       &-body {
         height: 80%;
       }
+    }
+  }
+  .listLabel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .detailListTitle {
+      font-size: 5vh;
     }
   }
 }

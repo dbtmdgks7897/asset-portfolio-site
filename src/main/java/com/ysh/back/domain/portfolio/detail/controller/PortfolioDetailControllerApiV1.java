@@ -25,12 +25,21 @@ public class PortfolioDetailControllerApiV1 {
     @Autowired
     PortfolioDetailServiceApiV1 portfolioDetailServiceApiV1;
 
-    @Operation(summary = "내 포트폴리오 리스트", description = "현재 유저 idx로 생성된 포트폴리오 리스트 가져옴")
-    @GetMapping("/{portfolioIdx}")
+    @Operation(summary = "상세 차트", description = "각 자산 별 상세 자산들의 차트")
+    @GetMapping("/{portfolioIdx}/chart")
     public ResponseEntity<?> getDetailCharts(
         @PathVariable Integer portfolioIdx,
         @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
         return portfolioDetailServiceApiV1.getDetailChart(portfolioIdx, customUserDetails);
+    }
+    
+    @Operation(summary = "상세 리스트", description = "상세 자산 리스트")
+    @GetMapping("/{portfolioIdx}/list")
+    public ResponseEntity<?> getDetailList(
+        @PathVariable Integer portfolioIdx,
+        @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
+        return portfolioDetailServiceApiV1.getDetailList(portfolioIdx, customUserDetails);
     }
 }

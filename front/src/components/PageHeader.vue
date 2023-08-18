@@ -357,7 +357,7 @@ ul {
     left: -$sidebar-width;
     transition: 1s;
     border: 2px solid black;
-    background-color: white;
+    background-color: rgb(190, 190, 190);
   }
 }
 

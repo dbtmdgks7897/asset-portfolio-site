@@ -1,268 +1,213 @@
-SET foreign_key_checks = 0;
-DROP TABLE IF EXISTS `USER`;
-DROP TABLE IF EXISTS `BOARD`;
-DROP TABLE IF EXISTS `COMMENT`;
-DROP TABLE IF EXISTS `COMMENT_RECOMMEND`;
-DROP TABLE IF EXISTS `BOARD_RECOMMEND`;
-DROP TABLE IF EXISTS `ROLES`;
-DROP TABLE IF EXISTS `AUTHORITY`;
-DROP TABLE IF EXISTS `USER_ROLES`;
-DROP TABLE IF EXISTS `ROLES_AUTHORITY`;
-DROP TABLE IF EXISTS `AUDIT_LOG`;
-DROP TABLE IF EXISTS `COMMENT_REPORT`;
-DROP TABLE IF EXISTS `BOARD_REPORT`;
-DROP TABLE IF EXISTS `PORTFOLIO`;
-DROP TABLE IF EXISTS `PORTFOLIO_DETAIL`;
-DROP TABLE IF EXISTS `BOOKMARK`;
-DROP TABLE IF EXISTS `TRANSACTION`;
-DROP TABLE IF EXISTS `ASSET`;
-DROP TABLE IF EXISTS `ASSET_TYPE`;
-SET foreign_key_checks = 1;
-
-CREATE TABLE `USER` (
-  `idx` BIGINT PRIMARY KEY AUTO_INCREMENT,
-  `email` VARCHAR(255) UNIQUE NOT NULL,
-  `password` VARCHAR(255) NOT NULL,
-  `name` VARCHAR(100) NOT NULL,
-  `nickname` VARCHAR(50) NOT NULL,
-  `phone` VARCHAR(20),
-  `profile_img` LONGTEXT,
-  `img_type` VARCHAR(30),
-  `gender` VARCHAR(10),
-  `age` INT,
-  `suspend_until` DATETIME,
-  `suspend_reason` VARCHAR(255),
-  `created_at` DATETIME DEFAULT (CURRENT_TIMESTAMP),
-  `updated_at` DATETIME,
-  `deleted_at` DATETIME,
-  `deleted_reason` VARCHAR(255)
+CREATE TABLE `user` (
+  `idx` bigint(20) NOT NULL AUTO_INCREMENT,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `nickname` varchar(255) NOT NULL,
+  `phone` varchar(255) DEFAULT NULL,
+  `profile_img` mediumtext DEFAULT NULL,
+  `img_type` varchar(255) DEFAULT 'png',
+  `gender` varchar(255) DEFAULT NULL,
+  `age` int(11) DEFAULT NULL,
+  `suspend_until` datetime(6) DEFAULT NULL,
+  `suspend_reason` varchar(255) DEFAULT NULL,
+  `created_at` datetime(6) DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime(6) DEFAULT NULL,
+  `deleted_at` datetime(6) DEFAULT NULL,
+  `deleted_reason` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`idx`),
+  UNIQUE KEY `UK_oso07pudw19e66bs4yp8hwpux` (`email`)
 );
 
-CREATE TABLE `ROLES` (
-    `idx` INT PRIMARY KEY AUTO_INCREMENT,
-    `name` VARCHAR(50) NOT NULL
+CREATE TABLE `roles` (
+  `idx` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`idx`)
 );
 
-CREATE TABLE `AUTHORITY` (
-    `idx` INT PRIMARY KEY AUTO_INCREMENT,
-    `name` VARCHAR(50) NOT NULL
+CREATE TABLE `user_roles` (
+  `user_idx` bigint(20) NOT NULL,
+  `roles_idx` int(11) NOT NULL,
+  KEY `FKa34w5lball82mrl5kcbkimlty` (`roles_idx`),
+  KEY `FKouit3ld601idg73wq2uiwhob1` (`user_idx`),
+  CONSTRAINT `FKa34w5lball82mrl5kcbkimlty` FOREIGN KEY (`roles_idx`) REFERENCES `roles` (`idx`),
+  CONSTRAINT `FKouit3ld601idg73wq2uiwhob1` FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`)
 );
 
-CREATE TABLE `USER_ROLES` (
-    `user_idx` BIGINT NOT NULL,
-    `roles_idx` INT NOT NULL,
-    PRIMARY KEY (`user_idx`, `roles_idx`)
+CREATE TABLE `authority` (
+  `idx` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`idx`)
 );
 
-CREATE TABLE `ROLES_AUTHORITY` (
-    `roles_idx` INT NOT NULL,
-    `authority_idx` INT NOT NULL,
-    PRIMARY KEY (`roles_idx`, `authority_idx`)
+CREATE TABLE `roles_authority` (
+  `roles_idx` int(11) NOT NULL,
+  `authority_idx` int(11) NOT NULL,
+  KEY `FK3pdwso14ne1eydojbwenu3vth` (`authority_idx`),
+  KEY `FK2a3gx8057kcjls5qlpg9nem59` (`roles_idx`),
+  CONSTRAINT `FK2a3gx8057kcjls5qlpg9nem59` FOREIGN KEY (`roles_idx`) REFERENCES `roles` (`idx`),
+  CONSTRAINT `FK3pdwso14ne1eydojbwenu3vth` FOREIGN KEY (`authority_idx`) REFERENCES `authority` (`idx`)
 );
 
-CREATE TABLE `BOARD` (
-    `idx` BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `name` VARCHAR(100) NOT NULL,
-    `content` VARCHAR(1000) NOT NULL,
-    `user_idx` BIGINT NOT NULL,
-    `view_count` INT DEFAULT 0,
-    `recommend_count` INT DEFAULT 0,
-    `is_hided` BOOL DEFAULT FALSE,
-    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` DATETIME,
-    `deleted_at` DATETIME
+CREATE TABLE `board` (
+  `idx` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `content` varchar(255) NOT NULL,
+  `user_idx` bigint(20) NOT NULL,
+  `view_count` int(11) DEFAULT 0,
+  `recommend_count` int(11) DEFAULT 0,
+  `is_hided` bit(1) DEFAULT FALSE,
+  `created_at` datetime(6) DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime(6) DEFAULT NULL,
+  `deleted_at` datetime(6) DEFAULT NULL,
+  PRIMARY KEY (`idx`),
+  KEY `FKn5hq5nlk75iglopl215y5jt83` (`user_idx`),
+  CONSTRAINT `FKn5hq5nlk75iglopl215y5jt83` FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`)
 );
 
-CREATE TABLE `BOARD_RECOMMEND` (
-  `board_idx` BIGINT NOT NULL,
-  `user_idx` BIGINT NOT NULL,
-  `created_at` DATETIME DEFAULT (CURRENT_TIMESTAMP),
-  PRIMARY KEY (board_idx, user_idx)
+CREATE TABLE `board_recommend` (
+  `board_idx` bigint(20) NOT NULL,
+  `user_idx` bigint(20) NOT NULL,
+  `created_at` datetime(6) DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`board_idx`,`user_idx`),
+  UNIQUE KEY `UK_pnpsf6yp0upi1n76wwy5rni4m` (`board_idx`),
+  UNIQUE KEY `UK_qdmpw0ku3o96tlcrx36x70oju` (`user_idx`)
 );
 
--- board_report 테이블 생성
-CREATE TABLE `BOARD_REPORT` (
-  `board_idx` BIGINT NOT NULL,
-  `user_idx` BIGINT NOT NULL,
-  `reason` VARCHAR(255),
-  `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (board_idx, user_idx)
+CREATE TABLE `board_report` (
+  `board_idx` bigint(20) NOT NULL,
+  `user_idx` bigint(20) NOT NULL,
+  `reason` varchar(255) DEFAULT NULL,
+  `created_at` datetime(6) DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`board_idx`,`user_idx`),
+  UNIQUE KEY `UK_iatkx85gmyris8uaf11fj6imj` (`board_idx`),
+  UNIQUE KEY `UK_lu6ahlpfrdq2i8f355wltfmcj` (`user_idx`)
 );
 
-CREATE TABLE `COMMENT` (
-  `idx` BIGINT PRIMARY KEY AUTO_INCREMENT,
-  `user_idx` BIGINT,
-  `board_idx` BIGINT,
-  `content` TEXT NOT NULL,
-  `recommend_count` INT DEFAULT 0,
-  `created_at` DATETIME DEFAULT (CURRENT_TIMESTAMP),
-  `updated_at` DATETIME,
-  `deleted_at` DATETIME
+CREATE TABLE `comment` (
+  `idx` bigint(20) NOT NULL AUTO_INCREMENT,
+  `user_idx` bigint(20) NOT NULL,
+  `board_idx` bigint(20) NOT NULL,
+  `content` varchar(255) NOT NULL,
+  `recommend_count` int(11) DEFAULT 0,
+  `created_at` datetime(6) DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime(6) DEFAULT NULL,
+  `deleted_at` datetime(6) DEFAULT NULL,
+  PRIMARY KEY (`idx`),
+  KEY `FK18qu651b4scnktwvkstxhmoqb` (`board_idx`),
+  KEY `FKbbasm0l7q1tn8t973k41wih81` (`user_idx`),
+  CONSTRAINT `FK18qu651b4scnktwvkstxhmoqb` FOREIGN KEY (`board_idx`) REFERENCES `board` (`idx`),
+  CONSTRAINT `FKbbasm0l7q1tn8t973k41wih81` FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`)
 );
 
-CREATE TABLE `COMMENT_RECOMMEND` (
-  `comment_idx` BIGINT NOT NULL,
-  `user_idx` BIGINT NOT NULL,
-  `created_at` DATETIME DEFAULT (CURRENT_TIMESTAMP),
-  PRIMARY KEY (comment_idx, user_idx)
+CREATE TABLE `comment_recommend` (
+  `comment_idx` bigint(20) NOT NULL,
+  `user_idx` bigint(20) NOT NULL,
+  `created_at` datetime(6) DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`comment_idx`,`user_idx`),
+  UNIQUE KEY `UK_t15v8uorx3bd22nti8jyh5dtk` (`comment_idx`),
+  UNIQUE KEY `UK_htalek5fs3yaao596k8onmg2w` (`user_idx`)
 );
 
--- comment_report 테이블 생성
-CREATE TABLE `COMMENT_REPORT` (
-  `comment_idx` BIGINT NOT NULL,
-  `user_idx` BIGINT NOT NULL,
-  `reason` VARCHAR(255),
-  `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (comment_idx, user_idx)
+CREATE TABLE `comment_report` (
+  `comment_idx` bigint(20) NOT NULL,
+  `user_idx` bigint(20) NOT NULL,
+  `reason` varchar(255) DEFAULT NULL,
+  `created_at` datetime(6) DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`comment_idx`,`user_idx`),
+  UNIQUE KEY `UK_q89mjy6scoeosvxypj6eq7yk5` (`comment_idx`),
+  UNIQUE KEY `UK_pbdrmoxp7ft201eho3wv3nvc1` (`user_idx`)
 );
 
--- 포트폴리오(Portfolio) 테이블
-CREATE TABLE `PORTFOLIO` (
-    `idx` INT PRIMARY KEY AUTO_INCREMENT,
-    `user_idx` BIGINT NOT NULL,
-    `name` VARCHAR(100) NOT NULL,
-    `description` VARCHAR(500),
-    `created_at` DATETIME DEFAULT (CURRENT_TIMESTAMP),
-    `updated_at` DATETIME,
-    `deleted_at` DATETIME
+CREATE TABLE `portfolio` (
+  `idx` int(11) NOT NULL AUTO_INCREMENT,
+  `user_idx` bigint(20) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `created_at` datetime(6) DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime(6) DEFAULT NULL,
+  `deleted_at` datetime(6) DEFAULT NULL,
+  PRIMARY KEY (`idx`),
+  KEY `FKoc460dqn3joolauy9mji0y3ri` (`user_idx`),
+  CONSTRAINT `FKoc460dqn3joolauy9mji0y3ri` FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`)
 );
 
--- 포트폴리오 디테일(PortfolioDetail) 테이블
-CREATE TABLE `PORTFOLIO_DETAIL` (
-    `idx` BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `portfolio_idx` INT,
-    `asset_idx` VARCHAR(20),
-    `amount` DECIMAL(18,5),
-    `average_purchase_price` DECIMAL(18,2),
-    `total_purchase_price` DECIMAL(18,2),
-    `dividend_month` VARCHAR(20),
-    `dividend_amount` DECIMAL(18,2),
-    `created_at` DATETIME DEFAULT (CURRENT_TIMESTAMP),
-    `updated_at` DATETIME,
-    `deleted_at` DATETIME
+CREATE TABLE `asset_type` (
+  `idx` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`idx`)
 );
 
--- 자산(Asset) 테이블
-CREATE TABLE `ASSET` (
-    `idx` VARCHAR(20) PRIMARY KEY,
-    `name` VARCHAR(100) NOT NULL,
-    `type_idx` INT NOT NULL,
-    `price` DECIMAL(18,2),
-    `updated_at` DATETIME
+CREATE TABLE `asset` (
+  `idx` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `type_idx` int(11) NOT NULL,
+  `price` decimal(38,2) DEFAULT NULL,
+  `updated_at` datetime(6) DEFAULT NULL,
+  PRIMARY KEY (`idx`),
+  KEY `FK4hv6qmuvab3mtrgj8kh4a2tp4` (`type_idx`),
+  CONSTRAINT `FK4hv6qmuvab3mtrgj8kh4a2tp4` FOREIGN KEY (`type_idx`) REFERENCES `asset_type` (`idx`)
 );
 
-CREATE TABLE `ASSET_TYPE` (
-    `idx` INT AUTO_INCREMENT PRIMARY KEY,
-    `name` VARCHAR(255) NOT NULL
+CREATE TABLE `portfolio_detail` (
+  `idx` int(11) NOT NULL AUTO_INCREMENT,
+  `portfolio_idx` int(11) NOT NULL,
+  `asset_idx` varchar(255) NOT NULL,
+  `amount` decimal(38,2) DEFAULT NULL,
+  `average_purchase_price` decimal(38,2) DEFAULT NULL,
+  `total_purchase_price` decimal(38,2) DEFAULT NULL,
+  `dividend_month` varchar(255) DEFAULT NULL,
+  `dividend_amount` decimal(38,2) DEFAULT NULL,
+  `created_at` datetime(6) DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime(6) DEFAULT NULL,
+  `deleted_at` datetime(6) DEFAULT NULL,
+  PRIMARY KEY (`idx`),
+  KEY `FK163wcng8f59mp63miqd301uxr` (`asset_idx`),
+  KEY `FKb0bbxnkngybhej819o5cutbry` (`portfolio_idx`),
+  CONSTRAINT `FK163wcng8f59mp63miqd301uxr` FOREIGN KEY (`asset_idx`) REFERENCES `asset` (`idx`),
+  CONSTRAINT `FKb0bbxnkngybhej819o5cutbry` FOREIGN KEY (`portfolio_idx`) REFERENCES `portfolio` (`idx`)
 );
 
-
--- 거래(Transaction) 테이블
-CREATE TABLE `TRANSACTION` (
-    `idx` BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `user_idx` BIGINT,
-    `portfolio_idx` INT,
-    `asset_idx` VARCHAR(20),
-    `type` VARCHAR(10),
-    `amount` DECIMAL(18,5),
-    `price_avg` DECIMAL(18,2),
-    `profit` DECIMAL(18,2),
-    `transaction_date` DATETIME
+CREATE TABLE `bookmark` (
+  `idx` bigint(20) NOT NULL AUTO_INCREMENT,
+  `user_idx` bigint(20) NOT NULL,
+  `asset_idx` varchar(255) NOT NULL,
+  PRIMARY KEY (`idx`),
+  KEY `FKqs46o7wlpjitfs0mv7f3ibhe3` (`asset_idx`),
+  KEY `FK75f0lkcn5n9k221v58krwqqth` (`user_idx`),
+  CONSTRAINT `FK75f0lkcn5n9k221v58krwqqth` FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`),
+  CONSTRAINT `FKqs46o7wlpjitfs0mv7f3ibhe3` FOREIGN KEY (`asset_idx`) REFERENCES `asset` (`idx`)
 );
 
--- 북마크(Bookmark) 테이블
-CREATE TABLE `BOOKMARK` (
-    `idx` INT PRIMARY KEY AUTO_INCREMENT,
-    `user_idx` BIGINT,
-    `asset_idx` VARCHAR(20)
+CREATE TABLE `transaction` (
+  `idx` int(11) NOT NULL AUTO_INCREMENT,
+  `user_idx` bigint(20) NOT NULL,
+  `portfolio_idx` int(11) NOT NULL,
+  `asset_idx` varchar(255) NOT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  `price_avg` decimal(38,2) DEFAULT NULL,
+  `amount` decimal(38,2) DEFAULT NULL,
+  `profit` decimal(38,2) DEFAULT NULL,
+  `transaction_date` datetime(6) DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idx`),
+  KEY `FKkl7usxxre8v2t6xi9idbynkif` (`asset_idx`),
+  KEY `FKqmbqckxr2k9cuomeby1sff18j` (`portfolio_idx`),
+  KEY `FKjyy45dbi4rto9mh49k2nir5mr` (`user_idx`),
+  CONSTRAINT `FKjyy45dbi4rto9mh49k2nir5mr` FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`),
+  CONSTRAINT `FKkl7usxxre8v2t6xi9idbynkif` FOREIGN KEY (`asset_idx`) REFERENCES `asset` (`idx`),
+  CONSTRAINT `FKqmbqckxr2k9cuomeby1sff18j` FOREIGN KEY (`portfolio_idx`) REFERENCES `portfolio` (`idx`)
 );
 
-
-CREATE TABLE `AUDIT_LOG` (
-    `idx` BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `table_name` VARCHAR(100) NOT NULL,
-    `user_idx` VARCHAR(100) NOT NULL,
-    `row_id` INT,
-    `operation` VARCHAR(10) NOT NULL,
-    `column_name` VARCHAR(100),
-    `old_value` VARCHAR(255),
-    `new_value` VARCHAR(255),
-    `reason` VARCHAR(255),
-    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE `audit_log` (
+  `idx` bigint(20) NOT NULL AUTO_INCREMENT,
+  `table_name` varchar(255) NOT NULL,
+  `user_idx` bigint(20) NOT NULL,
+  `row_id` bigint(20) DEFAULT NULL,
+  `operation` varchar(255) NOT NULL,
+  `column_name` varchar(255) DEFAULT NULL,
+  `old_value` varchar(255) DEFAULT NULL,
+  `new_value` varchar(255) DEFAULT NULL,
+  `reason` varchar(255) DEFAULT NULL,
+  `created_at` varchar(255) DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idx`)
 );
-
-CREATE INDEX `IDX_BOARD_USER_IDX` ON `BOARD` (`user_idx`);
-CREATE INDEX `IDX_BOARD_RECOMMEND_BOARD_IDX` ON `BOARD_RECOMMEND` (`board_idx`);
-CREATE INDEX `IDX_BOARD_RECOMMEND_USER_IDX` ON `BOARD_RECOMMEND` (`user_idx`);
-CREATE INDEX `IDX_COMMENT_USER_IDX` ON `COMMENT` (`user_idx`);
-CREATE INDEX `IDX_COMMENT_BOARD_IDX` ON `COMMENT` (`board_idx`);
-CREATE INDEX `IDX_COMMENT_RECOMMEND_COMMENT_IDX` ON `COMMENT_RECOMMEND` (`comment_idx`);
-CREATE INDEX `IDX_COMMENT_RECOMMEND_USER_IDX` ON `COMMENT_RECOMMEND` (`user_idx`);
-CREATE INDEX `IDX_TRANSACTION_USER_IDX` ON `TRANSACTION` (`user_idx`);
-CREATE INDEX `IDX_TRANSACTION_PORTFOLIO_IDX` ON `TRANSACTION` (`portfolio_idx`);
-CREATE INDEX `IDX_TRANSACTION_ASSET_IDX` ON `TRANSACTION` (`ASSET_IDX`);
-CREATE INDEX `IDX_BOOKMARK_USER_IDX` ON `BOOKMARK` (`user_idx`);
-CREATE INDEX `IDX_BOOKMARK_ASSET_IDX` ON `BOOKMARK` (`asset_idx`);
-
--- ALTER TABLE `board` ADD CONSTRAINT `fk_board_user` FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
--- ALTER TABLE `board_recommend` ADD CONSTRAINT `fk_board_recommend_board` FOREIGN KEY (`board_idx`) REFERENCES `board` (`idx`) ON DELETE CASCADE;
--- ALTER TABLE `board_recommend` ADD CONSTRAINT `fk_board_recommend_user` FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
--- ALTER TABLE `comment` ADD CONSTRAINT `fk_comment_user` FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
--- ALTER TABLE `comment` ADD CONSTRAINT `fk_comment_board` FOREIGN KEY (`board_idx`) REFERENCES `board` (`idx`) ON DELETE CASCADE;
--- ALTER TABLE `comment_recommend` ADD CONSTRAINT `fk_comment_recommend_comment` FOREIGN KEY (`comment_idx`) REFERENCES `comment` (`idx`) ON DELETE CASCADE;
--- ALTER TABLE `comment_recommend` ADD CONSTRAINT `fk_comment_recommend_user` FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
--- ALTER TABLE `user_roles` ADD CONSTRAINT `fk_user_roles_user` FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
--- ALTER TABLE `user_roles` ADD CONSTRAINT `fk_user_roles_roles` FOREIGN KEY (`roles_idx`) REFERENCES `roles` (`idx`) ON DELETE CASCADE;
--- ALTER TABLE `roles_authority` ADD CONSTRAINT `fk_roles_authority_roles` FOREIGN KEY (`roles_idx`) REFERENCES `roles` (`idx`) ON DELETE CASCADE;
--- ALTER TABLE `roles_authority` ADD CONSTRAINT `fk_roles_authority_authority` FOREIGN KEY (`authority_idx`) REFERENCES `authority` (`idx`) ON DELETE CASCADE;
--- ALTER TABLE `board_report` ADD CONSTRAINT `fk_board_report_board` FOREIGN KEY (`board_idx`) REFERENCES `board` (`idx`) ON DELETE CASCADE;
--- ALTER TABLE `board_report` ADD CONSTRAINT `fk_board_report_user` FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
--- ALTER TABLE `comment_report` ADD CONSTRAINT `fk_comment_report_comment` FOREIGN KEY (`comment_idx`) REFERENCES `comment` (`idx`) ON DELETE CASCADE;
--- ALTER TABLE `comment_report` ADD CONSTRAINT `fk_comment_report_user` FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
--- ALTER TABLE `portfolio` ADD FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
--- ALTER TABLE `portfolio_detail` ADD FOREIGN KEY (`portfolio_idx`) REFERENCES `portfolio` (`idx`) ON DELETE CASCADE;
--- ALTER TABLE `portfolio_detail` ADD FOREIGN KEY (`asset_idx`) REFERENCES `asset` (`idx`);
--- ALTER TABLE `transaction` ADD FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
--- ALTER TABLE `transaction` ADD FOREIGN KEY (`asset_idx`) REFERENCES `asset` (`idx`);
--- ALTER TABLE `transaction` ADD FOREIGN KEY (`portfolio_idx`) REFERENCES `portfolio` (`idx`);
--- ALTER TABLE `bookmark` ADD FOREIGN KEY (`user_idx`) REFERENCES `user` (`idx`) ON DELETE CASCADE;
--- ALTER TABLE `bookmark` ADD FOREIGN KEY (`asset_idx`) REFERENCES `asset` (`idx`);
--- ALTER TABLE `asset` ADD FOREIGN KEY (`type_idx`) REFERENCES `asset_type` (`idx`);
-
-ALTER TABLE `BOARD` ADD CONSTRAINT `FK_BOARD_USER` FOREIGN KEY (`USER_IDX`) REFERENCES `USER` (`IDX`) ON DELETE CASCADE;
-
--- BOARD_RECOMMEND 테이블
-ALTER TABLE `BOARD_RECOMMEND` ADD CONSTRAINT `FK_BOARD_RECOMMEND_BOARD` FOREIGN KEY (`BOARD_IDX`) REFERENCES `BOARD` (`IDX`) ON DELETE CASCADE;
-ALTER TABLE `BOARD_RECOMMEND` ADD CONSTRAINT `FK_BOARD_RECOMMEND_USER` FOREIGN KEY (`USER_IDX`) REFERENCES `USER` (`IDX`) ON DELETE CASCADE;
-
--- BOARD_REPORT 테이블
-ALTER TABLE `BOARD_REPORT` ADD CONSTRAINT `FK_BOARD_REPORT_BOARD` FOREIGN KEY (`BOARD_IDX`) REFERENCES `BOARD` (`IDX`) ON DELETE CASCADE;
-ALTER TABLE `BOARD_REPORT` ADD CONSTRAINT `FK_BOARD_REPORT_USER` FOREIGN KEY (`USER_IDX`) REFERENCES `USER` (`IDX`) ON DELETE CASCADE;
-
--- COMMENT 테이블
-ALTER TABLE `COMMENT` ADD CONSTRAINT `FK_COMMENT_USER` FOREIGN KEY (`USER_IDX`) REFERENCES `USER` (`IDX`) ON DELETE CASCADE;
-ALTER TABLE `COMMENT` ADD CONSTRAINT `FK_COMMENT_BOARD` FOREIGN KEY (`BOARD_IDX`) REFERENCES `BOARD` (`IDX`) ON DELETE CASCADE;
-
--- COMMENT_RECOMMEND 테이블
-ALTER TABLE `COMMENT_RECOMMEND` ADD CONSTRAINT `FK_COMMENT_RECOMMEND_COMMENT` FOREIGN KEY (`COMMENT_IDX`) REFERENCES `COMMENT` (`IDX`) ON DELETE CASCADE;
-ALTER TABLE `COMMENT_RECOMMEND` ADD CONSTRAINT `FK_COMMENT_RECOMMEND_USER` FOREIGN KEY (`USER_IDX`) REFERENCES `USER` (`IDX`) ON DELETE CASCADE;
-
--- COMMENT_REPORT 테이블
-ALTER TABLE `COMMENT_REPORT` ADD CONSTRAINT `FK_COMMENT_REPORT_COMMENT` FOREIGN KEY (`COMMENT_IDX`) REFERENCES `COMMENT` (`IDX`) ON DELETE CASCADE;
-ALTER TABLE `COMMENT_REPORT` ADD CONSTRAINT `FK_COMMENT_REPORT_USER` FOREIGN KEY (`USER_IDX`) REFERENCES `USER` (`IDX`) ON DELETE CASCADE;
-
--- PORTFOLIO 테이블
-ALTER TABLE `PORTFOLIO` ADD CONSTRAINT `FK_PORTFOLIO_USER` FOREIGN KEY (`USER_IDX`) REFERENCES `USER` (`IDX`) ON DELETE CASCADE;
-
--- PORTFOLIO_DETAIL 테이블
-ALTER TABLE `PORTFOLIO_DETAIL` ADD CONSTRAINT `FK_PORTFOLIO_DETAIL_PORTFOLIO` FOREIGN KEY (`PORTFOLIO_IDX`) REFERENCES `PORTFOLIO` (`IDX`) ON DELETE CASCADE;
-ALTER TABLE `PORTFOLIO_DETAIL` ADD CONSTRAINT `FK_PORTFOLIO_DETAIL_ASSET` FOREIGN KEY (`ASSET_IDX`) REFERENCES `ASSET` (`IDX`);
-
--- TRANSACTION 테이블
-ALTER TABLE `TRANSACTION` ADD CONSTRAINT `FK_TRANSACTION_USER` FOREIGN KEY (`USER_IDX`) REFERENCES `USER` (`IDX`) ON DELETE CASCADE;
-ALTER TABLE `TRANSACTION` ADD CONSTRAINT `FK_TRANSACTION_PORTFOLIO` FOREIGN KEY (`PORTFOLIO_IDX`) REFERENCES `PORTFOLIO` (`IDX`) ON DELETE CASCADE;
-ALTER TABLE `TRANSACTION` ADD CONSTRAINT `FK_TRANSACTION_ASSET` FOREIGN KEY (`ASSET_IDX`) REFERENCES `ASSET` (`IDX`);
-
--- BOOKMARK 테이블
-ALTER TABLE `BOOKMARK` ADD CONSTRAINT `FK_BOOKMARK_USER` FOREIGN KEY (`USER_IDX`) REFERENCES `USER` (`IDX`) ON DELETE CASCADE;
-ALTER TABLE `BOOKMARK` ADD CONSTRAINT `FK_BOOKMARK_ASSET` FOREIGN KEY (`ASSET_IDX`) REFERENCES `ASSET` (`IDX`);

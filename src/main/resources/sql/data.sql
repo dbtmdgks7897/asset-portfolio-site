@@ -104,6 +104,10 @@ insert into `USER` (idx, email, password, name, nickname, phone, profile_img, ge
 insert into `USER` (idx, email, password, name, nickname, phone, profile_img, gender, age, suspend_until, suspend_reason, updated_at, deleted_at, deleted_reason) values (102, 'w@n.c', '$2a$12$kVy0FCDLAntSxHyD3hnXfuoNiDXPlzg18iQHjNOGSNogaiJs9jySK', '홍', 'honhong', '010-1111-2222', null, null, null, "2023-08-11 12:36:57", null, null, null, null);
 
 
+INSERT INTO `asset-port`.`user`
+(idx, email, password, name, nickname, phone, profile_img, img_type, gender, age, suspend_until, suspend_reason, created_at, updated_at, deleted_at, deleted_reason)
+VALUES(1, 'w@w.c', '$2a$10$ZLdQNEyTNes1xkaIpdfgtOS1ju7WRiWTo8gts2F98T8L4hFIsj6AK', '유', 'ysh', '010-1111-2222', '/img/profile_1.png', NULL, '남성', 10, NULL, NULL, '2023-08-18 22:10:25.496', NULL, NULL, NULL);
+
 INSERT INTO `ROLES` (`name`) VALUES
 ('ROLE_USER'),
 ('ROLE_ADMIN');
@@ -115,9 +119,8 @@ INSERT INTO `AUTHORITY` (`name`) VALUES
 
 
 INSERT INTO `USER_ROLES` (`user_idx`,`roles_idx`) VALUES
-(101, 1),
-(101, 2),
-(102, 1);
+(1, 1),
+(1, 2),
 
 INSERT INTO `ROLES_AUTHORITY` (`roles_idx`,`authority_idx`) VALUES
 (1, 1),
@@ -126,7 +129,13 @@ INSERT INTO `ROLES_AUTHORITY` (`roles_idx`,`authority_idx`) VALUES
 (2, 2),
 (2, 3);
 
-
+INSERT INTO `ASSET_TYPE` (name) VALUES ('주식_국내');
+INSERT INTO `ASSET_TYPE` (name) VALUES ('주식_해외');
+INSERT INTO `ASSET_TYPE` (name) VALUES ('암호화폐');
+INSERT INTO `ASSET_TYPE` (name) VALUES ('원자재_금');
+INSERT INTO `ASSET_TYPE` (name) VALUES ('원자재_은');
+INSERT INTO `ASSET_TYPE` (name) VALUES ('외화');
+INSERT INTO `ASSET_TYPE` (name) VALUES ('기타');
 
 
 -- 바꿔
@@ -333,15 +342,7 @@ insert into COMMENT (idx, user_idx, board_idx, content, recommend_count, created
 insert into COMMENT (idx, user_idx, board_idx, content, recommend_count, created_at, updated_at, deleted_at) values (99, 28, 3, 'interdum mauris non ligula pellentesque ultrices phasellus id sapien in sapien iaculis congue vivamus', 5, '2023-05-28 11:27:20', '2022-11-30 06:44:29', null);
 insert into COMMENT (idx, user_idx, board_idx, content, recommend_count, created_at, updated_at, deleted_at) values (100, 29, 4, 'nam congue risus semper porta volutpat quam pede lobortis', 43, '2023-08-02 04:14:58', '2023-08-03 07:40:06', '2022-09-29 21:30:35');
 
-INSERT INTO `PORTFOLIO` (`idx`, `user_idx`, `name`, `description`, `created_at`, `updated_at`, `deleted_at`) VALUES (1, 101, '하이', '헬로', '2023-08-16 11:07:08', NULL, NULL);
-
-INSERT INTO ASSET_TYPE (name) VALUES ('주식_국내');
-INSERT INTO ASSET_TYPE (name) VALUES ('주식_해외');
-INSERT INTO ASSET_TYPE (name) VALUES ('암호화폐');
-INSERT INTO ASSET_TYPE (name) VALUES ('원자재_금');
-INSERT INTO ASSET_TYPE (name) VALUES ('원자재_은');
-INSERT INTO ASSET_TYPE (name) VALUES ('외화');
-INSERT INTO ASSET_TYPE (name) VALUES ('기타');
+INSERT INTO `PORTFOLIO` (`idx`, `user_idx`, `name`, `description`, `created_at`, `updated_at`, `deleted_at`) VALUES (1, 101, '하이', '헬로', '2023-08-16 11:07:08', NULL, NULL)
 
 INSERT INTO `ASSET` (`idx`, `name`, `type_idx`, `price`, `updated_at`) VALUES ('005930', '삼성전자', 1, NULL, NULL);
 INSERT INTO `ASSET` (`idx`, `name`, `type_idx`, `price`, `updated_at`) VALUES ('JPY/KRW', 'jpy', 6, NULL, NULL);

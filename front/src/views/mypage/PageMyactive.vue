@@ -87,7 +87,7 @@ export default {
   },
   mounted() {
     this.getMyactiveData();
-    login.getUserProfile();
+    // login.getUserProfile();
   },
   methods: {
     getMyactiveData() {

@@ -33,7 +33,7 @@
         <table class="table">
           <thead class="table-dark">
             <tr>
-              <th scope="col" colspan="4">프로필</th>
+              <th scope="col" colspan="3">프로필</th>
               <th scope="col">가입일</th>
               <th scope="col">나이</th>
               <th scope="col">성별</th>
@@ -46,7 +46,6 @@
             <!-- v-for로 반복 돌려서 데이터 가져와서 링크 넣고 뿌려주기 -->
             <tr v-for="user in userList" :key="user">
               <th scope="row">{{ user.idx }}</th>
-              <td><img :src="user.profileImg" alt="이미지" /></td>
               <td>{{ user.email }}</td>
               <td>{{ user.name }}</td>
               <td>{{ user.createdAt }}</td>
@@ -214,7 +213,7 @@ export default {
           }
         })
         .catch((err) => {
-          alert(err.response.data.message);
+          alert(err);
         });
     },
     searchFn() {

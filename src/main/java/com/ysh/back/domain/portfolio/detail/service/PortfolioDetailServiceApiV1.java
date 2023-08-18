@@ -19,6 +19,7 @@ import com.ysh.back.common.exception.BadRequestException;
 import com.ysh.back.config.security.auth.CustomUserDetails;
 import com.ysh.back.domain.portfolio.detail.dto.ReqPostPortfolioDetailPerchaseDTO;
 import com.ysh.back.domain.portfolio.detail.dto.ReqPostPortfolioDetailSellDTO;
+import com.ysh.back.domain.portfolio.detail.dto.ResGetPortfolioDetailDTO;
 import com.ysh.back.domain.portfolio.dto.chart.ChartDataDTO;
 import com.ysh.back.model.asset.entity.AssetEntity;
 import com.ysh.back.model.asset.repository.AssetRepository;
@@ -94,8 +95,38 @@ public class PortfolioDetailServiceApiV1 {
         return new ResponseEntity<>(
                 ResponseDTO.builder()
                         .code(0)
-                        .message("포트폴리오 디테일 가져오기 성공")
+                        .message("포트폴리오 디테일 차트 가져오기 성공")
                         .data(result)
+                        .build(),
+                HttpStatus.OK);
+    }
+
+
+    public ResponseEntity<?> getDetailList(Integer portfolioIdx, CustomUserDetails customUserDetails){
+        Optional<UserEntity> userEntityOptional = userRepository.findByEmail(customUserDetails.getUsername());
+        if (!userEntityOptional.isPresent()) {
+            throw new BadRequestException("사용자 정보를 찾을 수 없습니다.");
+        }
+        UserEntity userEntity = userEntityOptional.get();
+        
+        Optional<PortfolioEntity> portfolioEntityOptional = portfolioRepository.findByIdx(portfolioIdx);
+        if (!portfolioEntityOptional.isPresent()){
+            throw new BadRequestException("포트폴리오 정보를 찾을 수 없습니다.");
+        }
+        PortfolioEntity portfolioEntity = portfolioEntityOptional.get();
+        if(userEntity.getIdx() != portfolioEntity.getUserEntity().getIdx()){
+            throw new BadRequestException("포트폴리오 접근 권한을 찾을 수 없습니다.");
+        }
+
+        List<PortfolioDetailEntity> portfolioDetailEntityList = portfolioEntity.getPortfolioDetailEntityList();
+        
+        ResGetPortfolioDetailDTO dto = ResGetPortfolioDetailDTO.of(portfolioDetailEntityList);
+
+        return new ResponseEntity<>(
+                ResponseDTO.builder()
+                        .code(0)
+                        .message("포트폴리오 디테일 리스트 가져오기 성공")
+                        .data(dto)
                         .build(),
                 HttpStatus.OK);
     }
