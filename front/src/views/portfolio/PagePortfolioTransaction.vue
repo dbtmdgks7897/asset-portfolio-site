@@ -4,7 +4,7 @@
       <div class="contents-head">
         <span>거래 내역</span>
       </div>
-        <div class="contents-body table-responsive-xxl">
+      <div class="contents-body table-responsive-xxl">
         <table class="table">
           <thead class="table-dark">
             <tr>
@@ -21,12 +21,14 @@
             <!-- v-for로 반복 돌려서 데이터 가져와서 링크 넣고 뿌려주기 -->
             <tr v-for="transaction in transactionList" :key="transaction">
               <th scope="row">{{ transaction.idx }}</th>
-              <td>{{ transaction.type }}</td>
+              <td :style="getTypeStyle(transaction.type)" style="font-weight: bold;">
+                {{ transaction.type }}
+              </td>
               <td>{{ transaction.transactionDate }}</td>
               <td>{{ transaction.assetName }}</td>
-              <td>{{ transaction.amount }}</td>
-              <td>{{ transaction.priceAvg }}</td>              
-              <td>{{ transaction.profit }}</td>              
+              <td>{{ transaction.amount.toLocaleString() }}</td>
+              <td>{{ transaction.priceAvg.toLocaleString() }}</td>
+              <td>{{ transaction.profit.toLocaleString() }}</td>
               <!-- 타입이 판매일 때만 -->
               <!-- C:\Users\user\Desktop\ysh\pj\메모\계산\거래 내역_수익금  -->
               <!-- 저거 보셈 -->
@@ -35,7 +37,7 @@
           </tbody>
         </table>
       </div>
-      </div>
+    </div>
   </div>
 </template>
 
@@ -50,32 +52,46 @@ export default {
     };
   },
   mounted() {
-    if(localStorage.getItem("portfolioIdx") == null){
-      alert('먼저 포트폴리오를 선택해주세요.');
-      this.$router.push('/portfolio');
+    if (localStorage.getItem("portfolioIdx") == null) {
+      alert("먼저 포트폴리오를 선택해주세요.");
+      this.$router.push("/portfolio");
     }
     this.getAllTransaction();
   },
-  methods :{
+  methods: {
     getAllTransaction() {
-        this.$axios
+      this.$axios
         .get(`/api/v1/transaction`, {
-            params : {
-                portfolioIdx: localStorage.getItem("portfolioIdx")
-            }
-        }).then((res) => {
+          params: {
+            portfolioIdx: localStorage.getItem("portfolioIdx"),
+          },
+        })
+        .then((res) => {
           if (res.data.code === 0) {
-            console.log(res.data)
+            console.log(res.data);
             this.transactionList = res.data.data.transactionList;
           } else {
             alert(res.data.message);
           }
         })
         .catch((err) => {
-          alert(err.response.data.message);
+          if(err.response.status == 500){
+            alert("로그인 해주세요")
+            this.$router.push("/login")
+          }
         });
-    }
-  }
+    },
+    getTypeStyle(type) {
+      const style = {};
+
+      if (type === "구입") {
+        style.color = "green"; // 구매일 경우 초록색 글자
+      } else if (type === "판매") {
+        style.color = "red"; // 판매일 경우 빨간색 글자
+      }
+      return style;
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -93,6 +109,5 @@ export default {
       font-size: 4vw;
     }
   }
-
 }
 </style>

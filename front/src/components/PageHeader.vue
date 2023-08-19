@@ -98,7 +98,8 @@
             >
               <a><span>자산 검색</span></a>
             </li>
-            <li class="list-group-item list-group-item-dark">
+            <li class="list-group-item list-group-item-dark"
+            @click="this.$router.push('/portfolio/analyze')">
               <a><span>분석</span></a>
             </li>
             <li
@@ -232,8 +233,10 @@ export default {
       }
     },
   },
+  beforeMount(){
+    login.getUserProfile()
+  },
   mounted() {
-    login.getUserProfile();
     this.handleResize();
     window.addEventListener("resize", this.handleResize);
   },

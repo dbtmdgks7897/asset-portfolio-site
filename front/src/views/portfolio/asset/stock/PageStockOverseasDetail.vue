@@ -5,8 +5,7 @@
   >
     <div class="contents">
       <div class="contents-head flex">
-        <span
-          >{{ stockCode }}
+        <span>
           <a
             ><i
               v-show="isBookmark"
@@ -17,6 +16,7 @@
           <a
             ><i v-show="!isBookmark" @click="bookmarking" class="bi bi-star"></i
           ></a>
+          {{ stockCode }}
         </span>
       </div>
       <div class="contents-body table-responsive-xxl">
@@ -24,8 +24,7 @@
           <div class="flex pricebox">
             <p class="price">{{ stockData.price }}</p>
             <p class="compare" :style="getPriceStyle(stockData.compareYester)">
-              <span>{{ stockData.compareYester }}</span
-              >
+              <span>{{ stockData.compareYester }}</span>
             </p>
           </div>
           <div class="pricebox downside">
@@ -124,10 +123,12 @@ export default {
             highPrice: lastData["2. high"],
             rowPrice: lastData["3. low"],
             price: lastData["4. close"],
-            compareYester: (parseFloat(lastData["4. close"]) - parseFloat(preData["4. close"])).toFixed(2),
-            compareYesterRate: Math.abs(this.compareYester) / parseFloat(preData["4. close"]),
+            compareYester: (
+              parseFloat(lastData["4. close"]) - parseFloat(preData["4. close"])
+            ).toFixed(2),
+            compareYesterRate:
+              Math.abs(this.compareYester) / parseFloat(preData["4. close"]),
           };
-
         })
         .catch((error) => {
           console.error("Error fetching data:", error);
@@ -135,7 +136,7 @@ export default {
     },
     isBookmarked() {
       this.$axios
-        .get(`/api/v1/bookmark`, {
+        .get(`/api/v1/bookmark/isBookmarked`, {
           params: {
             assetCode: this.stockCode,
           },
@@ -144,7 +145,10 @@ export default {
           this.isBookmark = res.data;
         })
         .catch((err) => {
-          alert(err.response.data.message);
+          if(err.response.status == 500){
+            alert("로그인 해주세요")
+            this.$router.push("/login")
+          }
         });
     },
     bookmarking() {

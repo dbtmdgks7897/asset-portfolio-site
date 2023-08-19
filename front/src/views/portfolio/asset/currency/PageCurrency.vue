@@ -111,7 +111,7 @@
                   {{
                     isNaN(currencyData * parseFloat(fromPrice))
                       ? 0
-                      : (currencyData * parseFloat(fromPrice)).toFixed(1)
+                      : parseFloat((currencyData * parseFloat(fromPrice)).toFixed(1)).toLocaleString()
                   }}
                 </td>
                 <td v-if="from == `krw`">
@@ -441,7 +441,10 @@ export default {
           console.log(res.data.krw);
         })
         .catch((err) => {
-          console.error(err);
+          if(err.response.status == 500){
+            alert("로그인 해주세요")
+            this.$router.push("/login")
+          }
         });
     },
   },

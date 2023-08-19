@@ -24,7 +24,7 @@
           <tbody>
             <!-- v-for로 반복 돌려서 데이터 가져와서 링크 넣고 뿌려주기 -->
             <tr>
-              <th scope="row"><input type="text" v-model="code" /></th>
+              <th scope="row"><input type="text" oninput= "this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" v-model="code" placeholder="숫자만 입력"/></th>
               <td><input type="text" v-model="name" /></td>
               <td>
                 <select
@@ -78,6 +78,7 @@
             </tr>
           </tbody>
         </table>
+        <p class="asset-list-title">기존 자산 목록</p>
         <table class="table">
           <thead class="table-dark">
             <tr>
@@ -140,7 +141,10 @@ export default {
           }
         })
         .catch((err) => {
-          alert(err.response.data.message);
+          if(err.response.status == 500){
+            alert("로그인 해주세요")
+            this.$router.push("/login")
+          }
         });
     },
     getAssetList() {
@@ -262,5 +266,9 @@ export default {
   select {
     width: 5vw;
   }
+}
+.asset-list-title{
+    font-weight: bold;
+    font-size: 3vh;
 }
 </style>

@@ -28,6 +28,14 @@ public class BookmarkControllerApiV1 {
 
     @Operation(summary = "즐겨찾기 등록 여부", description = "즐겨찾기 되어있으면 true, 아니면 false")
     @GetMapping()
+    public ResponseEntity<?> getBookmarkList(
+        @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ){
+        return bookmarkServiceApiV1.getBookmarkList(customUserDetails);
+    }
+
+    @Operation(summary = "즐겨찾기 등록 여부", description = "즐겨찾기 되어있으면 true, 아니면 false")
+    @GetMapping("/isBookmarked")
     public boolean isBookmarked(
         @RequestParam String assetCode,
         @AuthenticationPrincipal CustomUserDetails customUserDetails
@@ -43,4 +51,6 @@ public class BookmarkControllerApiV1 {
     ){
         return bookmarkServiceApiV1.postBookmarkData(reqPostBookmarkDTO, customUserDetails);
     }
+
+
 }

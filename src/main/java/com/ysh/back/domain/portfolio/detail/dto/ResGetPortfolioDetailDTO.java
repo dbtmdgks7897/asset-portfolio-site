@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -33,6 +34,7 @@ public class ResGetPortfolioDetailDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     @Getter
+    @Setter
     @Builder
     public static class PortfolioDetail {
         private String code;
@@ -41,17 +43,26 @@ public class ResGetPortfolioDetailDTO {
         private BigDecimal purchasePrice;
         private BigDecimal amount;
         private BigDecimal profit;
+        private String dividendMonth;
+        private BigDecimal dividendAmount;
 
         public static PortfolioDetail fromEntity(PortfolioDetailEntity entity) {
-            return PortfolioDetail.builder()
+            PortfolioDetail portfolioDetail = PortfolioDetail.builder()
                     .code(entity.getAssetEntity().getIdx())
                     .name(entity.getAssetEntity().getName())
                     .curPrice(entity.getAssetEntity().getPrice())
                     .purchasePrice(entity.getAveragePurchasePrice())
                     .amount(entity.getAmount())
-                    .profit(entity.getAmount()
-                            .multiply(entity.getAssetEntity().getPrice().subtract(entity.getAveragePurchasePrice())))
                     .build();
+            if(entity.getAssetEntity().getPrice() != null){
+                portfolioDetail.setProfit(entity.getAmount()
+                            .multiply(entity.getAssetEntity().getPrice().subtract(entity.getAveragePurchasePrice())));
+            }
+            if(entity.getDividendMonth() != null && entity.getDividendAmount() != null){
+                portfolioDetail.setDividendMonth(entity.getDividendMonth());
+                portfolioDetail.setDividendAmount(entity.getDividendAmount());
+            }
+            return portfolioDetail;
         }
     }
 

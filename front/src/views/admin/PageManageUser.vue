@@ -213,7 +213,10 @@ export default {
           }
         })
         .catch((err) => {
-          alert(err);
+          if(err.response.status == 500){
+            alert("로그인 해주세요")
+            this.$router.push("/login")
+          }
         });
     },
     searchFn() {

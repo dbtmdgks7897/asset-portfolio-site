@@ -1,11 +1,13 @@
 package com.ysh.back.domain.portfolio.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -49,7 +51,7 @@ public class PortfolioServiceApiV1 {
         }
         UserEntity userEntity = userEntityOptional.get();
 
-        List<PortfolioEntity> portfolioEntityList = portfolioRepository.findByUserEntityIdx(userEntity.getIdx());
+        List<PortfolioEntity> portfolioEntityList = portfolioRepository.findByUserEntityIdxAndDeletedAtIsNull(userEntity.getIdx());
         if (portfolioEntityList.isEmpty()) {
             return null;
         }
@@ -137,9 +139,50 @@ public class PortfolioServiceApiV1 {
         auditLogRepository.save(auditLog);
 
         return new ResponseEntity<>(
-                ResponseDTO.builder()
+                ResponseDTO.builder()   
                         .code(0)
                         .message("새로운 포트폴리오가 생성되었습니다.")
+                        .build(),
+                HttpStatus.OK);
+    }
+
+    @Transactional
+    public ResponseEntity<?> deletePortfolioData(Integer portfolioIdx, CustomUserDetails customUserDetails){
+        Optional<UserEntity> userEntityOptional = userRepository.findByEmail(customUserDetails.getUsername());
+        if (!userEntityOptional.isPresent()) {
+            throw new BadRequestException("사용자 정보가 존재하지 않습니다.");
+        }
+        UserEntity userEntity = userEntityOptional.get();
+
+        Optional<PortfolioEntity> portfolioEntityOptional = portfolioRepository.findByIdx(portfolioIdx);
+        if(!portfolioEntityOptional.isPresent()){
+            throw new BadRequestException("포트폴리오가 존재하지 않습니다.");
+        }
+        PortfolioEntity portfolioEntity = portfolioEntityOptional.get();
+
+        if(userEntity.getIdx() != portfolioEntity.getUserEntity().getIdx()){
+            throw new BadRequestException("현재 사용자와 포트폴리오 생성자가 일치하지 않습니다.");
+        }
+
+        portfolioEntity.setDeletedAt(LocalDateTime.now());
+
+        AuditLogEntity auditLog = AuditLogEntity.builder()
+                .tableName("portfolio")
+                // 유저 정보 가져올 수 있을 때 바꾸자.
+                .userIdx(userEntity.getIdx())
+                .rowId(Long.valueOf(portfolioEntity.getIdx()))
+                .operation("DELETE")
+                .oldValue("")
+                .newValue(portfolioEntity.getName())
+                .reason("포트폴리오 삭제")
+                .build();
+
+        auditLogRepository.save(auditLog);
+
+        return new ResponseEntity<>(
+                ResponseDTO.builder()
+                        .code(0)
+                        .message("포트폴리오가 삭제되었습니다.")
                         .build(),
                 HttpStatus.OK);
     }

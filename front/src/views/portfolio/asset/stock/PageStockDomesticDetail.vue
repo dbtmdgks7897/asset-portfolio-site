@@ -5,8 +5,7 @@
   >
     <div class="contents">
       <div v-if="stockHead" class="contents-head flex">
-        <span
-          >{{ util.truncateText(stockHead.assetName, 12) }}
+        <span>
           <a
             ><i
               v-show="isBookmark"
@@ -17,30 +16,32 @@
           <a
             ><i v-show="!isBookmark" @click="bookmarking" class="bi bi-star"></i
           ></a>
+          {{ util.truncateText(stockHead.assetName, 12) }}
         </span>
         <span>({{ stockHead.assetCode }})</span>
       </div>
       <div class="contents-body table-responsive-xxl">
         <div v-if="stockData.price">
           <div class="flex pricebox">
-            <p class="price">{{ stockData.price }}</p>
+            <p class="price">{{ stockData.price.toLocaleString() }}</p>
             <p class="compare" :style="getPriceStyle(stockData.compareYester)">
-              <span>{{ stockData.compareYester }}</span
+              <span>{{ stockData.compareYester.toLocaleString() }}</span
               >({{ stockData.compareYesterRate }}%)
             </p>
           </div>
           <div class="pricebox downside">
             <p style="color: red">
-              <span>금일 최고가</span> | {{ stockData.highPrice }}
+              <span>금일 최고가</span> | {{ stockData.highPrice.toLocaleString() }}
             </p>
             <p style="color: blue">
-              <span>금일 최저가</span> | {{ stockData.rowPrice }}
+              <span>금일 최저가</span> | {{ stockData.rowPrice.toLocaleString() }}
             </p>
           </div>
         </div>
         <div v-else>
-          <div class="flex pricebox">
-            <p class="price">{{ tempStockPrice }}</p>
+          <div class="flex pricebox temp-price">
+            <span>장 마감 가격</span>
+            <p class="price">{{ parseInt(tempStockPrice).toLocaleString() }}원</p>
           </div>
         </div>
         <div class="buttons">
@@ -208,7 +209,7 @@ export default {
   methods: {
     isBookmarked() {
       this.$axios
-        .get(`/api/v1/bookmark`, {
+        .get(`/api/v1/bookmark/isBookmarked`, {
           params: {
             assetCode: this.stockCode,
           },
@@ -269,7 +270,10 @@ export default {
           }
         })
         .catch((err) => {
-          alert(err.response.data.message);
+          if(err.response.status == 500){
+            alert("로그인 해주세요")
+            this.$router.push("/login")
+          }
         });
     },
     // getDomesticStockDetailData() {
@@ -511,6 +515,14 @@ body {
         font-size: 2vw;
         margin-left: 20px;
       }
+    }
+    .temp-price{
+        flex-direction: column;
+        align-items: flex-start;
+        span{
+            font-weight: bold;
+            color: rgb(255, 0, 0);
+        }
     }
     .downside {
       display: flex;

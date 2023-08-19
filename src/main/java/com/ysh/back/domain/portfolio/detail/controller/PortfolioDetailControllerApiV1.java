@@ -7,15 +7,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ysh.back.config.security.auth.CustomUserDetails;
+import com.ysh.back.domain.portfolio.detail.dto.ReqDeletePortfolioDetailDTO;
 import com.ysh.back.domain.portfolio.detail.service.PortfolioDetailServiceApiV1;
 import com.ysh.back.domain.portfolio.dto.chart.ChartDataDTO;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @Tag(name = "포트폴리오 상세", description = "포트폴리오 상세 도메인")
 @RestController
@@ -34,12 +38,22 @@ public class PortfolioDetailControllerApiV1 {
         return portfolioDetailServiceApiV1.getDetailChart(portfolioIdx, customUserDetails);
     }
     
-    @Operation(summary = "상세 리스트", description = "상세 자산 리스트")
+    @Operation(summary = "상세 리스트", description = "포트폴리오 상세 자산 리스트")
     @GetMapping("/{portfolioIdx}/list")
     public ResponseEntity<?> getDetailList(
         @PathVariable Integer portfolioIdx,
         @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
         return portfolioDetailServiceApiV1.getDetailList(portfolioIdx, customUserDetails);
+    }
+
+    @Operation(summary = "상세 자산 삭제", description = "포트폴리오 상세 자산 삭제")
+    @PostMapping("/{portfolioIdx}")
+    public ResponseEntity<?> deleteDetail(
+        @PathVariable Integer portfolioIdx,
+        @AuthenticationPrincipal CustomUserDetails customUserDetails,
+        @Valid @RequestBody ReqDeletePortfolioDetailDTO reqDeletePortfolioDetailDTO
+    ){
+        return portfolioDetailServiceApiV1.deleteDetail(portfolioIdx, reqDeletePortfolioDetailDTO, customUserDetails);
     }
 }

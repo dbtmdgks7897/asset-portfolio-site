@@ -2,107 +2,10 @@
   <div :class="[toggle.show ? 'sidebar-margin' : 'sidebar-margin-none']">
     <div class="contents">
       <div class="contents-head">
-        <span>내 포트폴리오</span>
+        <span>{{ portfolioName }} 분석</span>
       </div>
       <div class="contents-body grid">
-        <!-- idx 가져와서 링크 받아야함 -->
-        <div
-          v-for="portfolio in portfolioList"
-          :key="portfolio"
-          class="portfolio"
-        >
-          <div class="portfolio-head flex">
-            <span>{{ portfolio.name }}</span>
-            <span
-              class="x-button"
-              @click="deletePortfolio(portfolio.idx, portfolio.name)"
-              ><i class="bi bi-x"></i
-            ></span>
-          </div>
-          <div
-            class="portfolio-body"
-            @click="selectPortfolio(portfolio.idx, portfolio.name)"
-          >
-            <span>
-              <Pie
-                v-if="portfolio.chartDataDTO"
-                :data="portfolio.chartDataDTO"
-                :options="options"
-              />
-              <Pie v-else :data="tempData" :options="options" />
-            </span>
-          </div>
-        </div>
-        <div
-          class="portfolio portfolio-add flex"
-          data-bs-toggle="modal"
-          data-bs-target="#exampleModal"
-          data-bs-whatever="@mdo"
-        >
-          <span class="icon"><i class="bi bi-plus-square"></i></span>
-          <span> Add Portfolio </span>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div
-    class="modal fade"
-    id="exampleModal"
-    tabindex="-1"
-    aria-labelledby="exampleModalLabel"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">New message</h1>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div class="modal-body">
-          <form>
-            <div class="mb-3">
-              <label for="recipient-name" class="col-form-label"
-                >포트폴리오 이름 :</label
-              >
-              <input
-                v-model="portfolioName"
-                type="text"
-                class="form-control"
-                id="recipient-name"
-              />
-            </div>
-            <div class="mb-3">
-              <label for="message-text" class="col-form-label">추가 설명</label>
-              <textarea
-                v-model="portfolioDescription"
-                class="form-control"
-                id="message-text"
-              ></textarea>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
-            닫기
-          </button>
-          <button
-            @click="addPortfolioButton"
-            data-bs-toggle="modal"
-            type="button"
-            class="btn btn-primary"
-          >
-            추가
-          </button>
-        </div>
+
       </div>
     </div>
   </div>
@@ -111,8 +14,8 @@
 <script setup>
 import { toggle } from "@/utils/toggle";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { Pie } from "vue-chartjs";
-import { tempData, options } from "@/utils/chartConfig";
+// import { Pie } from "vue-chartjs";
+// import { tempData, options } from "@/utils/chartConfig";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 </script>
@@ -120,9 +23,9 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 export default {
   data() {
     return {
-      options,
-      portfolioList: null,
-      portfolioName: null,
+    //   options,
+      portfolioList: localStorage.getItem("portfolioList"),
+      portfolioName: localStorage.getItem("portfolioName"),
       portfolioDescription: "설명 없음",
     };
   },
@@ -130,7 +33,7 @@ export default {
     // login.getUserProfile();
     this.getPortfolioList();
   },
-  components: { Pie },
+//   components: { Pie },
   methods: {
     getPortfolioList() {
       this.$axios

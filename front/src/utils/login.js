@@ -11,6 +11,7 @@ export const login = reactive({
         axios
         .get('/api/v1/auth/my')
         .then((res) => {
+            if(res.data.code == 0)
             this.isLogined = true;
             this.idx = res.data.data.idx;
             this.nickname = res.data.data.nickname;

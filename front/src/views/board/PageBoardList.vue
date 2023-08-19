@@ -53,7 +53,7 @@
         </div>
       </div>
       <div class="contents-body table-responsive-xxl">
-        <table class="table">
+        <table class="table table-hover">
           <thead class="table-dark">
             <tr>
               <th scope="col">번호</th>
@@ -77,13 +77,14 @@
               "
             >
               <th v-if="!board.isHided" scope="row">{{ board.idx }}</th>
-              <td v-if="!board.isHided">{{ util.truncateText(board.name, 25) }}</td>
+              <td v-if="!board.isHided">
+                {{ util.truncateText(board.name, 25) }}
+              </td>
               <td v-if="!board.isHided">{{ board.user.nickname }}</td>
               <td v-if="!board.isHided">{{ board.createdAt }}</td>
               <td v-if="!board.isHided">{{ board.viewCount }}</td>
               <td v-if="!board.isHided">{{ board.recommendCount }}</td>
             </tr>
-            
           </tbody>
         </table>
       </div>

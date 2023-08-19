@@ -32,18 +32,19 @@
       </div>
       <div class="listLabel">
         <p class="detailListTitle">보유 자산 리스트</p>
-        <button class="btn my-button manageBtn">관리</button>
+        <button class="btn my-button manageBtn"
+        @click="this.$router.push('/portfolio/manage')">관리</button>
       </div>
       <table class="table">
         <thead class="table-dark">
           <tr>
             <th scope="col">코드</th>
-            <th scope="col">이름</th>
-            <th scope="col">현재가</th>
-            <th scope="col">평균 구매액</th>
-            <th scope="col">수량</th>
-            <th scope="col">총액</th>
-            <th scope="col">수익</th>
+            <th>이름</th>
+            <th>평균 구매액</th>
+            <th>현재가</th>
+            <th>수량</th>
+            <th>총액</th>
+            <th>수익</th>
           </tr>
         </thead>
         <tbody>
@@ -51,11 +52,11 @@
           <tr style="font-weight: bold;" v-for="detail in listData" :key="detail">
             <th scope="row">{{ detail.code }}</th>
             <td>{{ detail.name }}</td>
-            <td>{{ detail.curPrice }} 원</td>
-            <td>{{ detail.purchasePrice }} 원</td>
+            <td>{{ detail.purchasePrice.toLocaleString() }} 원</td>
+            <td>{{ detail.curPrice != null ? detail.curPrice.toLocaleString() : null }} 원</td>
             <td>{{ detail.amount }} 개</td>
-            <td>{{ detail.amount * detail.purchasePrice }} 원</td>
-            <td>{{ detail.profit }} 원</td>
+            <td>{{ (detail.amount * detail.purchasePrice).toLocaleString() }} 원</td>
+            <td>{{ detail.profit != null ? detail.profit.toLocaleString() : null }} 원</td>
           </tr>
         </tbody>
       </table>
@@ -86,6 +87,10 @@ export default {
     };
   },
   mounted() {
+    if(localStorage.getItem("portfolioIdx") == null){
+      alert('먼저 포트폴리오를 선택해주세요.');
+      this.$router.push('/portfolio');
+    }
     this.getPortfolioDetailChart();
     this.getPortfolioDetailList();
   },
@@ -105,7 +110,10 @@ export default {
           }
         })
         .catch((err) => {
-          alert(err.response.data.message);
+          if(err.response.status == 500){
+            alert("로그인 해주세요")
+            this.$router.push("/login")
+          }
         });
     },
     getPortfolioDetailList() {
@@ -172,8 +180,9 @@ export default {
       height: 110%;
       min-height: 40vh;
       color: black;
-      background-color: gray;
-      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+      background-color: rgb(255, 255, 255);
+      border: 1px solid;
+      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
       position: relative;
       &-head {
         padding: 5%;

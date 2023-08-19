@@ -3,7 +3,9 @@ package com.ysh.back.domain.portfolio.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,5 +42,15 @@ public class PortfolioControllerApiV1 {
         @AuthenticationPrincipal CustomUserDetails customUserDetails
     ){
         return portfolioServiceApiV1.insertPortfolioData(reqPortfolioInsertDTO, customUserDetails);
+    }
+
+    @Operation(summary = "포트폴리오 삭제", description = "포트폴리오 삭제")
+    @DeleteMapping("/{portfolioIdx}")
+    public ResponseEntity<?> deletePortfolioData(
+        @PathVariable Integer portfolioIdx,
+        @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ){
+        System.out.println();
+        return portfolioServiceApiV1.deletePortfolioData(portfolioIdx, customUserDetails);
     }
 }

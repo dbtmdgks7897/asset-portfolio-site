@@ -13,5 +13,5 @@ public interface PortfolioRepository extends JpaRepository<PortfolioEntity, Inte
     Optional<PortfolioEntity> findByName(String name);   
     Optional<PortfolioEntity> findByIdx(Integer Idx);   
 
-    List<PortfolioEntity> findByUserEntityIdx(Long userIdx);
+    List<PortfolioEntity> findByUserEntityIdxAndDeletedAtIsNull(Long userIdx);
 }

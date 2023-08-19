@@ -98,7 +98,10 @@ export default {
           this.bitcoinData = res.data;
         })
         .catch((err) => {
-          alert(err.response.data.message);
+          if(err.response.status == 500){
+            alert("로그인 해주세요")
+            this.$router.push("/login")
+          }
         });
     },
     getBitcoinSearchData() {},

@@ -1,5 +1,6 @@
 package com.ysh.back.domain.asset.bookmark.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import com.ysh.back.common.dto.ResponseDTO;
 import com.ysh.back.common.exception.BadRequestException;
 import com.ysh.back.config.security.auth.CustomUserDetails;
 import com.ysh.back.domain.asset.bookmark.dto.ReqPostBookmarkDTO;
+import com.ysh.back.domain.asset.bookmark.dto.ResGetBookmarkListDTO;
 import com.ysh.back.model.asset.entity.AssetEntity;
 import com.ysh.back.model.asset.repository.AssetRepository;
 import com.ysh.back.model.auditLog.entity.AuditLogEntity;
@@ -34,6 +36,33 @@ public class BookmarkServiceApiV1 {
     @Autowired
     AuditLogRepository auditLogRepository;
 
+    public ResponseEntity<?> getBookmarkList(CustomUserDetails customUserDetails){
+        Optional<UserEntity> userEntityOptional = userRepository.findByEmail(customUserDetails.getUsername());
+        if(!userEntityOptional.isPresent()){
+            throw new BadRequestException("사용자 정보를 찾을 수 없습니다.");
+        }
+        UserEntity userEntity = userEntityOptional.get();
+
+        List<BookmarkEntity> bookmarkEntityList = bookmarkRepository.findByUserEntityIdx(userEntity.getIdx());
+        if(bookmarkEntityList.isEmpty()){
+            return new ResponseEntity<>(
+                    ResponseDTO.builder()
+                            .code(0)
+                            .message("즐겨찾기 없음")
+                            .build(),
+                    HttpStatus.OK);
+        }
+        
+        ResGetBookmarkListDTO dto = ResGetBookmarkListDTO.of(bookmarkEntityList);
+        
+        return new ResponseEntity<>(
+                    ResponseDTO.builder()
+                            .code(0)
+                            .message("즐겨찾기 리스트~")
+                            .data(dto)
+                            .build(),
+                    HttpStatus.OK);
+    }
 
     public boolean isBookmarked(String stockCode, CustomUserDetails customUserDetails){
         Optional<BookmarkEntity> bookmarkEntityOptional = bookmarkRepository.findByUserEntityIdxAndAssetEntityIdx(userRepository.findByEmail(customUserDetails.getUsername()).get().getIdx(), stockCode);

@@ -1,5 +1,6 @@
 package com.ysh.back.model.bookmark.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,4 +11,5 @@ import com.ysh.back.model.bookmark.entity.BookmarkEntity;
 @Repository
 public interface BookmarkRepository extends JpaRepository<BookmarkEntity, Integer>{
     Optional<BookmarkEntity> findByUserEntityIdxAndAssetEntityIdx(Long userEntityIdx, String assetEntityIdx);
+    List<BookmarkEntity> findByUserEntityIdx(Long userIdx);
 }

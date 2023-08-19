@@ -6,8 +6,7 @@
     <div class="contents">
       <div class="contents-head flex">
         <span
-          >{{ bitcoinName }}
-          <a
+          ><a
             ><i
               v-show="isBookmark"
               @click="bookmarking"
@@ -17,127 +16,144 @@
           <a
             ><i v-show="!isBookmark" @click="bookmarking" class="bi bi-star"></i
           ></a>
+          {{ bitcoinName }}
         </span>
         <span>({{ bitcoinCode }})</span>
       </div>
       <div class="contents-body table-responsive-xxl">
         <div v-if="bitcoinData">
-          <div class="flex pricebox">
-            <p class="price">{{ bitcoinData.trade_price }}원</p>
-            <p class="compare" :style="getPriceStyle(bitcoinData.signed_change_price)">
-              <span>{{ bitcoinData.signed_change_price }}</span
-              >({{ bitcoinData.signed_change_rate }}%)
-            </p>
-          </div>
-          <div class="pricebox downside">
-            <p style="color: red">
-              <span>금일 최고가</span> | {{ bitcoinData.high_price
- }}
-            </p>
-            <p style="color: blue">
-              <span>금일 최저가</span> | {{ bitcoinData.low_price }}
-            </p>
-          </div>
           <div>
-
+            <div class="flex pricebox">
+              <div class="flex">
+                <span class="label">현재가</span>
+                <p class="price">
+                  {{ bitcoinData.trade_price.toLocaleString() }}원
+                </p>
+              </div>
+              <div class="flex">
+                <span class="label">전일 대비</span>
+                <p
+                  class="compare"
+                  :style="getPriceStyle(bitcoinData.signed_change_price)"
+                >
+                  <span
+                    >{{
+                      (bitcoinData.signed_change_price > 0 ? "+" : "") +
+                      bitcoinData.signed_change_price.toLocaleString()
+                    }}원</span
+                  >({{ bitcoinData.signed_change_rate.toLocaleString() }}%)
+                </p>
+              </div>
+            </div>
+            <div class="pricebox downside">
+              <p style="color: red">
+                <span>금일 최고가</span> |
+                {{ bitcoinData.high_price.toLocaleString() }}
+              </p>
+              <p style="color: blue">
+                <span>금일 최저가</span> |
+                {{ bitcoinData.low_price.toLocaleString() }}
+              </p>
+            </div>
+            <div></div>
           </div>
-        </div>
-        <div class="buttons">
-          <button
-            @click="purchaseModal"
-            data-bs-toggle="modal"
-            data-bs-target="#exampleModal"
-            data-bs-whatever="@mdo"
-            class="btn my-button"
-          >
-            <span>구매</span>
-          </button>
-          <button
-            @click="sellModal"
-            data-bs-toggle="modal"
-            data-bs-target="#exampleModal"
-            data-bs-whatever="@mdo"
-            class="btn my-button"
-          >
-            <span>판매</span>
-          </button>
+          <div class="buttons">
+            <button
+              @click="purchaseModal"
+              data-bs-toggle="modal"
+              data-bs-target="#exampleModal"
+              data-bs-whatever="@mdo"
+              class="btn my-button"
+            >
+              <span>구매</span>
+            </button>
+            <button
+              @click="sellModal"
+              data-bs-toggle="modal"
+              data-bs-target="#exampleModal"
+              data-bs-whatever="@mdo"
+              class="btn my-button"
+            >
+              <span>판매</span>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-    <div
-      class="modal fade"
-      id="exampleModal"
-      tabindex="-1"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">
-              {{ modalStatus }}
-            </h1>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="mb-3">
-                <label for="recipient-name" class="col-form-label"
-                  >액수 조정</label
-                >
-                <input
-                  v-model="finalPrice"
-                  type="number"
-                  class="form-control"
-                  id="recipient-name"
-                />
-              </div>
-              <div class="mb-3">
-                <label for="recipient-name" class="col-form-label"
-                  >{{ modalStatus }} 갯수 :
-                </label>
-                <input
-                  v-model="amount"
-                  type="number"
-                  class="form-control"
-                  id="recipient-name"
-                />
-              </div>
-              <div class="mb-3">
-                <label for="message-text" class="col-form-label"
-                  >총 금액 :</label
-                >
-                <textarea
-                  :value="result"
-                  class="form-control"
-                  id="message-text"
-                  disabled
-                >
-                </textarea>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              닫기
-            </button>
-            <button
-              @click="buttonHandler"
-              data-bs-toggle="modal"
-              type="button"
-              class="btn btn-primary"
-            >
-              {{ modalStatus }}
-            </button>
+      <div
+        class="modal fade"
+        id="exampleModal"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">
+                {{ modalStatus }}
+              </h1>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="mb-3">
+                  <label for="recipient-name" class="col-form-label"
+                    >액수 조정</label
+                  >
+                  <input
+                    v-model="finalPrice"
+                    type="number"
+                    class="form-control"
+                    id="recipient-name"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="recipient-name" class="col-form-label"
+                    >{{ modalStatus }} 갯수 :
+                  </label>
+                  <input
+                    v-model="amount"
+                    type="number"
+                    class="form-control"
+                    id="recipient-name"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="message-text" class="col-form-label"
+                    >총 금액 :</label
+                  >
+                  <textarea
+                    :value="result"
+                    class="form-control"
+                    id="message-text"
+                    disabled
+                  >
+                  </textarea>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                닫기
+              </button>
+              <button
+                @click="buttonHandler"
+                data-bs-toggle="modal"
+                type="button"
+                class="btn btn-primary"
+              >
+                {{ modalStatus }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -167,15 +183,15 @@ export default {
   data() {
     //변수생성
     return {
-        bitcoinCode: this.$route.params.bitcoinCode,
-        bitcoinName: this.$route.query.bitcoinName,
-        bitcoinData: null,
-        isBookmark: null,
-        modalStatus: null,
-        finalPrice: null,
-        amount: null,
-        result: null,
-        assetType: "암호화폐"
+      bitcoinCode: this.$route.params.bitcoinCode,
+      bitcoinName: this.$route.query.bitcoinName,
+      bitcoinData: null,
+      isBookmark: null,
+      modalStatus: null,
+      finalPrice: null,
+      amount: null,
+      result: null,
+      assetType: "암호화폐",
     };
   },
   mounted() {
@@ -188,29 +204,31 @@ export default {
     },
   },
   methods: {
-    getBitcoinDetailData(){
-        this.$axios
-        .get(`/api/v1/asset/bitcoin/${this.bitcoinCode}`,{
-            params: {
-                bitcoinName: this.bitcoinName
-            }
+    getBitcoinDetailData() {
+      this.$axios
+        .get(`/api/v1/asset/bitcoin/${this.bitcoinCode}`, {
+          params: {
+            bitcoinName: this.bitcoinName,
+          },
         })
         .then((res) => {
           if (res.data.code === 0) {
             this.bitcoinData = res.data.data[0];
-            console.log(this.bitcoinData)
+            console.log(this.bitcoinData);
           } else {
             alert(res.data.message);
           }
         })
         .catch((err) => {
-          alert(err.response.data.message);
+          if(err.response.status == 500){
+            alert("로그인 해주세요")
+            this.$router.push("/login")
+          }
         });
-        
     },
     isBookmarked() {
       this.$axios
-        .get(`/api/v1/bookmark`, {
+        .get(`/api/v1/bookmark/isBookmarked`, {
           params: {
             assetCode: this.bitcoinCode,
           },
@@ -396,6 +414,11 @@ body {
     height: 70%;
     .pricebox {
       align-items: center;
+      justify-content: space-around;
+      div {
+        flex-direction: column;
+        align-items: flex-start;
+      }
       .price {
         font-size: 4vw;
       }
@@ -403,6 +426,11 @@ body {
         font-size: 2vw;
         margin-left: 20px;
       }
+    }
+    .label {
+      font-weight: bold;
+      font-size: 1vw;
+      color: rgb(116, 116, 116);
     }
 
     .downside {

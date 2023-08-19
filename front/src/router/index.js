@@ -22,6 +22,8 @@ import PageBitcoinDetail from '@/views/portfolio/asset/bitcoin/PageBitcoinDetail
 import PagePortfolioTransaction from '@/views/portfolio/PagePortfolioTransaction'
 import PageMyPortfolio from '@/views/portfolio/PageMyPortfolio'
 import PageMyPortfolioDetail from '@/views/portfolio/PageMyPortfolioDetail'
+import PageMyPortfolioAnalyze from '@/views/portfolio/PageMyPortfolioAnalyze'
+import PagePortfolioManage from '@/views/portfolio/PagePortfolioManage'
 import PageAssetCustom from '@/views/portfolio/asset/custom/PageAssetCustom'
 
 PageCurrency
@@ -93,9 +95,19 @@ const routes = [
         component: PageMyPortfolioDetail
     },
     {
+        path: '/portfolio/analyze',
+        name: 'PageMyPortfolioAnalyze',
+        component: PageMyPortfolioAnalyze
+    },
+    {
         path: '/asset',
         name: 'PageAssetMain',
         component: PageAssetMain
+    },
+    {
+        path: '/portfolio/manage',
+        name: 'PagePortfolioManage',
+        component: PagePortfolioManage
     },
     {
         path: '/asset/stock/domestic',
@@ -142,8 +154,6 @@ const routes = [
         name: 'PageAssetCustom',
         component: PageAssetCustom
     },
-
-    
 ]
 
 // const authNotRequiredComponents = ['PageMain', 'PageBoardList', 'PageJoin', 'PageLogin'];
