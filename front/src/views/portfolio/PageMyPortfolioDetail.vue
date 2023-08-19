@@ -42,6 +42,7 @@
             <th scope="col">현재가</th>
             <th scope="col">평균 구매액</th>
             <th scope="col">수량</th>
+            <th scope="col">총액</th>
             <th scope="col">수익</th>
           </tr>
         </thead>
@@ -53,6 +54,7 @@
             <td>{{ detail.curPrice }} 원</td>
             <td>{{ detail.purchasePrice }} 원</td>
             <td>{{ detail.amount }} 개</td>
+            <td>{{ detail.amount * detail.purchasePrice }} 원</td>
             <td>{{ detail.profit }} 원</td>
           </tr>
         </tbody>
@@ -84,7 +86,6 @@ export default {
     };
   },
   mounted() {
-    // login.getUserProfile();
     this.getPortfolioDetailChart();
     this.getPortfolioDetailList();
   },
@@ -124,8 +125,12 @@ export default {
           alert(err.response.data.message);
         });
     },
-    
-  },
+    goSelectPortfolioPage(){
+        localStorage.removeItem("portfolioIdx");
+        localStorage.removeItem("portfolioName");
+        this.$router.push('/portfolio')
+    }
+  },    
 };
 </script>
 <style lang="scss" scoped>

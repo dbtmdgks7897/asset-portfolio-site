@@ -63,7 +63,7 @@ public class PortfolioServiceApiV1 {
             List<BigDecimal> assetSums = new ArrayList<>();
 
             List<PortfolioDetailEntity> portfolioDetailList = portfolioDetailRepository
-                    .findByPortfolioEntityIdx(portfolioIdx);
+                    .findByPortfolioEntityIdxAndDeletedAtIsNull(portfolioIdx);
 
             // 포트폴리오의 각 자산을 순회하면서 자산 타입과 금액을 리스트에 추가하고 더해갑니다.
             for (PortfolioDetailEntity portfolioDetailEntity : portfolioDetailList) {

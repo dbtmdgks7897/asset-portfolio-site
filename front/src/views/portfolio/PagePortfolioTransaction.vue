@@ -14,7 +14,7 @@
               <th scope="col">이름</th>
               <th scope="col">수량</th>
               <th scope="col">평균 거래액</th>
-              <th scope="col">수익금</th>
+              <th scope="col">총 거래액</th>
             </tr>
           </thead>
           <tbody>

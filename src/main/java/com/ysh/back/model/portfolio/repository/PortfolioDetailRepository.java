@@ -11,5 +11,5 @@ import com.ysh.back.model.portfolio.entity.PortfolioDetailEntity;
 @Repository
 public interface PortfolioDetailRepository extends JpaRepository<PortfolioDetailEntity, Long>{
     Optional<PortfolioDetailEntity> findByPortfolioEntityIdxAndAssetEntityIdx(Integer portfolioIdx, String assetIdx);
-    List<PortfolioDetailEntity> findByPortfolioEntityIdx(Integer idx);
+    List<PortfolioDetailEntity> findByPortfolioEntityIdxAndDeletedAtIsNull(Integer idx);
 }

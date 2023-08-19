@@ -61,6 +61,9 @@ public class PortfolioDetailServiceApiV1 {
         }
         PortfolioEntity portfolioEntity = portfolioEntityOptional.get();
         List<PortfolioDetailEntity> portfolioDetailEntityList = portfolioEntity.getPortfolioDetailEntityList();
+        List<PortfolioDetailEntity> notNullEntityList = portfolioDetailEntityList.stream()
+        .filter(entity -> entity.getDeletedAt() == null)
+        .toList();
 
         List<String> stockLabelList = new ArrayList<String>();
         List<BigDecimal> stockPriceList = new ArrayList<BigDecimal>();
@@ -68,7 +71,7 @@ public class PortfolioDetailServiceApiV1 {
         List<BigDecimal> currencyPriceList = new ArrayList<BigDecimal>();
         List<String> bitcoinLabelList = new ArrayList<String>();
         List<BigDecimal> bitcoinPriceList = new ArrayList<BigDecimal>();
-        for(PortfolioDetailEntity portfolioDetailEntity : portfolioDetailEntityList){
+        for(PortfolioDetailEntity portfolioDetailEntity : notNullEntityList){
             String typeName = portfolioDetailEntity.getAssetEntity().getAssetTypeEntity().getName();
             if(typeName.startsWith("주식")){
                 stockLabelList.add(portfolioDetailEntity.getAssetEntity().getName());
@@ -119,8 +122,11 @@ public class PortfolioDetailServiceApiV1 {
         }
 
         List<PortfolioDetailEntity> portfolioDetailEntityList = portfolioEntity.getPortfolioDetailEntityList();
+        List<PortfolioDetailEntity> result = portfolioDetailEntityList.stream()
+        .filter(entity -> entity.getDeletedAt() == null)
+        .toList();
         
-        ResGetPortfolioDetailDTO dto = ResGetPortfolioDetailDTO.of(portfolioDetailEntityList);
+        ResGetPortfolioDetailDTO dto = ResGetPortfolioDetailDTO.of(result);
 
         return new ResponseEntity<>(
                 ResponseDTO.builder()
@@ -252,6 +258,7 @@ public class PortfolioDetailServiceApiV1 {
         PortfolioDetailEntity portfolioDetailEntity = portfolioDetailEntityOptional.get();
 
         int compareResult = portfolioDetailEntity.getAmount().compareTo(reqPostPortfolioDetailSellDTO.getAmount());
+        System.out.println("");
         if (compareResult == -1) {
             throw new BadRequestException("보유량이 충분하지 않습니다.");
         } else if (compareResult == 0) {
@@ -266,8 +273,11 @@ public class PortfolioDetailServiceApiV1 {
                     .reason(portfolioDetailEntity.getAssetEntity().getName() + "종목"
                             + reqPostPortfolioDetailSellDTO.getAmount() + "개 매도(전량 매도)")
                     .build();
+            // TODO
 
-            portfolioDetailRepository.delete(portfolioDetailEntity);
+            portfolioDetailEntity.setAmount(new BigDecimal(0));
+            portfolioDetailEntity.setTotalPurchasePrice(new BigDecimal(0));
+            portfolioDetailEntity.setDeletedAt(LocalDateTime.now());
 
             auditLogRepository.save(auditLog);
 
@@ -277,7 +287,6 @@ public class PortfolioDetailServiceApiV1 {
                             .message("판매 성공!")
                             .build(),
                     HttpStatus.OK);
-
         } else {
             BigDecimal newTotalPurchase = portfolioDetailEntity.getTotalPurchasePrice()
                     .subtract(reqPostPortfolioDetailSellDTO.getTotalSellPrice());

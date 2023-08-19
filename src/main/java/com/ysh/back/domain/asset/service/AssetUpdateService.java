@@ -33,7 +33,7 @@ public class AssetUpdateService {
     
     @Transactional
     // @Scheduled(initialDelay = 5000, fixedRate = 5000)
-    @Scheduled(fixedRate = 3600000 * 12)
+    // @Scheduled(fixedRate = 3600000 * 12)
     public void updateAllAsset(){
         List<AssetEntity> allAsset = assetRepository.findAll();
         allAsset.forEach((asset) -> {
