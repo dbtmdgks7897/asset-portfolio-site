@@ -246,7 +246,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-$sidebar-width: 15vw;
+$sidebar-width: 10vw;
 
 body {
   font-size: 1vw;
@@ -291,7 +291,7 @@ ul {
 
 .side-item {
   li {
-    font-size: 1.2vw;
+    font-size: 1vw;
     padding: 0;
   }
 }

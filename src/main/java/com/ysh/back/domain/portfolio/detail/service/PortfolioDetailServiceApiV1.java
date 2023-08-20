@@ -137,7 +137,7 @@ public class PortfolioDetailServiceApiV1 {
     }
 
     @Transactional
-    public ResponseEntity<?> deleteDetail(Integer portfolioIdx, ReqDeletePortfolioDetailDTO reqDeletePortfolioDetailDTO,
+    public ResponseEntity<?> deleteDetail(Integer portfolioDetailIdx, ReqDeletePortfolioDetailDTO reqDeletePortfolioDetailDTO,
             CustomUserDetails customUserDetails) {
         Optional<UserEntity> userEntityOptional = userRepository.findByEmail(customUserDetails.getUsername());
         if (!userEntityOptional.isPresent()) {
@@ -146,9 +146,8 @@ public class PortfolioDetailServiceApiV1 {
         UserEntity userEntity = userEntityOptional.get();
 
         Optional<PortfolioDetailEntity> portfolioDetailEntityOptional = portfolioDetailRepository
-                .findByPortfolioEntityIdxAndAssetEntityIdx(portfolioIdx,
+                .findByPortfolioEntityIdxAndAssetEntityIdx(portfolioDetailIdx,
                         reqDeletePortfolioDetailDTO.getCode());
-        System.out.println("IDX : " + portfolioIdx + "CODE :" + reqDeletePortfolioDetailDTO.getCode());
         if (!portfolioDetailEntityOptional.isPresent()) {
             throw new BadRequestException("포트폴리오 상세 정보를 찾을 수 없습니다.");
         }

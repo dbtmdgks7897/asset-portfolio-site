@@ -48,12 +48,12 @@ public class PortfolioDetailControllerApiV1 {
     }
 
     @Operation(summary = "상세 자산 삭제", description = "포트폴리오 상세 자산 삭제")
-    @PostMapping("/{portfolioIdx}")
+    @PostMapping("/{portfolioDetailIdx}")
     public ResponseEntity<?> deleteDetail(
-        @PathVariable Integer portfolioIdx,
+        @PathVariable Integer portfolioDetailIdx,
         @AuthenticationPrincipal CustomUserDetails customUserDetails,
         @Valid @RequestBody ReqDeletePortfolioDetailDTO reqDeletePortfolioDetailDTO
     ){
-        return portfolioDetailServiceApiV1.deleteDetail(portfolioIdx, reqDeletePortfolioDetailDTO, customUserDetails);
+        return portfolioDetailServiceApiV1.deleteDetail(portfolioDetailIdx, reqDeletePortfolioDetailDTO, customUserDetails);
     }
 }
