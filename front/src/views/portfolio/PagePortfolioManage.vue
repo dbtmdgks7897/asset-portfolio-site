@@ -93,7 +93,7 @@ export default {
       diviUpdating: false,
       listData: null,
       bookmarkListData: null,
-      portfolioIdx: localStorage.getItem("portfolioIdx"),
+      portfolioIdx: sessionStorage.getItem("portfolioIdx"),
     };
   },
   mounted() {

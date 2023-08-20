@@ -183,7 +183,7 @@ export default {
             type: this.type,
           },
           portfolioDetail: {
-            portfolioIdx: localStorage.getItem("portfolioIdx"),
+            portfolioIdx: sessionStorage.getItem("portfolioIdx"),
             amount: this.amount,
             averagePurchasePrice: this.price,
             totalPurchasePrice: this.totalPrice,
@@ -224,7 +224,7 @@ export default {
         const data = {
           assetIdx: this.code,
           portfolioDetail: {
-            portfolioIdx: localStorage.getItem("portfolioIdx"),
+            portfolioIdx: sessionStorage.getItem("portfolioIdx"),
             amount: this.amount,
             totalSellPrice: this.totalPrice,
           },

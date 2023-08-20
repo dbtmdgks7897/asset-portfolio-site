@@ -8,6 +8,8 @@ export const login = reactive({
     img: null,
     roles: null,
     getUserProfile() {
+        localStorage.removeItem("portfolioIdx")
+        localStorage.removeItem("portfolioName")
         axios
         .get('/api/v1/auth/my')
         .then((res) => {

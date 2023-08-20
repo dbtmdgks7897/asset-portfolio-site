@@ -121,13 +121,16 @@ export default {
   data() {
     return {
       options,
+      portfolioIdx: sessionStorage.getItem("portfolioIdx"),
       portfolioList: null,
       portfolioName: null,
       portfolioDescription: "설명 없음",
     };
   },
   mounted() {
-    // login.getUserProfile();
+    if(this.portfolioIdx != null){
+        this.$router.push(`/portfolio/${this.portfolioIdx}`)
+    }
     this.getPortfolioList();
   },
   components: { Pie },
@@ -175,8 +178,8 @@ export default {
         });
     },
     selectPortfolio(idx, name) {
-      localStorage.setItem("portfolioIdx", idx);
-      localStorage.setItem("portfolioName", name);
+      sessionStorage.setItem("portfolioIdx", idx);
+      sessionStorage.setItem("portfolioName", name);
       this.$router.push({
         name: "PageMyPortfolioDetail",
         params: { idx: idx },

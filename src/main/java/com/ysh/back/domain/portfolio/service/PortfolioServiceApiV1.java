@@ -53,7 +53,12 @@ public class PortfolioServiceApiV1 {
 
         List<PortfolioEntity> portfolioEntityList = portfolioRepository.findByUserEntityIdxAndDeletedAtIsNull(userEntity.getIdx());
         if (portfolioEntityList.isEmpty()) {
-            return null;
+            return new ResponseEntity<>(
+                ResponseDTO.builder()   
+                        .code(0)
+                        .message("리스트 없음")
+                        .build(),
+                HttpStatus.OK);
         }
 
         ResPortfolioListDTO dto = ResPortfolioListDTO.of(portfolioEntityList);
@@ -70,13 +75,13 @@ public class PortfolioServiceApiV1 {
             // 포트폴리오의 각 자산을 순회하면서 자산 타입과 금액을 리스트에 추가하고 더해갑니다.
             for (PortfolioDetailEntity portfolioDetailEntity : portfolioDetailList) {
                 String assetType = portfolioDetailEntity.getAssetEntity().getAssetTypeEntity().getName();
-                BigDecimal assetAmount = portfolioDetailEntity.getTotalPurchasePrice();
+                BigDecimal assetAmount = portfolioDetailEntity.getTotalPurchasePrice() == null ? BigDecimal.ZERO : portfolioDetailEntity.getTotalPurchasePrice();
 
                 int index = assetTypes.indexOf(assetType);
 
                 if (index != -1) {
                     // 이미 해당 자산 타입이 리스트에 존재하는 경우 합을 업데이트합니다.
-                    BigDecimal currentAmount = assetSums.get(index);
+                    BigDecimal currentAmount = assetSums.get(index) == null ? BigDecimal.ZERO : assetSums.get(index);
                     assetSums.set(index, currentAmount.add(assetAmount));
                 } else {
                     // 해당 자산 타입이 리스트에 없는 경우 추가합니다.

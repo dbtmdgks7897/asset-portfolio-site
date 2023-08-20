@@ -26,8 +26,6 @@ import PageMyPortfolioAnalyze from '@/views/portfolio/PageMyPortfolioAnalyze'
 import PagePortfolioManage from '@/views/portfolio/PagePortfolioManage'
 import PageAssetCustom from '@/views/portfolio/asset/custom/PageAssetCustom'
 
-PageCurrency
-
 const routes = [
     {
         path: '/',

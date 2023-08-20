@@ -26,7 +26,7 @@
             >
               <div class="analyze-box">
                 <span>{{ key }} {{ analCategoryList[index] }}</span>
-                <span class="price">{{ inVal }}</span>
+                <span class="price">{{ inVal.toLocaleString() }} {{ index != 3 ? '원' : '%' }}</span>
               </div>
               <div class="overlap-div" :class="value.numClass">
                 <span><i class="bi" :class="value.iClass"></i></span>
@@ -191,8 +191,8 @@ export default {
   data() {
     return {
       //   options,
-      portfolioIdx: localStorage.getItem("portfolioIdx"),
-      portfolioName: localStorage.getItem("portfolioName"),
+      portfolioIdx: sessionStorage.getItem("portfolioIdx"),
+      portfolioName: sessionStorage.getItem("portfolioName"),
       portfolioDescription: "설명 없음",
       onlyProfit: false,
       //   analTypeList: ["총", "주식", "외화", "암호화폐"],
@@ -220,6 +220,10 @@ export default {
     };
   },
   mounted() {
+    if (sessionStorage.getItem("portfolioIdx") == null) {
+      alert("먼저 포트폴리오를 선택해주세요.");
+      this.$router.push("/portfolio");
+    }
     this.getAnalyzeData();
   },
   //   components: { Pie },
@@ -294,6 +298,8 @@ export default {
           font-size: 1vw;
           .price {
             font-size: 2vw;
+            margin-top: 1vh;
+            color: white;
           }
         }
         .overlap-div {

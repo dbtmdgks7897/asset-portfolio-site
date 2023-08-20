@@ -53,7 +53,7 @@ export default {
     return {};
   },
   mounted() {
-    if(localStorage.getItem("portfolioIdx") == null){
+    if(sessionStorage.getItem("portfolioIdx") == null){
       alert('먼저 포트폴리오를 선택해주세요.');
       this.$router.push('/portfolio');
     }

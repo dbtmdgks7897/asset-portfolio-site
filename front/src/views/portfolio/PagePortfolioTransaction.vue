@@ -52,7 +52,7 @@ export default {
     };
   },
   mounted() {
-    if (localStorage.getItem("portfolioIdx") == null) {
+    if (sessionStorage.getItem("portfolioIdx") == null) {
       alert("먼저 포트폴리오를 선택해주세요.");
       this.$router.push("/portfolio");
     }
@@ -63,7 +63,7 @@ export default {
       this.$axios
         .get(`/api/v1/transaction`, {
           params: {
-            portfolioIdx: localStorage.getItem("portfolioIdx"),
+            portfolioIdx: sessionStorage.getItem("portfolioIdx"),
           },
         })
         .then((res) => {

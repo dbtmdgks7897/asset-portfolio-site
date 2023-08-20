@@ -120,7 +120,7 @@ INSERT INTO `AUTHORITY` (`name`) VALUES
 
 INSERT INTO `USER_ROLES` (`user_idx`,`roles_idx`) VALUES
 (1, 1),
-(1, 2),
+(1, 2);
 
 INSERT INTO `ROLES_AUTHORITY` (`roles_idx`,`authority_idx`) VALUES
 (1, 1),

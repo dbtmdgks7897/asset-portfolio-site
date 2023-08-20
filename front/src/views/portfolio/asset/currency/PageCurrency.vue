@@ -356,7 +356,7 @@ export default {
             type: "외화",
           },
           portfolioDetail: {
-            portfolioIdx: localStorage.getItem("portfolioIdx"),
+            portfolioIdx: sessionStorage.getItem("portfolioIdx"),
             amount: this.result,
             averagePurchasePrice: this.krwPrice / this.result,
             totalPurchasePrice: this.krwPrice,
@@ -401,7 +401,7 @@ export default {
         const data = {
           assetIdx: `${this.selected.toUpperCase()}/KRW`,
           portfolioDetail: {
-            portfolioIdx: localStorage.getItem("portfolioIdx"),
+            portfolioIdx: sessionStorage.getItem("portfolioIdx"),
             amount: this.toPrice,
             totalSellPrice: this.result,
           },

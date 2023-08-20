@@ -55,7 +55,7 @@
             <td>{{ detail.purchasePrice.toLocaleString() }} 원</td>
             <td>{{ detail.curPrice != null ? detail.curPrice.toLocaleString() : null }} 원</td>
             <td>{{ detail.amount }} 개</td>
-            <td>{{ (detail.amount * detail.purchasePrice).toLocaleString() }} 원</td>
+            <td>{{ parseInt((detail.amount * detail.purchasePrice).toFixed(0)).toLocaleString() }} 원</td>
             <td>{{ detail.profit != null ? detail.profit.toLocaleString() : null }} 원</td>
           </tr>
         </tbody>
@@ -77,8 +77,8 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 export default {
   data() {
     return {
-      portfolioIdx: localStorage.getItem("portfolioIdx"),
-      portfolioName: localStorage.getItem("portfolioName"),
+      portfolioIdx: sessionStorage.getItem("portfolioIdx"),
+      portfolioName: sessionStorage.getItem("portfolioName"),
       chartData: null,
       listData: null,
       titleList: ["주식", "외화", "암호화폐"],
@@ -87,7 +87,7 @@ export default {
     };
   },
   mounted() {
-    if(localStorage.getItem("portfolioIdx") == null){
+    if(sessionStorage.getItem("portfolioIdx") == null){
       alert('먼저 포트폴리오를 선택해주세요.');
       this.$router.push('/portfolio');
     }
@@ -134,8 +134,8 @@ export default {
         });
     },
     goSelectPortfolioPage(){
-        localStorage.removeItem("portfolioIdx");
-        localStorage.removeItem("portfolioName");
+        sessionStorage.removeItem("portfolioIdx");
+        sessionStorage.removeItem("portfolioName");
         this.$router.push('/portfolio')
     }
   },    
