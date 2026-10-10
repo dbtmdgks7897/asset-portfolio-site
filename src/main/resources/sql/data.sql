@@ -100,7 +100,7 @@ insert into `USER` (idx, email, password, name, nickname, phone, profile_img, ge
 insert into `USER` (idx, email, password, name, nickname, phone, profile_img, gender, age, suspend_until, suspend_reason, updated_at, deleted_at, deleted_reason) values (98, 'irussan2p@dyndns.org', '$2a$04$9Dn4Lvr7lUTftedVggv31OAJGPKGDyZFLv7sz7Kmrd0LscmGVLrim', 'Ignazio Russan', 'Smith', null, null, null, null, '2012-09-13 03:44:45', null, null, '2019-06-22 15:43:20', 'Account Closure');
 insert into `USER` (idx, email, password, name, nickname, phone, profile_img, gender, age, suspend_until, suspend_reason, updated_at, deleted_at, deleted_reason) values (99, 'nwasling2q@umich.edu', '$2a$04$FaeB.sTUnY6BH8ycQqHr5OVfcSY7aIUga86xeL7I/50d.bVPFOP.S', 'Nealson Wasling', 'Doe', '839-360-3215', null, 'Male', null, '2013-11-02 18:43:46', 'Violation', null, null, 'Account Closure');
 insert into `USER` (idx, email, password, name, nickname, phone, profile_img, gender, age, suspend_until, suspend_reason, updated_at, deleted_at, deleted_reason) values (100, 'bhovard2r@archive.org', '$2a$04$v3rj0obKbdwlcnCJ7np9cuCQzP1hBMro3nqCZUKqDxDSEZRQFGlAW', 'Binni Hovard', 'Jane', null, null, null, null, null, null, null, null, null);
-insert into `USER` (idx, email, password, name, nickname, phone, profile_img, gender, age, suspend_until, suspend_reason, updated_at, deleted_at, deleted_reason) values (101, 'w@w.c', '$2a$12$kVy0FCDLAntSxHyD3hnXfuoNiDXPlzg18iQHjNOGSNogaiJs9jySK', '유승한', 'yshh', '010-1111-2222', null, null, null, null, null, null, null, null);
+insert into `USER` (idx, email, password, name, nickname, phone, profile_img, gender, age, suspend_until, suspend_reason, updated_at, deleted_at, deleted_reason) values (101, 'w@w.c', '$2a$10$PH4CKWh2DvrvkCGbbUwUp.n5iEfb/rchJ6HO76zBkLqt5j.8nwAsm', '데모유저', 'yshh', '010-1111-2222', null, null, null, null, null, null, null, null);
 insert into `USER` (idx, email, password, name, nickname, phone, profile_img, gender, age, suspend_until, suspend_reason, updated_at, deleted_at, deleted_reason) values (102, 'w@n.c', '$2a$12$kVy0FCDLAntSxHyD3hnXfuoNiDXPlzg18iQHjNOGSNogaiJs9jySK', '홍', 'honhong', '010-1111-2222', null, null, null, "2023-08-11 12:36:57", null, null, null, null);
 
 
@@ -116,8 +116,8 @@ INSERT INTO `AUTHORITY` (`name`) VALUES
 
 
 INSERT INTO `USER_ROLES` (`user_idx`,`roles_idx`) VALUES
-(1, 1),
-(1, 2);
+(101, 1),
+(101, 2);
 
 INSERT INTO `ROLES_AUTHORITY` (`roles_idx`,`authority_idx`) VALUES
 (1, 1),
